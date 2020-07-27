@@ -1,5 +1,4 @@
 <?php
-require_once 'conexion/credencial.inc';
 /*
 	Sample Processing of Forgot password form via ajax
 	Page: extra-register.html
