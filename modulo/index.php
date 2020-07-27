@@ -16,7 +16,7 @@ echo $credencial['driver'];
 	<meta name="description" content="Neon Admin Panel" />
 	<meta name="author" content="" />
 
-	<link rel="icon" href="assets/images/favicon.ico">
+	<link rel="icon" href="../libreria/neon/assets/images/favicon.ico">
 
 	<title>AP-Atl&aacute;ntico | Tablero Inicial</title>
 
@@ -86,17 +86,17 @@ echo $credencial['driver'];
 					</a>
 					<ul class="visible">
 						<li class="active">
-							<a href="index.html">
+							<a href="luminaria/luminaria.php">
 								<span class="title">Luminarias</span>
 							</a>
 						</li>
 						<li>
-							<a href="dashboard-2.html">
+							<a href="georegerencia/georegerencia.php">
 								<span class="title">Georeferencia</span>
 							</a>
 						</li>
 						<li>
-							<a href="dashboard-3.html">
+							<a href="actividad/actividad.php">
 								<span class="title">Actividades</span>
 							</a>
 						</li>						
