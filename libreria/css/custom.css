@@ -1,0 +1,99 @@
+.login-page {
+    background: #ffffff none repeat scroll 0 0;
+}
+
+.login-page .login-form .form-group .input-group {
+    background: #ffffff none repeat scroll 0 0 padding-box;
+}
+
+.login-page .login-header {
+    background: #009549 none repeat scroll 0 0;  
+    padding:50px;
+}
+body.login-page  {
+    background: #ffffff none repeat scroll 0 0;    
+}
+.msgbox-body{
+    color: #000000;
+}
+.login-page .login-header.login-caret::after {
+    border-color: #009549 transparent transparent;
+}
+.login-page.login-form-fall-init .login-form {
+    top: -20px;
+}
+input,textarea {    
+    text-transform: uppercase;
+}
+.links-list {
+    padding-bottom: 0.5px;
+    padding-top: 0.5px;
+}
+.footer {
+    height: 0;
+    padding-top: 25px;
+    width: 0;
+}
+.footer .footer-inner {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    z-index: auto;
+}
+.footer .footer-inner {
+    text-align: center;
+}
+.footer .footer-inner .footer-content {
+    border-top: 3px double #e5e5e5;
+    bottom: 4px;
+    left: 12px;
+    line-height: 15px;
+    padding: 8px;
+    position: absolute;
+    right: 12px;
+}
+.sidebar.h-sidebar ~ .footer .footer-inner {
+    left: 0;
+}
+.page-header {
+    margin: 0px 0 0px;
+}
+.panel-title {
+    font-size: 13px;
+}
+.panel-options{
+    float: right;
+    margin-top: -15px;
+}
+.panel-heading {
+    padding: 5px 10px;
+}
+div.dataTables_wrapper div.dataTables_processing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    margin-left: -100px;
+    margin-top: -26px;
+    text-align: center;
+    padding: 1em 0;
+    border-radius: 3px;
+    margin-bottom: 17px;
+    padding: 15px;
+    background-color: #c5e8f7;
+    border-color: #c5e8f7;
+    color: #0072bc;
+}
+.dataTables_wrapper .dataTables_filter > label input {
+    width: 50%;
+}
+table > tbody > tr.highlight > td, table > tbody > tr.highlight > th {
+    background-color: #c5e8f7 !important;
+}
+.dataTables_wrapper .dataTables_info.dataTables_info, .dataTables_wrapper .dataTables_paginate.dataTables_info {
+    width: 100%;
+}
+.alignRight { text-align: right; }
+.alignCenter { text-align: center; }
