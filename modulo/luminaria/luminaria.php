@@ -11,11 +11,6 @@ $ObjTipoLum = new TipoLuminaria($credencial['driver'],$credencial['host'], $cred
 $municipio = $ObjMun->listarMunicipioContrato();
 $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
 
-/*
-$db = NewADOConnection($credencial['driver']);
-$c = $db->Connect($credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
-$db->SetFetchMode(ADODB_FETCH_ASSOC);
-*/
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -116,17 +111,17 @@ $db->SetFetchMode(ADODB_FETCH_ASSOC);
                         <ul class="visible">
                             <li class="active">
                                 <a href="luminaria.php">
-                                    <span class="title">Luminarias</span>
+                                    <span class="Inventario de Luminaria">Luminarias</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="../georegerencia/georegerencia.php">
-                                    <span class="title">Georeferencia</span>
+                                <a href="../georeferencia/georeferencia.php">
+                                    <span class="Georeferencia">Georeferencia</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="../actividad/actividad.php">
-                                    <span class="title">Actividades</span>
+                                    <span class="Actividades en Terreno">Actividades</span>
                                 </a>
                             </li>						
                         </ul>
@@ -184,7 +179,7 @@ $db->SetFetchMode(ADODB_FETCH_ASSOC);
                     <a href="#"><i class="glyphicon glyphicon-home"></i> Inicio</a>
                 </li>
                 <li>
-                    <a href="#">Luminaria</a>
+                    <a href="../index.php">Luminaria</a>
                 </li>
                 <li class="active">
                 <strong>Inventario</strong>
@@ -406,7 +401,7 @@ $db->SetFetchMode(ADODB_FETCH_ASSOC);
             
             </div>
         </div>
-    </div>
+        </div>
         </div>
         <!--Fin Detalle-->
     </div>
