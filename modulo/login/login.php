@@ -1,4 +1,5 @@
 <?php
+session_start();
 /*
 	Sample Processing of Forgot password form via ajax
 	Page: extra-register.html
@@ -21,9 +22,10 @@ $resp['submitted_data'] = $_POST;
 // Your code will decide if username and password are correct
 $login_status = 'invalid';
 
-if($username == 'demo' && $password == 'demo')
+if(($username == 'admin' && $password == 'admin') or ($username == 'invitado' && $password == 'invitado'))
 {
 	$login_status = 'success';
+	$_SESSION['nombre'] = ($username == 'admin')?"Administrador":"Invitado";
 }
 
 $resp['login_status'] = $login_status;

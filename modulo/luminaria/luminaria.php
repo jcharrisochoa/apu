@@ -10,7 +10,11 @@ $ObjTipoLum = new TipoLuminaria($credencial['driver'],$credencial['host'], $cred
 
 $municipio = $ObjMun->listarMunicipioContrato();
 $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
-
+if($_SESSION['nombre']==""){
+	?>
+	<script> window.location = "../index.php";</script>
+	<?
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -80,7 +84,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
 			    <header class="logo-env">
                     <!-- logo -->
                     <div class="logo">
-                        <a href="index.html">
+                        <a href="../index.php">
                             <img src="../../libreria/neon/assets/images/logo@2x.png" width="120" alt="" />
                         </a>
                     </div>
@@ -139,7 +143,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                         <li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->            
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="../../libreria/neon/assets/images/thumb-1@2x.png" alt="" class="img-circle" width="44" />
-                                Johan Charris
+                                <?=$_SESSION['nombre']?>
                             </a>            
                             <ul class="dropdown-menu">            
                                 <!-- Reverse Caret -->
@@ -152,7 +156,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                                     </a>
                                 </li>            
                                 <li>
-                                    <a href="extra-calendar.html">
+                                    <a href="../../index.php">
                                         <i class="entypo-calendar"></i>
                                         Salir
                                     </a>
@@ -189,7 +193,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
             <div class="row">
                 <div class="form-group">
                     <div class="col-xs 12 col-md-2">
-                        <select id="municipio" name="municipio" title="Municipio" class="form-control" data-allow-clear="true" data-placeholder="MUNICIPIO">
+                        <select id="municipio" name="municipio" title="Municipio" class="form-control requerido" data-allow-clear="true" data-placeholder="MUNICIPIO">
                         <option value="">-Seleccione-</option>
                         <?php
                         while(!$municipio->EOF){
@@ -206,7 +210,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                         </select>
                     </div>
 
-                    <div class="col-xs 12 col-md-2">                    
+                    <div class="col-xs 12 col-md-1">                    
                         <select id="tipo" name="tipo" title="Tipo" class="form-control" data-allow-clear="true" data-placeholder="TIPO">
                         <option value=""></option>
                         <?php
@@ -238,7 +242,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                         <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_luminaria">
                         <i class="glyphicon glyphicon-search"></i>BUSCAR</button> 
                     </div>
-
+                    <div class="col-xs 12 col-md-1"></div>
                 </div>
             </div>
             </hr>
@@ -250,10 +254,9 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                                 <tr> 
                                     <th style="text-align: center">#</th>
                                     <th style="text-align: center">MUNICIPIO</th>
-                                    <th style="text-align: center">POSTE No</th>
-                                    <th style="text-align: center">LUMINARIA No</th>
+                                    <th style="text-align: center">POSTE</th>
+                                    <th style="text-align: center">LUMINARIA</th>
                                     <th style="text-align: center">TIPO</th>
-                                    <th style="text-align: center">BARRIO</th>
                                     <th style="text-align: center">DIRECCION</th>
                                     <th style="text-align: center">LATITUD</th>
                                     <th style="text-align: center">LONGITUD</th> 
@@ -268,11 +271,6 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
             </div>
 
             </hr>
-
-            <!-- Footer -->
-            <footer class="main">			
-                &copy; 2020 Administrador</a>		
-            </footer>
 
         </div>
 

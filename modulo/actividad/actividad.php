@@ -4,12 +4,17 @@ include("../../libreria/adodb/adodb.inc.php");
 $url = file_get_contents("../../conexion/credencial.json");
 $credencial= json_decode($url, true);
 require_once "../parametros/clase/Municipio.php";
-require_once "../parametros/clase/TipoLuminaria.php";
+require_once "../parametros/clase/TipoActividad.php";
 $ObjMun = new Municipio($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
-$ObjTipoLum = new TipoLuminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjTipoAct = new TipoActividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 
 $municipio = $ObjMun->listarMunicipioContrato();
-$tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
+$tipoActividad = $ObjTipoAct->listarTipoActividad();
+if($_SESSION['nombre']==""){
+	?>
+	<script> window.location = "../../index.php";</script>
+	<?
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -70,7 +75,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
     <script type="text/javascript" src="../../libreria/js/neon-custom.js"></script>
     <script type="text/javascript" src="../../libreria/js/jquery.blockUI.js"></script>
     <script type="text/javascript" src="../../libreria/js/custom.js"></script>
-    <script type="text/javascript" src="js/luminaria.js"></script>
+    <script type="text/javascript" src="js/actividad.js"></script>
 </head>
 <body class="page-body  page-fade">
     <div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->	
@@ -79,7 +84,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
 			    <header class="logo-env">
                     <!-- logo -->
                     <div class="logo">
-                        <a href="index.html">
+                        <a href="../index.php">
                             <img src="../../libreria/neon/assets/images/logo@2x.png" width="120" alt="" />
                         </a>
                     </div>
@@ -138,7 +143,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                         <li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->            
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="../../libreria/neon/assets/images/thumb-1@2x.png" alt="" class="img-circle" width="44" />
-                                Johan Charris
+                                <?=$_SESSION['nombre']?>
                             </a>            
                             <ul class="dropdown-menu">            
                                 <!-- Reverse Caret -->
@@ -185,11 +190,163 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                 </li>
             </ol>
             </hr>
-            <!-- Footer -->
-            <footer class="main">			
-                &copy; 2020 Administrador</a>		
-            </footer>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-xs 12 col-md-3">
+                        <select id="municipio" name="municipio" title="Municipio" class="form-control requerido" data-allow-clear="true" data-placeholder="MUNICIPIO">
+                        <option value="">-Seleccione-</option>
+                        <?php
+                        while(!$municipio->EOF){
+                            echo "<option value=\"".$municipio->fields['id_municipio']."\">".strtoupper($municipio->fields['descripcion'])."</option>";
+                            $municipio->MoveNext();
+                        }
+                        ?>
+                        </select>              
+                    </div>
+
+                    <div class="col-xs 12 col-md-2">
+                        <select id="barrio" name="barrio" title="Barrio" class="form-control" data-allow-clear="true" data-placeholder="BARRIO">
+                        <option value=""></option>
+                        </select>
+                    </div>
+
+                    <div class="col-xs 12 col-md-2">                    
+                        <select id="tipo_actividad" name="tipo_actividad" title="Tipo" class="form-control" data-allow-clear="true" data-placeholder="TIPO ACTIVIDAD">
+                        <option value=""></option>
+                        <?php
+                        while(!$tipoActividad->EOF){
+                            echo "<option value=\"".$tipoActividad->fields['id_tipo_actividad']."\">".strtoupper($tipoActividad->fields['descripcion'])."</option>";
+                            $tipoActividad->MoveNext();
+                        }
+                        ?>
+                        </select>
+                    </div>
+                    <div class="col-xs 12 col-md-2">
+                        <input type="text" id="poste_luminaria" name="poste_luminaria"  class="form-control" placeholder="POSTE/LUMINARIA"/> 
+                    </div>
+
+                    <div class="col-xs 12 col-md-2">
+                        <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_actividad">
+                        <i class="glyphicon glyphicon-search"></i>BUSCAR</button> 
+                    </div>
+                    <div class="col-xs 12 col-md-1"></div>
+                </div>
+            </div>
+            <div class="container-fluid">                
+                <div class="row">
+                    <div class="table-responsive"> 
+                        <table id="tbl_actividad" class="table table-bordered datatable">
+                            <thead>
+                                <tr> 
+                                    <th style="text-align: center">#</th>
+                                    <th style="text-align: center">MUNICIPIO</th>
+                                    <th style="text-align: center">ACTIVIDAD No</th>
+                                    <th style="text-align: center">TIPO</th>
+                                    <th style="text-align: center">BARRIO</th>
+                                    <th style="text-align: center">DIRECCION</th>
+                                    <th style="text-align: center">FCH ACTIVIDAD</th>                               
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>  
+            </div>
+
+            </hr>
         </div>
     </div>
+
+    <!--Detalle Luminaria-->
+    <div class="modal fade" id="modal-detalle-actividad"> 
+            <div class="modal-dialog modal-lg" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="actividad"></h4>
+                    </div>
+            
+                    <div id="modal-body-orden" class="modal-body">
+                <!--Informacion General-->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="0" id="panel-encabezado"><!-- to apply shadow add class "panel-shadow" -->
+                            <!-- panel head -->
+                            <div class="panel-heading">
+                                <div class="panel-title">Informaci&oacute;n General</div>
+                                <div class="panel-options">
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                </div>
+                            </div>
+                            <div class="panel-body panel-encabezado">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Poste.No</label></div>
+                                        <div class="col-ms-12 col-md-4" style="color:#2ca02c; font-weight: bold;" id="td_poste_no"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Reporte</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_tipo_reporte"></div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Luminaria No</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_luminaria_no"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Reporte</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_fch_reporte"></div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Luminaria</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_tipo_luminaria"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Actividad</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_tipo"></div>
+
+                                    </div>
+                                </div>
+                                 <div class="row">
+                                     <div class="col-sm-12">
+                                         <div class="col-ms-12 col-md-2"><label class="control-label">Municipio</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_municipio"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Actividad</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_fch_instalacion"></div>               
+                                     </div>
+                                 </div>
+                                <div class="row">
+                                     <div class="col-sm-12">
+                                         <div class="col-ms-12 col-md-2"><label class="control-label">Barrio</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_barrio"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tècnico</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_usuario"></div>               
+                                     </div>
+                                </div>
+                                <div class="row">
+                                     <div class="col-sm-12">
+                                         <div class="col-ms-12 col-md-2"><label class="control-label">Direcci&oacute;n</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_direccion"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Estado</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_estado"></div>               
+                                     </div>
+                                </div>
+                                <div class="row">
+                                     <div class="col-sm-12">
+                                         <div class="col-ms-12 col-md-2"><label class="control-label">Observacion</label></div>
+                                        <div class="col-ms-12 col-md-10" id="td_observacion"></div>         
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_cerrar_detalle_actividad">Cerrar<i class="glyphicon glyphicon-ok"></i></button>
+            
+            </div>
+        </div>
+        </div>
+        </div>
+        <!--Fin Detalle-->
 </body>
 </html>

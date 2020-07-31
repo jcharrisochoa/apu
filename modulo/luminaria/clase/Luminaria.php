@@ -61,6 +61,9 @@ class Luminaria{
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(l.fch_instalacion) >= '".$post['fechaini']."' and date(l.fch_instalacion) <= '".$post['fechafin']."'";
 
+        if (!empty($post['start']) or !empty($post['length']))
+            $q .= " limit ".$post['start'].",".$post['length'];
+
         $this->sql = "select l.id_luminaria,l.poste_no,l.luminaria_no,m.descripcion as municipio,l.direccion,b.descripcion as barrio,l.latitud,l.longitud,l.fch_instalacion,
                     el.descripcion as estado,tl.descripcion as tipo,l.potencia,l.referencia,l.fch_registro,tc. usuario,
                     (select razon_social from tercero where id_tercero = l.id_tercero) as proveedor
@@ -72,8 +75,7 @@ class Luminaria{
                     join tercero tc on (tc.id_tercero = l.id_tercero_registra) 
                     where
                     1=1
-                    ".$q."
-                    limit ".$post['start'].",".$post['length'];
+                    ".$q;
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
             echo "Error Consultando las luminarias". $this->db->ErrorMsg();

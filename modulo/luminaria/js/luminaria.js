@@ -59,7 +59,7 @@ function InitTableLuminaria() {
             "processing": true,
             "serverSide": true,
             "responsive": true,
-            "bAutoWidth": false,
+            "bAutoWidth": true,
             "searching": false,
             "ajax": {
                 "url": "ajax/listar_luminaria.php",
@@ -72,7 +72,6 @@ function InitTableLuminaria() {
                 { "data": "poste_no", "searchable": false, "orderable": false },
                 { "data": "luminaria_no", className: "alignCenter" },
                 { "data": "tipo", className: "alignLeft" },
-                { "data": "barrio", className: "alignLeft" },
                 { "data": "direccion", "searchable": false },
                 { "data": "latitud", className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "longitud", className: "alignCenter", "searchable": false, "orderable": false },

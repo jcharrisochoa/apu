@@ -2,9 +2,11 @@
 session_start();
 $url = file_get_contents("../conexion/credencial.json");
 $credencial= json_decode($url, true);
-/*
-echo $credencial['driver'];
-"host,uid,pwd,database*/
+if($_SESSION['nombre']==""){
+	?>
+	<script> window.location = "../index.php";</script>
+	<?
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -91,7 +93,7 @@ echo $credencial['driver'];
 							</a>
 						</li>
 						<li>
-							<a href="georegerencia/georegerencia.php">
+							<a href="georeferencia/georeferencia.php">
 								<span class="title">Georeferencia</span>
 							</a>
 						</li>
@@ -112,58 +114,34 @@ echo $credencial['driver'];
 				
 		<div class="row">
 		
-			<!-- Profile Info and Notifications -->
-			<div class="col-md-6 col-sm-8 clearfix">
-		
-				<ul class="user-info pull-left pull-none-xsm">
-		
-					<!-- Profile Info -->
-					<li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->
-		
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="../libreria/neon/assets/images/thumb-1@2x.png" alt="" class="img-circle" width="44" />
-							Johan Charris
-						</a>
-		
-						<ul class="dropdown-menu">
-		
-							<!-- Reverse Caret -->
-							<li class="caret"></li>
-		
-							<!-- Profile sub-links -->
-							<li>
-								<a href="extra-timeline.html">
-									<i class="entypo-user"></i>
-									Edit Profile
-								</a>
-							</li>
-		
-							<li>
-								<a href="mailbox.html">
-									<i class="entypo-mail"></i>
-									Inbox
-								</a>
-							</li>
-		
-							<li>
-								<a href="extra-calendar.html">
-									<i class="entypo-calendar"></i>
-									Calendar
-								</a>
-							</li>
-		
-							<li>
-								<a href="#">
-									<i class="entypo-clipboard"></i>
-									Tasks
-								</a>
-							</li>
-						</ul>
-					</li>
-		
-				</ul>
-		
-			</div>
+		<div class="col-md-6 col-sm-8 clearfix">            
+                    <ul class="user-info pull-left pull-none-xsm">            
+                        <!-- Profile Info -->
+                        <li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->            
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="../../libreria/neon/assets/images/thumb-1@2x.png" alt="" class="img-circle" width="44" />
+                                <?=$_SESSION['nombre']?>
+                            </a>            
+                            <ul class="dropdown-menu">            
+                                <!-- Reverse Caret -->
+                                <li class="caret"></li>            
+                                <!-- Profile sub-links -->
+                                <li>
+                                    <a href="extra-timeline.html">
+                                        <i class="entypo-user"></i>
+                                        Cambiar Clave
+                                    </a>
+                                </li>            
+                                <li>
+                                    <a href="extra-calendar.html">
+                                        <i class="entypo-calendar"></i>
+                                        Salir
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>            
+                    </ul>            
+                </div>        
 		
 		
 			<!-- Raw Links -->
@@ -171,7 +149,7 @@ echo $credencial['driver'];
 				<ul class="list-inline links-list pull-right">		
 					<li>
 						<a href="../index.php">
-							Log Out <i class="entypo-logout right"></i>
+							Salir <i class="entypo-logout right"></i>
 						</a>
 					</li>
 				</ul>		
@@ -206,11 +184,6 @@ echo $credencial['driver'];
 		</script>
 		
 	
-		
-		<!-- Footer -->
-		<footer class="main">			
-			&copy; 2020 Admin:jcharris</a>		
-		</footer>
 	</div>
 		
 </div>

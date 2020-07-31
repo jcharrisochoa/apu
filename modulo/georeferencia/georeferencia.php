@@ -10,6 +10,11 @@ $ObjTipoLum = new TipoLuminaria($credencial['driver'],$credencial['host'], $cred
 
 $municipio = $ObjMun->listarMunicipioContrato();
 $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
+if($_SESSION['nombre']==""){
+	?>
+	<script> window.location = "../../index.php";</script>
+	<?
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -47,6 +52,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
     <link rel="stylesheet" type="text/css" href="../../libreria/entypo/css/entypo.css"/>             
     <link rel="stylesheet" type="text/css" href="../../libreria/css/jquery-ui-1.10.3.custom.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../libreria/css/bootstrap-colorselector.css"/>
+    <link rel="stylesheet" type="text/css" href="../../libreria/leaflet/leaflet.css"/>
 
     <script type="text/javascript" src="../../libreria/js/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="../../libreria/js/jquery.mask.js"></script>
@@ -70,7 +76,8 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
     <script type="text/javascript" src="../../libreria/js/neon-custom.js"></script>
     <script type="text/javascript" src="../../libreria/js/jquery.blockUI.js"></script>
     <script type="text/javascript" src="../../libreria/js/custom.js"></script>
-    <script type="text/javascript" src="js/luminaria.js"></script>
+    <script type="text/javascript" src="../../libreria/leaflet/leaflet.js"></script>
+    <script type="text/javascript" src="js/georeferencia.js"></script>
 </head>
 <body class="page-body  page-fade">
     <div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->	
@@ -79,7 +86,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
 			    <header class="logo-env">
                     <!-- logo -->
                     <div class="logo">
-                        <a href="index.html">
+                        <a href="../index.php">
                             <img src="../../libreria/neon/assets/images/logo@2x.png" width="120" alt="" />
                         </a>
                     </div>
@@ -138,7 +145,7 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                         <li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->            
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="../../libreria/neon/assets/images/thumb-1@2x.png" alt="" class="img-circle" width="44" />
-                                Johan Charris
+                                <?=$_SESSION['nombre']?>
                             </a>            
                             <ul class="dropdown-menu">            
                                 <!-- Reverse Caret -->
@@ -185,10 +192,61 @@ $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
                 </li>
             </ol>
             </hr>
-            <!-- Footer -->
-            <footer class="main">			
-                &copy; 2020 Administrador</a>		
-            </footer>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-xs 12 col-md-2">
+                        <select id="municipio" name="municipio" title="Municipio" class="form-control" data-allow-clear="true" data-placeholder="MUNICIPIO">
+                        <option value="">-Seleccione-</option>
+                        <?php
+                        while(!$municipio->EOF){
+                            echo "<option value=\"".$municipio->fields['id_municipio']."\">".strtoupper($municipio->fields['descripcion'])."</option>";
+                            $municipio->MoveNext();
+                        }
+                        ?>
+                        </select>              
+                    </div>
+
+                    <div class="col-xs 12 col-md-2">
+                        <select id="barrio" name="barrio" title="Barrio" class="form-control" data-allow-clear="true" data-placeholder="BARRIO">
+                        <option value=""></option>
+                        </select>
+                    </div>
+
+                    <div class="col-xs 12 col-md-2">                    
+                        <select id="tipo" name="tipo" title="Tipo" class="form-control" data-allow-clear="true" data-placeholder="TIPO">
+                        <option value=""></option>
+                        <?php
+                        while(!$tipoLuminaria->EOF){
+                            echo "<option value=\"".$tipoLuminaria->fields['id_tipo_luminaria']."\">".strtoupper($tipoLuminaria->fields['descripcion'])."</option>";
+                            $tipoLuminaria->MoveNext();
+                        }
+                        ?>
+                        </select>
+                    </div>
+
+                    <div class="col-xs 12 col-md-2">
+                        <input type="text" id="direccion" name="direccion"  class=" form-control" placeholder="DIRECCION"/> 
+                    </div>
+
+                    <div class="col-xs 12 col-md-2">
+                        <input type="text" id="poste_luminaria" name="poste_luminaria"  class="form-control" placeholder="POSTE/LUMINARIA"/> 
+                    </div>
+
+                    <div class="col-xs 12 col-md-1">
+                        <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_luminaria">
+                        <i class="glyphicon glyphicon-search"></i>BUSCAR</button> 
+                    </div>
+                    <div class="col-xs 12 col-md-1"></div>
+
+                </div>
+            </div>
+            </hr>
+            <div class="row">
+                <div class="col-md-12"></div>
+            </div>
+            <div class="row" id="mapa">
+            </div>
+    
         </div>
     </div>
 </body>
