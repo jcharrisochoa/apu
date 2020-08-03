@@ -13,13 +13,15 @@ class Actividad{
         $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
     }
     function contarActividad($post){
-        
+        $q = "";
         if(!empty($post['municipio']))
             $q .= " and ac.id_municipio=".$post['municipio'];
         if(!empty($post['barrio']))
             $q .= " and ac.id_barrio=".$post['barrio'];
         if(!empty($post['tipo_actividad']))
             $q .= " and ac.id_tipo_actividad=".$post['tipo_actividad'];
+        if(!empty($post['id_luminaria']))
+            $q .= " and ac.id_luminaria=".$post['id_luminaria'];
         if(!empty($post['poste_luminaria']))
             $q .= " and (l.luminaria_no like '%".$post['poste_luminaria']."%' or l.poste_no like '%".$post['poste_luminaria']."%')";
         
@@ -45,13 +47,15 @@ class Actividad{
         }
     }
     function listarActividad($post){
-
+        $q = "";
         if(!empty($post['municipio']))
             $q .= " and ac.id_municipio=".$post['municipio'];
         if(!empty($post['barrio']))
             $q .= " and ac.id_barrio=".$post['barrio'];
         if(!empty($post['tipo_actividad']))
             $q .= " and ac.id_tipo_actividad=".$post['tipo_actividad'];
+        if(!empty($post['id_luminaria']))
+            $q .= " and ac.id_luminaria=".$post['id_luminaria'];
         if(!empty($post['poste_luminaria']))
             $q .= " and (l.luminaria_no like '%".$post['poste_luminaria']."%' or l.poste_no like '%".$post['poste_luminaria']."%')";
 

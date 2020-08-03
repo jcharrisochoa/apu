@@ -36,7 +36,7 @@ $(function() {
 
 
     InitTableLuminaria();
-    InitTableActividad();
+    //InitTableActividad();
 });
 
 function InitTableLuminaria() {
@@ -61,6 +61,7 @@ function InitTableLuminaria() {
             "responsive": true,
             "bAutoWidth": true,
             "searching": false,
+
             "ajax": {
                 "url": "ajax/listar_luminaria.php",
                 "type": "POST"
@@ -121,27 +122,11 @@ function verDetalle(dataDet) {
         $("#td_usuario").html(dataDet.usuario);
         $("#td_estado").html(dataDet.estado);
         $("#td_proveedor").html(dataDet.proveedor);
-        $.ajax({
-            async: true,
-            type: "POST",
-            dataType: "json",
-            contentType: "application/x-www-form-urlencoded",
-            url: "ajax/listar_actividad.php",
-            data: {
-                id_luminaria: dataDet.id_luminaria
-            },
-            beforeSend: inicioEnvio,
-            success: function(dataActividad) {
-                console.log(dataActividad);
-                $.unblockUI("");
-                if (dataActividad.n == 1) {
-                    //$("#modal-body-orden").html(data.mensaje);
-                    $("#modal-detalle-luminaria").modal("show");
-                } else {
-                    $("#modal-detalle-luminaria").modal("show");
-                }
-            }
-        });
+        if ($.fn.DataTable.isDataTable("#tbl_actividad_luminaria")) {
+            tableActividad.destroy();
+        }
+        InitTableActividad(dataDet);
+        $("#modal-detalle-luminaria").modal("show");
     }
 }
 
@@ -167,18 +152,25 @@ function listarBarrio() {
     });
 }
 
-function InitTableActividad() {
-    tableActividad = "";
-    tableActividad = $("#tbl_actividad_luminaria").DataTable({
+function InitTableActividad(dataDet) {
+    //tableActividad = "";
+    tableActividad = $("#tbl_actividad_luminaria").on("preXhr.dt", function(e, settings, data) {
+        data.id_luminaria = dataDet.id_luminaria
+    }).DataTable({
         "aLengthMenu": [
-            [5, 10, 15, 20],
-            [5, 10, 15, 20]
+            [3, 5, 10],
+            [3, 5, 10]
         ],
         "bStateSave": false,
         "processing": true,
+        "serverSide": true,
         "responsive": true,
+        "bAutoWidth": true,
         "searching": false,
-        data: dataSet,
+        "ajax": {
+            "url": "ajax/listar_actividad.php",
+            "type": "POST"
+        },
         "columns": [
             { "data": "item", className: "alignCenter", "searchable": false, "orderable": false },
             { "data": "codigo", className: "alignCenter", "searchable": false, "orderable": false },
@@ -187,9 +179,8 @@ function InitTableActividad() {
             { "data": "direccion", "searchable": false, "orderable": false },
             { "data": "fch_reclamo", className: "alignCenter", "searchable": false, "orderable": false },
             { "data": "fch_ejecucion", className: "alignCenter", "searchable": false, "orderable": false },
-            { "data": "latitud", className: "alignCenter", "searchable": false, "orderable": false },
-            { "data": "longitud", className: "alignCenter", "searchable": false, "orderable": false },
-            { "data": "tecnico", className: "alignCenter", "searchable": false, "orderable": false }
+            { "data": "tecnico", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "estado_actividad", className: "alignCenter", "searchable": false, "orderable": false },
 
         ],
         language: {
@@ -197,3 +188,4 @@ function InitTableActividad() {
         }
     });
 }
+

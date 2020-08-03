@@ -190,9 +190,12 @@ if($_SESSION['nombre']==""){
                 </li>
             </ol>
             </hr>
-            <div class="row">
+
+            <!--Filtros-->
+            <div class="row">            
                 <div class="form-group">
-                    <div class="col-xs 12 col-md-2">
+                    <div class="col-xs-12 col-md-3">
+                        <label for="municipio" class="control-label">Municipio</label> 
                         <select id="municipio" name="municipio" title="Municipio" class="form-control requerido" data-allow-clear="true" data-placeholder="MUNICIPIO">
                         <option value="">-Seleccione-</option>
                         <?php
@@ -204,13 +207,30 @@ if($_SESSION['nombre']==""){
                         </select>              
                     </div>
 
-                    <div class="col-xs 12 col-md-2">
+                    <div class="col-xs-12 col-md-3">
+                        <label for="barrio" class="control-label">Barrio</label> 
                         <select id="barrio" name="barrio" title="Barrio" class="form-control" data-allow-clear="true" data-placeholder="BARRIO">
                         <option value=""></option>
                         </select>
                     </div>
 
-                    <div class="col-xs 12 col-md-1">                    
+                    <div class="col-xs-12 col-md-3">
+                        <label for="direccion" class="control-label">Direcci&oacute;n</label> 
+                        <input type="text" id="direccion" name="direccion"  class=" form-control" placeholder="DIRECCION"/> 
+                    </div>
+
+                    <div class="col-xs-12 col-md-2">
+                        <label for="poste_luminaria" class="control-label">Poste/Lumi</label> 
+                        <input type="text" id="poste_luminaria" name="poste_luminaria"  class="form-control" placeholder="POSTE/LUMINARIA"/> 
+                    </div>
+                    <div class="col-xs-12 col-md-1"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-xs-12 col-md-3">
+                        <label for="Tipo" class="control-label">Tipo Luminaria</label>                     
                         <select id="tipo" name="tipo" title="Tipo" class="form-control" data-allow-clear="true" data-placeholder="TIPO">
                         <option value=""></option>
                         <?php
@@ -220,31 +240,29 @@ if($_SESSION['nombre']==""){
                         }
                         ?>
                         </select>
+                    </div>                    
+
+                    <div class="col-xs-12 col-md-2">
+                        <label for="fch_instalacion_ini" class="control-label">Fecha Inicial</label> 
+                        <input type="text" id="fch_instalacion_ini" name="fch_instalacion_ini" title="Fecha Instalacion Inicial"  class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
                     </div>
 
-                    <div class="col-xs 12 col-md-2">
-                        <input type="text" id="direccion" name="direccion"  class=" form-control" placeholder="DIRECCION"/> 
-                    </div>
+                    <div class="col-xs-12 col-md-2">
+                        <label for="fch_instalacion_fin" class="control-label">Fecha Final</label> 
+                        <input type="text" id="fch_instalacion_fin" name="fch_instalacion_fin" title="Fecha Instalacion Final" class="form-control datepicker"  placeholder="yyyy-mm-dd"/> 
+                    </div>                    
 
-                    <div class="col-xs 12 col-md-1">
-                        <input type="text" id="fch_instalacion_ini" name="fch_instalacion_ini" title="Fecha Instalacion Inicial"  class="form-control datepicker" readOnly="" placeholder="FECHA INI"/> 
-                    </div>
-
-                    <div class="col-xs 12 col-md-1">
-                        <input type="text" id="fch_instalacion_fin" name="fch_instalacion_fin" title="Fecha Instalacion Final" class="form-control datepicker"  readOnly="" placeholder="FECHA FIN"/> 
-                    </div>
-
-                    <div class="col-xs 12 col-md-1">
-                        <input type="text" id="poste_luminaria" name="poste_luminaria"  class="form-control" placeholder="POSTE/LUMINARIA"/> 
-                    </div>
-
-                    <div class="col-xs 12 col-md-1">
+                    <div class="col-xs-12 col-md-4">
+                        </br>
                         <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_luminaria">
-                        <i class="glyphicon glyphicon-search"></i>BUSCAR</button> 
+                            <i class="glyphicon glyphicon-search"></i>BUSCAR
+                        </button> 
                     </div>
-                    <div class="col-xs 12 col-md-1"></div>
+
+                    <div class="col-xs-12 col-md-1"></div>
                 </div>
-            </div>
+            </div>             
+            <!--Fin Filtros-->
             </hr>
             <div class="container-fluid">                
                 <div class="row">
@@ -382,9 +400,8 @@ if($_SESSION['nombre']==""){
                                                 <th>Direccion</th>
                                                 <th>Reclamo</th>
                                                 <th>Revision</th>
-                                                <th>Latitud</th>
-                                                <th>Longitud</th>
-                                                <th>T&eacute;cnico</th>                                       
+                                                <th>T&eacute;cnico</th> 
+                                                <th>Estado</th>                                      
                                             </tr>
                                         </thead>
                                     </table>
@@ -402,8 +419,6 @@ if($_SESSION['nombre']==""){
         </div>
         </div>
         <!--Fin Detalle-->
-    </div>
-
     </div>
 </body>
 </html>

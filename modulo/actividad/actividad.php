@@ -190,9 +190,11 @@ if($_SESSION['nombre']==""){
                 </li>
             </ol>
             </hr>
+
             <div class="row">
                 <div class="form-group">
-                    <div class="col-xs 12 col-md-3">
+                    <div class="col-xs-12 col-md-3">
+                        <label for="municipio" class="control-label">Municipio</label> 
                         <select id="municipio" name="municipio" title="Municipio" class="form-control requerido" data-allow-clear="true" data-placeholder="MUNICIPIO">
                         <option value="">-Seleccione-</option>
                         <?php
@@ -204,13 +206,15 @@ if($_SESSION['nombre']==""){
                         </select>              
                     </div>
 
-                    <div class="col-xs 12 col-md-2">
+                    <div class="col-xs-12 col-md-2">
+                        <label for="barrio" class="control-label">Barrio</label> 
                         <select id="barrio" name="barrio" title="Barrio" class="form-control" data-allow-clear="true" data-placeholder="BARRIO">
                         <option value=""></option>
                         </select>
                     </div>
 
-                    <div class="col-xs 12 col-md-2">                    
+                    <div class="col-xs-12 col-md-2">   
+                    <label for="tipo_actividad" class="control-label">Tipo Actividad</label>                  
                         <select id="tipo_actividad" name="tipo_actividad" title="Tipo" class="form-control" data-allow-clear="true" data-placeholder="TIPO ACTIVIDAD">
                         <option value=""></option>
                         <?php
@@ -221,17 +225,21 @@ if($_SESSION['nombre']==""){
                         ?>
                         </select>
                     </div>
-                    <div class="col-xs 12 col-md-2">
+                    <div class="col-xs-12 col-md-2">
+                        <label for="poste_luminaria" class="control-label">Poste/Lumi</label> 
                         <input type="text" id="poste_luminaria" name="poste_luminaria"  class="form-control" placeholder="POSTE/LUMINARIA"/> 
                     </div>
 
-                    <div class="col-xs 12 col-md-2">
+                    <div class="col-xs-12 col-md-2">
+                        </br>
                         <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_actividad">
                         <i class="glyphicon glyphicon-search"></i>BUSCAR</button> 
                     </div>
-                    <div class="col-xs 12 col-md-1"></div>
+                    <div class="col-xs-12 col-md-1"></div>
                 </div>
             </div>
+
+
             <div class="container-fluid">                
                 <div class="row">
                     <div class="table-responsive"> 

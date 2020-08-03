@@ -2,32 +2,28 @@
 session_start();
 $url = file_get_contents("../../../conexion/credencial.json");
 $credencial= json_decode($url, true);
-/*require_once "../clase/Luminaria.php";
-$luminaria = new Luminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
-$result = $luminaria->listarLuminaria($_POST);
-$count = $luminaria->contarLuminaria($_POST);
+require_once "../../actividad/clase/Actividad.php";
+$actividad = new Actividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$result = $actividad->listarActividad($_POST);
+$count = $actividad->contarActividad($_POST);
 $i=0;
 while (!$result->EOF){
     $lista[$i]=array(                    
         "item"          => $i, //$value['item'],
-        "municipio"     => $result->fields['municipio'],
-        "poste_no"      => $result->fields['poste_no'],
-        "luminaria_no"  => $result->fields['luminaria_no'],
+        /*"municipio"     => $result->fields['municipio'],*/
+        "codigo"  => $result->fields['id_actividad'],
         "tipo"          => $result->fields['tipo'],
-        "barrio"        => $result->fields['barrio'],
+        "descripcion"  => $result->fields['observacion'],
         "direccion"     => $result->fields['direccion'],
-        "latitud"       => $result->fields['longitud'],
-        "longitud"      => $result->fields['latitud'],
-        "id_luminaria"  => $result->fields['id_luminaria'],
-        "fch_instalacion"  => $result->fields['fch_instalacion'],
-        "fch_registro"  => $result->fields['fch_registro'],
-        "usuario"       => $result->fields['usuario'],
-        "estado"        => $result->fields['estado'],
-        "proveedor"     => $result->fields['proveedor']
+        "fch_reclamo"   => $result->fields['fch_reporte'],
+        "fch_ejecucion" => $result->fields['fch_actividad'],
+        "tecnico"       => $result->fields['tecnico'],
+        "estado_actividad"  => $result->fields['estado_actividad']
         );                    
     $i++;
     $result->MoveNext();
-}*/
+}
+
 if(count($lista)==0){
     $lista=array();
 }

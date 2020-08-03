@@ -46,12 +46,12 @@ session_destroy();
 			<a href="#" class="logo">
 				<img src="libreria/neon/assets/images/logo@2x.png" width="120" alt="" />
 			</a>			
-			<p class="description">Alumbrado P&uacute;blico del Atl&aacute;ntico | Iniciar Sessi&oacute;n</p>
+			<p class="description">ASOCIACION DE MUNICIPIOS DEL ATLANTICO</br>Iniciar Sessi&oacute;n</p>
 			
 			<!-- progress bar indicator -->
 			<div class="login-progressbar-indicator">
 				<h3>43%</h3>
-				<span>logging in...</span>
+				<span>ingresando...</span>
 			</div>
 		</div>
 		
@@ -64,7 +64,6 @@ session_destroy();
 		<div class="login-content">			
 			<div class="form-login-error">
 				<h3>Usuario Inv&aacute;lido</h3>
-				<p>Enter <strong>demo</strong>/<strong>demo</strong> as login and password.</p>
 			</div>
 			
 			<form method="post" role="form" id="form_login">				
@@ -95,7 +94,7 @@ session_destroy();
 			</form>			
 			
 			<div class="login-bottom-links">				
-				<a href="extra-forgot-password.html" class="link">Forgot your password?</a>				
+				<a href="#" class="link">Olvid&oacute; su clave?</a>				
 			</div>			
 		</div>		
 	</div>	

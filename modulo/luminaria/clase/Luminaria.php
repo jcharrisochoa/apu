@@ -14,6 +14,7 @@ class Luminaria{
     }
 
     function contarLuminaria($post){
+            $q = "";
         if(!empty($post['municipio']))
             $q .= " and l.id_municipio=".$post['municipio'];
         if(!empty($post['barrio']))
@@ -48,6 +49,7 @@ class Luminaria{
     }
     
     function listarLuminaria($post){
+            $q = "";
         if(!empty($post['municipio']))
             $q .= " and l.id_municipio=".$post['municipio'];
         if(!empty($post['barrio']))
