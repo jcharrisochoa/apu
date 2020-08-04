@@ -85,7 +85,7 @@ if($_SESSION['nombre']==""){
                     <!-- logo -->
                     <div class="logo">
                         <a href="../index.php">
-                            <img src="../../libreria/neon/assets/images/logo@2x.png" width="120" alt="" />
+                            <img src="../../libreria//img/logo.png" width="120" alt="" />
                         </a>
                     </div>
                     
@@ -226,16 +226,35 @@ if($_SESSION['nombre']==""){
                         </select>
                     </div>
                     <div class="col-xs-12 col-md-2">
-                        <label for="poste_luminaria" class="control-label">Poste/Lumi</label> 
-                        <input type="text" id="poste_luminaria" name="poste_luminaria"  class="form-control" placeholder="POSTE/LUMINARIA"/> 
+                        <label for="poste_no" class="control-label">Poste</label> 
+                        <input type="text" id="poste_no" name="poste_no"  class="form-control" placeholder="POSTE"/> 
                     </div>
 
                     <div class="col-xs-12 col-md-2">
-                        </br>
-                        <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_actividad">
-                        <i class="glyphicon glyphicon-search"></i>BUSCAR</button> 
+                        <label for="luminaria_no" class="control-label">Luminaria</label> 
+                        <input type="text" id="luminaria_no" name="luminaria_no"  class="form-control" placeholder="LUMINARIA"/> 
                     </div>
+                    
                     <div class="col-xs-12 col-md-1"></div>
+                </div>
+                <div class="rows">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-2">
+                            <label for="fch_actividad_ini" class="control-label">Fecha Inicial</label> 
+                            <input type="text" id="fch_actividad_ini" name="fch_actividad_ini" title="Fecha Actividad Inicial"  class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
+                        </div>
+
+                        <div class="col-xs-12 col-md-2">
+                            <label for="fch_actividad_fin" class="control-label">Fecha Final</label> 
+                            <input type="text" id="fch_actividad_fin" name="fch_actividad_fin" title="Fecha Actividad Final" class="form-control datepicker"  placeholder="yyyy-mm-dd"/> 
+                        </div>
+                        <div class="col-xs-12 col-md-2">
+                            </br>
+                            <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_actividad">
+                            <i class="glyphicon glyphicon-search"></i>BUSCAR</button> 
+                        </div>
+                        <div class="col-xs-12 col-md-6"></div>
+                    </div>
                 </div>
             </div>
 

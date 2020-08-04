@@ -22,8 +22,12 @@ class Actividad{
             $q .= " and ac.id_tipo_actividad=".$post['tipo_actividad'];
         if(!empty($post['id_luminaria']))
             $q .= " and ac.id_luminaria=".$post['id_luminaria'];
-        if(!empty($post['poste_luminaria']))
-            $q .= " and (l.luminaria_no like '%".$post['poste_luminaria']."%' or l.poste_no like '%".$post['poste_luminaria']."%')";
+        if(!empty($post['poste_no']))
+            $q .= " and l.poste_no = '".$post['poste_no']."'";
+        if(!empty($post['luminaria_no']))
+            $q .= " and l.luminaria_no = '".$post['luminaria_no']."'";
+        if(!empty($post['fechaini']) and !empty($post['fechafin']))
+            $q .= " and date(ac.fch_actividad) >= '".$post['fechaini']."' and date(ac.fch_actividad) <= '".$post['fechafin']."'";
         
             $this->sql = "select count(ac.id_actividad) as total
                 from actividad ac
@@ -56,8 +60,12 @@ class Actividad{
             $q .= " and ac.id_tipo_actividad=".$post['tipo_actividad'];
         if(!empty($post['id_luminaria']))
             $q .= " and ac.id_luminaria=".$post['id_luminaria'];
-        if(!empty($post['poste_luminaria']))
-            $q .= " and (l.luminaria_no like '%".$post['poste_luminaria']."%' or l.poste_no like '%".$post['poste_luminaria']."%')";
+        if(!empty($post['poste_no']))
+            $q .= " and l.poste_no = '".$post['poste_no']."'";
+        if(!empty($post['luminaria_no']))
+            $q .= " and l.luminaria_no = '".$post['luminaria_no']."'";
+        if(!empty($post['fechaini']) and !empty($post['fechafin']))
+            $q .= " and date(ac.fch_actividad) >= '".$post['fechaini']."' and date(ac.fch_actividad) <= '".$post['fechafin']."'";
 
         $q .= " order by fch_actividad desc";
 

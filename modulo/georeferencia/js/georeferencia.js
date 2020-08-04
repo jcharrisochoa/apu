@@ -84,7 +84,11 @@ function buscar(){
             barrio: $("#barrio").val(),
             tipo :$("#tipo").val(),
             direccion: $("#direccion").val(),
-            poste_luminaria : $("#poste_luminaria").val()
+            luminaria_no:$("#luminaria_no").val(),
+            poste_no: $("#poste_no").val(),
+            fechaini: $("#fch_instalacion_ini").val(),
+            fechafin: $("#fch_instalacion_fin").val()
+
         },
         beforeSend: inicioEnvio,
         success: function(data) {             
@@ -171,7 +175,7 @@ function InitTableActividad(dataDet) {
         },
         "columns": [
             { "data": "item", className: "alignCenter", "searchable": false, "orderable": false },
-            { "data": "codigo", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "codigo","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
             { "data": "tipo", className: "alignRight", "searchable": false, "orderable": false },
             { "data": "descripcion", "searchable": false, "orderable": false },
             { "data": "direccion", "searchable": false, "orderable": false },

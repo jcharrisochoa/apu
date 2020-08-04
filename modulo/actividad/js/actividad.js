@@ -58,13 +58,14 @@ function InitTableActividad() {
     if (!$.fn.DataTable.isDataTable("#tbl_actividad")) {
         tableActividad = "";
         tableActividad = $("#tbl_actividad").on("preXhr.dt", function(e, settings, data) {
-                data.poste_luminaria = $("#poste_luminaria").val(),
+            data.luminaria_no = $("#luminaria_no").val(),
+            data.poste_no = $("#poste_no").val(),
                 data.municipio = $("#municipio").val(),
                 data.barrio = $("#barrio").val(),
-                data.tipo_actividad = $("#tipo_actividad").val()
-                /*data.fechaini = $("#fch_instalacion_ini").val(),
-                data.fechafin = $("#fch_instalacion_fin").val(),
-                data.direccion = $("#direccion").val(),
+                data.tipo_actividad = $("#tipo_actividad").val(),
+                data.fechaini = $("#fch_actividad_ini").val(),
+                data.fechafin = $("#fch_actividad_fin").val()
+                /*data.direccion = $("#direccion").val(),
                 */
         }).DataTable({ ///todo por una D jeje
             "aLengthMenu": [

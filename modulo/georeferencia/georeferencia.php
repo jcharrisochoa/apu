@@ -87,7 +87,7 @@ if($_SESSION['nombre']==""){
                     <!-- logo -->
                     <div class="logo">
                         <a href="../index.php">
-                            <img src="../../libreria/neon/assets/images/logo@2x.png" width="120" alt="" />
+                            <img src="../../libreria/img/logo.png" width="120" alt="" />
                         </a>
                     </div>
                     
@@ -222,8 +222,8 @@ if($_SESSION['nombre']==""){
                     </div>
 
                     <div class="col-xs-12 col-md-2">
-                        <label for="poste_luminaria" class="control-label">Poste/Lumi</label> 
-                        <input type="text" id="poste_luminaria" name="poste_luminaria"  class="form-control" placeholder="POSTE/LUMINARIA"/> 
+                        <label for="poste_no" class="control-label">Poste</label> 
+                        <input type="text" id="poste_no" name="poste_no"  class="form-control" placeholder="POSTE"/> 
                     </div>
                     <div class="col-xs-12 col-md-1"></div>
                 </div>
@@ -231,6 +231,10 @@ if($_SESSION['nombre']==""){
 
             <div class="row">
                 <div class="form-group">
+                    <div class="col-xs-12 col-md-2">
+                        <label for="luminaria_no" class="control-label">Luminaria</label> 
+                        <input type="text" id="luminaria_no" name="luminaria_no"  class="form-control" placeholder="LUMINARIA"/> 
+                    </div>
                     <div class="col-xs-12 col-md-3">
                         <label for="Tipo" class="control-label">Tipo Luminaria</label>                     
                         <select id="tipo" name="tipo" title="Tipo" class="form-control" data-allow-clear="true" data-placeholder="TIPO">
@@ -254,7 +258,7 @@ if($_SESSION['nombre']==""){
                         <input type="text" id="fch_instalacion_fin" name="fch_instalacion_fin" title="Fecha Instalacion Final" class="form-control datepicker"  placeholder="yyyy-mm-dd"/> 
                     </div>                    
 
-                    <div class="col-xs-12 col-md-4">
+                    <div class="col-xs-12 col-md-2">
                         <br>
                         <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_luminaria">
                             <i class="glyphicon glyphicon-search"></i>BUSCAR

@@ -56,7 +56,7 @@ if($_SESSION['nombre']==""){
 				<!-- logo -->
 				<div class="logo">
 					<a href="index.html">
-						<img src="../libreria/neon/assets/images/logo@2x.png" width="120" alt="" />
+						<img src="../libreria/img/logo.png" width="120" alt="" />
 					</a>
 				</div>
 

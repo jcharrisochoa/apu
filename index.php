@@ -22,7 +22,7 @@ session_destroy();
 	<link rel="stylesheet" href="libreria/neon/assets/css/neon-core.css">
 	<link rel="stylesheet" href="libreria/neon/assets/css/neon-theme.css">
 	<link rel="stylesheet" href="libreria/neon/assets/css/neon-forms.css">
-	<link rel="stylesheet" href="libreria/neon/assets/css/skins/blue.css">
+	<link rel="stylesheet" href="libreria/neon/assets/css/skins/white.css">
 	<script src="libreria/jquery-3.5.1.min.js"></script>
 
 	<!--[if lt IE 9]><script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -44,17 +44,16 @@ session_destroy();
 	<div class="login-header login-caret">		
 		<div class="login-content">			
 			<a href="#" class="logo">
-				<img src="libreria/neon/assets/images/logo@2x.png" width="120" alt="" />
+				<img src="libreria/img/logo.png" width="220" alt="" />
 			</a>			
-			<p class="description">ASOCIACION DE MUNICIPIOS DEL ATLANTICO</br>Iniciar Sessi&oacute;n</p>
+			<p class="description">Iniciar Sessi&oacute;n</p>
 			
 			<!-- progress bar indicator -->
 			<div class="login-progressbar-indicator">
 				<h3>43%</h3>
-				<span>ingresando...</span>
+				<span>Ingresando</span>
 			</div>
-		</div>
-		
+		</div>	
 	</div>
 	
 	<div class="login-progressbar">

@@ -43,7 +43,8 @@ function InitTableLuminaria() {
     if (!$.fn.DataTable.isDataTable("#tbl_luminaria")) {
         tableLuminaria = "";
         tableLuminaria = $("#tbl_luminaria").on("preXhr.dt", function(e, settings, data) {
-            data.poste_luminaria = $("#poste_luminaria").val(),
+            data.luminaria_no = $("#luminaria_no").val(),
+            data.poste_no = $("#poste_no").val(),
                 data.municipio = $("#municipio").val(),
                 data.barrio = $("#barrio").val(),
                 data.fechaini = $("#fch_instalacion_ini").val(),
@@ -173,7 +174,7 @@ function InitTableActividad(dataDet) {
         },
         "columns": [
             { "data": "item", className: "alignCenter", "searchable": false, "orderable": false },
-            { "data": "codigo", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "codigo", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
             { "data": "tipo", className: "alignRight", "searchable": false, "orderable": false },
             { "data": "descripcion", "searchable": false, "orderable": false },
             { "data": "direccion", "searchable": false, "orderable": false },

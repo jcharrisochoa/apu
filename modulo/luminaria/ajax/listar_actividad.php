@@ -6,7 +6,8 @@ require_once "../../actividad/clase/Actividad.php";
 $actividad = new Actividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $result = $actividad->listarActividad($_POST);
 $count = $actividad->contarActividad($_POST);
-$i=0;
+$i=0; 
+$lista = array();
 while (!$result->EOF){
     $lista[$i]=array(                    
         "item"          => $i, //$value['item'],

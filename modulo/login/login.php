@@ -22,10 +22,24 @@ $resp['submitted_data'] = $_POST;
 // Your code will decide if username and password are correct
 $login_status = 'invalid';
 
-if(($username == 'admin' && $password == 'admin') or ($username == 'invitado' && $password == 'invitado'))
+if(
+	($username == 'admin' && $password == 'admin') or 
+	($username == 'invitado' && $password == 'invitado') or
+	($username == 'interventoria' && $password == 'interventoria2020') 
+	)
 {
 	$login_status = 'success';
-	$_SESSION['nombre'] = ($username == 'admin')?"Administrador":"Invitado";
+	switch ($username){
+		case 'admin':
+			$_SESSION['nombre'] = "Administrador";
+		break;
+		case "invitado":
+			$_SESSION['nombre'] = "Invitado";
+		break;
+		case "interventoria":
+			$_SESSION['nombre'] = "Interventoria";
+		break;
+	}
 }
 
 $resp['login_status'] = $login_status;

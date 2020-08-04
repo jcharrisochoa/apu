@@ -23,8 +23,10 @@ class Luminaria{
             $q .= " and l.id_tipo_luminaria=".$post['tipo'];
         if(!empty($post['direccion']))
             $q .= " and l.direccion like '%".$post['direccion']."%'";
-        if(!empty($post['poste_luminaria']))
-            $q .= " and (l.luminaria_no like '%".$post['poste_luminaria']."%' or l.poste_no like '%".$post['poste_luminaria']."%')";
+        if(!empty($post['poste_no']))
+            $q .= " and l.poste_no = '".$post['poste_no']."'";
+        if(!empty($post['luminaria_no']))
+            $q .= " and l.luminaria_no = '".$post['luminaria_no']."'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(l.fch_instalacion) >= '".$post['fechaini']."' and date(l.fch_instalacion) <= '".$post['fechafin']."'";
 
@@ -58,8 +60,10 @@ class Luminaria{
             $q .= " and l.id_tipo_luminaria=".$post['tipo'];
         if(!empty($post['direccion']))
             $q .= " and l.direccion like '%".$post['direccion']."%'";
-        if(!empty($post['poste_luminaria']))
-            $q .= " and (l.luminaria_no like '%".$post['poste_luminaria']."%' or l.poste_no like '%".$post['poste_luminaria']."%')";
+        if(!empty($post['poste_no']))
+            $q .= " and l.poste_no = '".$post['poste_no']."'";
+        if(!empty($post['luminaria_no']))
+            $q .= " and l.luminaria_no = '".$post['luminaria_no']."'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(l.fch_instalacion) >= '".$post['fechaini']."' and date(l.fch_instalacion) <= '".$post['fechafin']."'";
 
