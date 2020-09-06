@@ -3,10 +3,12 @@ session_start();
 include("../../libreria/adodb/adodb.inc.php");
 $url = file_get_contents("../../conexion/credencial.json");
 $credencial= json_decode($url, true);
+require_once "../parametros/clase/Menu.php";
 require_once "../parametros/clase/Municipio.php";
 require_once "../parametros/clase/TipoPQR.php";
 require_once "../parametros/clase/TipoReporte.php";
 require_once "../parametros/clase/MedioRecepcionPQR.php";
+$menu = new Menu($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjMun = new Municipio($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoPQR = new TipoPQR($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoRep = new TipoReporte($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
@@ -21,6 +23,13 @@ if(empty($_SESSION['id_tercero'])){
 		window.location = "../../index.php";
 	</script>
 	<?php
+}
+else{
+    $propiedades = $menu->propiedadEjecutable($_GET['id'],$_SESSION['id_tercero']);
+    $CREAR      = $propiedades->fields['crear'];
+    $EDITAR = $propiedades->fields['actualizar'];
+    $ELIMINAR   = $propiedades->fields['eliminar'];
+    $IMPRIMIR   = $propiedades->fields['imprimir']; 
 }
 ?>
 <script src="../libreria/custom/custom.js"></script>
@@ -38,21 +47,27 @@ if(empty($_SESSION['id_tercero'])){
         <a href="#">PQR</a>
     </li>
     <li class="active">
-    <strong>Listado PQR</strong>
+    <strong>Regristrar PQR</strong>
     </li>
 </ol>
 </hr>
 <div class="row">
     <div class="form-group">
+    <?php if($CREAR=="S"){ ?>
         <div class="col-md-2">
             <button type="button" id="btn_nueva_pqr" style class="btn btn-green btn-icon icon-left form-control">Nuevo<i class="entypo-plus"></i></button>
         </div>
+    <?php } ?>
+    <?php if($EDITAR=="S"){ ?>
         <div class="col-md-2">
             <button type="button" id="btn_editar_pqr" class="btn btn-orange btn-icon icon-left form-control">Editar<i class="entypo-pencil"></i></button>
         </div>
+    <?php } ?>
+    <?php if($ELIMINAR=="S"){ ?>
         <div class="col-md-2">
             <button type="button" id="btn_eliminar_pqr" class="btn btn-red btn-icon icon-left form-control">Eliminar<i class="entypo-trash"></i></button>
         </div>
+    <?php } ?>
         <div class="col-md-2">
             <button type="button" id="btn_detalle_pqr" class="btn btn-blue btn-icon icon-left form-control">Detalle<i class="entypo-info"></i></button>
         <div>
@@ -77,30 +92,30 @@ if(empty($_SESSION['id_tercero'])){
     </div>
 </div> 
 <!--Fin Filtros-->
-
-<!--<table id="tbl_lista_pqr" class="table table-bordered datatable table-responsive">
-    <thead>
-        <tr> 
-            <th style="text-align: center">#</th>
-            <th style="text-align: center">MUNICIPIO</th>
-            <th style="text-align: center">POSTE</th>
-            <th style="text-align: center">LUMINARIA</th>
-            <th style="text-align: center">TIPO</th>
-            <th style="text-align: center">DIRECCION</th>
-            <th style="text-align: center">LATITUD</th>
-            <th style="text-align: center">LONGITUD</th> 
-            <th style="text-align: center">ID_LUMINARIA</th>     
-            <th style="text-align: center">FCH_INSTALACION</th>
-            <th style="text-align: center">FCH_REGISTRO</th>                                
-            <th style="text-align: center">ID_MUNICIPIO</th>
-            <th style="text-align: center">ID_BARRIO</th>
-            <th style="text-align: center">ID_TERCERO_PROVEEDOR</th>
-            <th style="text-align: center">ID_ESTADO_LUMINARIA</th>
-            <th style="text-align: center">ID_TIPO_LUMINARIA</th>
-        </tr>
-    </thead>
-</table>-->
-
+<div class="table-responsive panel-shadow">
+    <table id="tbl_lista_pqr" class="table table-bordered datatable table-responsive">
+        <thead>
+            <tr> 
+                <th style="text-align: center">#</th>
+                <th style="text-align: center">MUNICIPIO</th>
+                <th style="text-align: center">TIPO</th>
+                <th style="text-align: center">REPORTE</th>
+                <th style="text-align: center">MEDIO</th>
+                <th style="text-align: center">TERCERO</th>
+                <th style="text-align: center">FECHA PQR</th>
+                <th style="text-align: center">USUARIO REGISTRA</th> 
+                <!--<th style="text-align: center">ID_LUMINARIA</th>     
+                <th style="text-align: center">FCH_INSTALACION</th>
+                <th style="text-align: center">FCH_REGISTRO</th>                                
+                <th style="text-align: center">ID_MUNICIPIO</th>
+                <th style="text-align: center">ID_BARRIO</th>
+                <th style="text-align: center">ID_TERCERO_PROVEEDOR</th>
+                <th style="text-align: center">ID_ESTADO_LUMINARIA</th>
+                <th style="text-align: center">ID_TIPO_LUMINARIA</th>-->
+            </tr>
+        </thead>
+    </table>
+</div>
 <!--Formulario de Entrada-->
 <div class="modal fade" id="frm-pqr" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
@@ -113,6 +128,8 @@ if(empty($_SESSION['id_tercero'])){
             <div class="modal-body">
                 <form id="form-luminaria">
                     <input type="hidden" id="id_pqr" name="id_pqr" class="form-control clear" value="" />
+                    <input type="hidden" id="id_luminaria" name="id_luminaria" class="form-control clear" value="" />
+                    <input type="hidden" id="id_usuario_servicio" name="id_usuario_servicio" class="form-control requerido clear">	
                     <div class="row">
                         <div class="col-md-6">                            
                             <div class="form-group">
@@ -173,15 +190,26 @@ if(empty($_SESSION['id_tercero'])){
                                 </select>
                             </div>
                         </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="fch_pqr" class="control-label">Fecha PQR*</label> 
+                            <div class="input-group">
+                                <input type="text" id="fch_pqr" name="fch_pqr"  value="<?=date("Y-m-d")?>" class="form-control datepicker"  placeholder="YYYY-MM-DD" title=Fecha PQR/> 
+                                <div class="input-group-addon">
+                                    <a href="#"><i class="entypo-calendar"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">&nbsp;</div>
                     </div>
+                    <hr/>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="txt_identificacion" class="control-label">Identificaci&oacute;n  (Sin D&iacute;gito de Verificaci&oacute;n)*</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control requerido clear" id="txt_identificacion" name="txt_identificacion" placeholder="Identifiaci&oacute;n" title="Identifiaci&oacute;n">	
-                                    <input type="hidden" class="form-control requerido clear" id="id_usuario_servicio" name="id_usuario_servicio">	
-                                    <div class="input-group-btn">					
+                                    <input type="text" class="form-control requerido clear" id="txt_identificacion" name="txt_identificacion" placeholder="Identifiaci&oacute;n" title="Identifiaci&oacute;n">	                                    <div class="input-group-btn">					
                                         <button type="button" id="btn_buscar_usuario_servicio" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
                                     </div>
                                     <!--<div class="input-group-btn">					
@@ -222,11 +250,9 @@ if(empty($_SESSION['id_tercero'])){
                     <div class="row">
                         <div class="form-group">
                             <div class="col-sm-6">&nbsp;</div>
-                            <label class="col-sm-5 control-label">¿Actualizar Informaci&oacute;n del usuario?</label>						
+                            <label class="col-sm-5 control-label" for="chk_actualizar_datos">¿Actualizar Informaci&oacute;n del usuario?</label>						
 							<div class="col-sm-1">
-                                <div class="make-switch">
-                                    <input type="checkbox">
-                                </div>
+                                <input tabindex="5" type="checkbox" class="icheck-11" id="chk_actualizar_datos">
                             </div>                            
                         </div>
                     </div>
@@ -243,41 +269,35 @@ if(empty($_SESSION['id_tercero'])){
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="txt_poste" class="control-label">Poste</label>
-                                <input type="text" class="form-control requerido clear" readonly="" id="txt_poste" name="txt_poste" placeholder="Poste No" title="Poste No">
+                                <input type="text" class="form-control clear" readonly="" id="txt_poste" name="txt_poste" placeholder="Poste No" title="Poste No">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="txt_luminaria" class="control-label">Luminaria</label>
-                                <input type="text" class="form-control requerido clear" readonly="" id="txt_luminaria" name="txt_luminaria" placeholder="Luminaria No" title="Luminaria No">
+                                <input type="text" class="form-control clear" readonly="" id="txt_luminaria" name="txt_luminaria" placeholder="Luminaria No" title="Luminaria No">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-group">
-                                <div class="fileinput fileinput-new" data-provides="fileinput">
-                                    <div class="input-group">
-                                        <div class="form-control uneditable-input" data-trigger="fileinput">
-                                            <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                            <span class="fileinput-filename"></span>
-                                        </div>
-                                        <span class="input-group-addon btn btn-default btn-file">
-                                            <span class="fileinput-new">Select file</span>
-                                            <span class="fileinput-exists">Change</span>
-                                            <input type="file" name="...">
-                                        </span>
-                                        <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-                                    </div>
-                                </div>
-							</div>	
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                <span class="btn btn-blue btn-file">
+                                    <span class="fileinput-new">Seleccione el archivo</span>
+                                    <span class="fileinput-exists">Cambiar</span>
+                                    <i class="entypo-upload"></i>
+                                    <input type="file" name="archivo" id="archivo">
+                                </span>
+                                <span class="fileinput-filename"></span>
+                                <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group no-margin">
 								<label for="txt_comentario" class="control-label">Comentarios*</label>								
-								<textarea class="form-control autogrow" id="txt_comentario" placeholder="Comentarios" title="Comentarios"></textarea>
+								<textarea class="form-control autogrow requerido clear" id="txt_comentario" name="txt_comentario" placeholder="Comentarios" title="Comentarios"></textarea>
 							</div>	
                         </div>
                     </div>

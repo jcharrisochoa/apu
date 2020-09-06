@@ -3,8 +3,10 @@ session_start();
 include("../../libreria/adodb/adodb.inc.php");
 $url = file_get_contents("../../conexion/credencial.json");
 $credencial= json_decode($url, true);
+require_once "../parametros/clase/Menu.php";
 require_once "../parametros/clase/Municipio.php";
 require_once "../parametros/clase/TipoActividad.php";
+$menu = new Menu($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjMun = new Municipio($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoAct = new TipoActividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 
@@ -17,6 +19,13 @@ if(empty($_SESSION['id_tercero'])){
 	</script>
 	<?php
 }
+else{
+    $propiedades = $menu->propiedadEjecutable($_GET['id'],$_SESSION['id_tercero']);
+    $CREAR      = $propiedades->fields['crear'];
+    $EDITAR     = $propiedades->fields['actualizar'];
+    $ELIMINAR   = $propiedades->fields['eliminar'];
+    $IMPRIMIR   = $propiedades->fields['imprimir']; 
+}
 ?>
 <script src="../libreria/custom/custom.js"></script>
 <script type="text/javascript" src="actividad/js/actividad.js"></script>
@@ -28,16 +37,23 @@ if(empty($_SESSION['id_tercero'])){
         <a href="#">Actividad</a>
     </li>
     <li class="active">
-    <strong>Listado Actividades</strong>
+    <strong>Regristrar Actividad</strong>
     </li>
 </ol>
 </hr>
 
 <div class="row">
 	<div class="col-md-12">
-        <button type="button" id="btn_nueva_actividad" class="btn btn-green btn-icon icon-left">Nuevo<i class="entypo-plus"></i></button>
-        <button type="button" id="btn_editar_actividad" class="btn btn-blue btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
+        <?php if($CREAR=="S"){ ?>
+        <button type="button" id="btn_nueva_actividad" style class="btn btn-green btn-icon icon-left">Nuevo<i class="entypo-plus"></i></button>
+        <?php } 
+        if($EDITAR=="S"){ ?>
+        <button type="button" id="btn_editar_actividad" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
+        <?php }  
+        if($ELIMINAR=="S"){ ?>
         <button type="button" id="btn_eliminar_actividad" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
+        <?php } ?>
+
     </div>
 </div>
 <br/>

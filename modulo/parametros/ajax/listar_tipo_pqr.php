@@ -13,7 +13,7 @@ while (!$result->EOF){
         "item"          => $i+1,
         "descripcion"     => $result->fields['descripcion'],
         "dias_vencimiento"     => $result->fields['dias_vencimiento'],
-        "estado"     => $result->fields['estado'],
+        "estado"     => ($result->fields['estado']=="A")?"ACTIVO":"INACTIVO",
         "id_tipo_pqr"   => $result->fields['id_tipo_pqr']
         );                    
     $i++;

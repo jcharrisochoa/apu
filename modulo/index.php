@@ -42,12 +42,14 @@ if(empty($_SESSION['id_tercero'])){
 	<link rel="stylesheet" href="../libreria/neon/assets/css/neon-forms.css"/>
 	<link rel="stylesheet" href="../libreria/neon/assets/css/custom.css"/>
 	<link rel="stylesheet" href="../libreria/neon/assets/css/skins/blue.css"/>
+	
 	<!--<link rel="stylesheet" href="../libreria/neon/assets/css/datepicker.css">-->
 	<!-- Imported styles on this page -->
 	<!--<link rel="stylesheet" href="../libreria/neon/assets/js/datatables/datatables.css">-->
 	<link rel="stylesheet" href="../libreria/neon/assets/js/datatables/DataTables-1.10.9/css/jquery.dataTables.css"/>
 	<link rel="stylesheet" href="../libreria/neon/assets/js/select2/select2-bootstrap.css"/>
 	<link rel="stylesheet" href="../libreria/neon/assets/js/select2/select2.css"/>
+	<link rel="stylesheet" href="../libreria/neon/assets/js/icheck/skins/square/_all.css"/>
 	<link rel="stylesheet" href="../libreria/leaflet/leaflet.css"/>
 	<!--jQuery-->
 	<script src="../libreria/neon/assets/js/jquery-1.11.3.min.js"></script>
@@ -58,6 +60,7 @@ if(empty($_SESSION['id_tercero'])){
 	<script src="../libreria/neon/assets/js/joinable.js"></script>
 	<script src="../libreria/neon/assets/js/resizeable.js"></script>
 	<script src="../libreria/neon/assets/js/neon-api.js"></script>
+	<script src="../libreria/neon/assets/js/fileinput.js"></script>
 	<!-- Imported scripts on this page -->
 	<script src="../libreria/neon/assets/js/bootstrap-switch.min.js"></script>
 	<script src="../libreria/neon/assets/js/select2/select2.min.js"></script>
@@ -67,6 +70,7 @@ if(empty($_SESSION['id_tercero'])){
 	<script src="../libreria/neon/assets/js/jquery.numeric.js"></script>
 	<script src="../libreria/neon/assets/js/bootstrap-datepicker.js"></script>
 	<script src="../libreria/neon/assets/js/datatables/DataTables-1.10.9/js/jquery.dataTables.min.js"></script>
+	<script src="../libreria/neon/assets/js/icheck/icheck.min.js"></script>
 	<!-- JavaScripts initializations and stuff -->
 	<script src="../libreria/neon/assets/js/neon-custom.js"></script>
 	<script src="../libreria/neon/assets/js/toastr.js"></script>
@@ -126,7 +130,7 @@ if(empty($_SESSION['id_tercero'])){
 						}
 						?>
 						<li>
-							<a href="#" onclick="cargarModulo('<?=$result->fields['ruta_pagina']?>');">
+							<a href="#" onclick="cargarModulo('<?=$result->fields['ruta_pagina']?>?id=<?=$result->fields['id_menu']?>');">
 								<i class="<?=$result->fields['icono']?>"></i>
 								<span class="title"><?=$result->fields['nombre']?></span>
 							</a>

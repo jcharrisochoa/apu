@@ -3,7 +3,9 @@ session_start();
 include("../../libreria/adodb/adodb.inc.php");
 $url = file_get_contents("../../conexion/credencial.json");
 $credencial= json_decode($url, true);
-require_once "../parametros/clase/Departamento.php";
+require_once "clase/Menu.php";
+require_once "clase/Departamento.php";
+$menu = new Menu($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjDep = new Departamento($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $departamento = $ObjDep->listarDepartamento();
 
@@ -13,6 +15,13 @@ if(empty($_SESSION['id_tercero'])){
 		window.location = "../../index.php";
 	</script>
 	<?php
+}
+else{
+    $propiedades = $menu->propiedadEjecutable($_GET['id'],$_SESSION['id_tercero']);
+    $CREAR      = $propiedades->fields['crear'];
+    $EDITAR     = $propiedades->fields['actualizar'];
+    $ELIMINAR   = $propiedades->fields['eliminar'];
+    $IMPRIMIR   = $propiedades->fields['imprimir']; 
 }
 ?>
 <script src="../libreria/custom/custom.js"></script>
@@ -36,9 +45,15 @@ if(empty($_SESSION['id_tercero'])){
 </hr>
 <div class="row">
 	<div class="col-md-12">
+        <?php if($CREAR=="S"){ ?>
         <button type="button" id="btn_nuevo_municipio" style class="btn btn-green btn-icon icon-left">Nuevo<i class="entypo-plus"></i></button>
+        <?php } 
+        if($EDITAR=="S"){ ?>
         <button type="button" id="btn_editar_municipio" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
+        <?php }  
+        if($ELIMINAR=="S"){ ?>
         <button type="button" id="btn_eliminar_municipio" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
+        <?php } ?>
     </div>
 </div>
 <br/>

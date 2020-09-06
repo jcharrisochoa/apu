@@ -17,7 +17,11 @@ $(function(){
        //return false;
    });
    
-   $(".make-switch").bootstrapSwitch('toggleRadioState');
+    //$(".make-switch").bootstrapSwitch('toggleRadioState');
+    $('input.icheck-11').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-yellow'
+    });
 
     $("#btn_buscar_usuario_servicio").click(function(event) {
         if (event.handled !== true) {
@@ -44,24 +48,46 @@ $(function(){
             event.preventDefault();
             if($("#slt_municipio").val()!=""){
                 $("#frm-punto-luminico").modal("show"); 
+                $("#frm-punto-luminico").css("z-index", "15001");
                 $("#flt_municipio").val($("#slt_municipio").val()).change();
                 tablePuntoLuminico.ajax.reload();
             }
             else
                 toastr.warning("Seleccione el municipio", null, opts);
-                
+
             event.handld = true;
         }
         return false;
     });
-    $("#frm-punto-luminico").on('hidden.bs.modal',function(){
+
+    $("#btn_guardar_pqr").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            if(ValidarDatos(".requerido")){
+                guardarAccion(accion); 
+            }
+            event.handld = true;
+        }
+        return false;
+    });
+    
+    //$("#frm-punto-luminico").on('hidden.bs.modal',function(){
        // $(this).modal('dispose');
         //$(this).off('hidden.bs.modal'); 
-        $('body').removeClass('modal-open');
+      //  $('body').removeClass('modal-open');
         //$('.modal-backdrop').remove();
-        $("#frm-pqr").modal("show"); 
-    });
+        //$("#frm-pqr").modal("show"); 
+    //});
 
+    $("#frm-punto-luminico").off().on('hidden.bs.modal',function(){
+        //$(".modal-backdrop").not(':first').remove();
+        $("#frm-pqr").css("z-index", "15000"); //foco del modal inicial
+        $('body').addClass('modal-open'); //render nuevamente el modal inicial
+        //console.log(dataDetallePuntoLuminico);
+        $("#id_luminaria").val(dataDetallePuntoLuminico.id_luminaria);
+        $("#txt_poste").val(dataDetallePuntoLuminico.poste_no);
+        $("#txt_luminaria").val(dataDetallePuntoLuminico.luminaria_no);
+    });
     
 });
 
@@ -89,6 +115,8 @@ function buscarUsuarioServicio(){
                 if(data.estado){
                     if(data.id_usuario_servicio == "")
                         toastr.warning(data.mensaje, null, opts);
+                    else
+                        toastr.success(data.mensaje, null, opts);
 
                     $("#id_usuario_servicio").val(data.id_usuario_servicio);
                     $("#txt_nombre").val(data.nombre);
@@ -110,4 +138,8 @@ function buscarUsuarioServicio(){
     else{
         //abrir ventana de todos los usuario
     }
+}
+
+function guardarAccion(accion){
+    alert("guardar "+accion);
 }

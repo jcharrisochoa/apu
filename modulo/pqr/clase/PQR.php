@@ -24,4 +24,14 @@ class PQR{
         else
             return $this->result;
     }
+
+    function iniciarTransaccion(){
+        $this->db->Execute("BEGIN;");
+    }
+    function finalizarTransaccion(){
+        $this->db->Execute("COMMIT;");
+    }
+    function devolverTransaccion(){
+        $this->db->Execute("ROLLBACK;");
+    }
 }

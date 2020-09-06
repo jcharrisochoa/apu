@@ -15,6 +15,8 @@
 }(jQuery));
 
 $(function() {
+    $(".fileinput").fileinput();
+    
     $(".datepicker").each(function(i, el) {
         var $this = $(el),
             opts = {
@@ -201,6 +203,7 @@ function ValidarDatos(clas) {
     var collection = $(clas);
     var sw = true;
     collection.each(function() {
+
         switch ($(this).attr("type")) {
             case "text":
                 if ($.trim($(this).val()) === "") {
@@ -228,21 +231,32 @@ function ValidarDatos(clas) {
                 }
                 break;
             default:
-                var str = $(this).get(0);
-                str = str.tagName;
-                switch (str) {
-                    case "SELECT":
-                        if ($.trim($(this).val()) === "") {
-                            var texto = $(this).attr("title");
-                            //$("#modal-text-global").html(texto + ' no puede ser en blanco !');
-                            //$("#modal-mensaje-global").modal('show');
-                            toastr.warning(texto + ' no ser puede vacío !', null, opts);
-                            $(this).focus();
-                            sw = false;
-                        }
-                        break;
-
+                if($(this).is("textarea")){
+                    if ($.trim($(this).val()) === "") {
+                        var texto = $(this).attr("title");
+                        toastr.warning(texto + ' no puede ser vacío !', null, opts);
+                        $(this).focus();
+                        sw = false;
+                    }
                 }
+                else{
+                    var str = $(this).get(0);
+                    str = str.tagName;
+                    switch (str) {
+                        case "SELECT":
+                            if ($.trim($(this).val()) === "") {
+                                var texto = $(this).attr("title");
+                                //$("#modal-text-global").html(texto + ' no puede ser en blanco !');
+                                //$("#modal-mensaje-global").modal('show');
+                                toastr.warning(texto + ' no ser puede vacío !', null, opts);
+                                $(this).focus();
+                                sw = false;
+                            }
+                            break;
+
+                    }
+                }
+
                 break;
 
         }

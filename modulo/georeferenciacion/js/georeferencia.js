@@ -167,7 +167,7 @@ function InitTableActividad(dataDet) {
         "bAutoWidth": true,
         "searching": false,
         "ajax": {
-            "url": "../luminaria/ajax/listar_actividad.php",
+            "url": "luminaria/ajax/listar_actividad.php",
             "type": "POST"
         },
         "columns": [

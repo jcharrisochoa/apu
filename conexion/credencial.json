@@ -1,0 +1,7 @@
+{
+    "driver": "mysqli",
+    "host": "localhost",
+    "user": "root",
+    "pwd": "",
+    "database": "apu"
+}

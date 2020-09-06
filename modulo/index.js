@@ -109,7 +109,7 @@ function initTablePuntoLuminico(){
             $("#tbl_punto_luminico tbody tr").removeClass("highlight");
             $(this).addClass("highlight");
             dataDetallePuntoLuminico = tablePuntoLuminico.row(this).data();
-            console.log(dataDetallePuntoLuminico);
+            $("#frm-punto-luminico").modal("hide");
             //$("#id_departamento").val(dataDetalleDepartamento.id_departamento);
         });
     }
