@@ -321,7 +321,7 @@ else{
 <!--Fin Detalle-->
 
 <!--Formulario de Entrada-->
-<div class="modal fade" id="frm-luminaria">
+<div class="modal fade" id="frm-luminaria" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">            
             <div class="modal-header">

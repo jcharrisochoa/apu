@@ -1,34 +1,32 @@
-var tableTipoPQR = "";
-var dataDetalleTipoPQR = "";
+var tableBarrio = "";
+var dataDetalleBarrio = "";
 var accion = "";
 
 $(function(){
-    $("#txt_dia").numeric();
-
-    $("#btn_nuevo_tipo_pqr").click(function(){
+    $("#btn_nuevo_barrio").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            nuevoEstadoActividad(); 
+            nuevoBarrio(); 
             accion = "nuevo";     
             event.handld = true;
         }
         return false;
     });
     
-    $("#btn_editar_tipo_pqr").click(function(){
+    $("#btn_editar_barrio").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            editarEstadoActividad(dataDetalleTipoPQR);
+            editarBarrio(dataDetalleBarrio);
             accion = "editar";
             event.handld = true;
         }
         return false;
     });
 
-    $("#btn_eliminar_tipo_pqr").click(function(){
+    $("#btn_eliminar_barrio").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            eliminarEstadoActividad(dataDetalleTipoPQR);
+            eliminarBarrio(dataDetalleBarrio);
             accion = "eliminar";
             event.handld = true;
         }
@@ -46,14 +44,14 @@ $(function(){
         return false;
     });
 
-    initTableEstadoActividad();
+    initTableBarrio();
 });
 
-function initTableEstadoActividad(){
-    if (!$.fn.DataTable.isDataTable("#tbl_tipo_pqr")) {
-        tableTipoPQR = "";
-        tableTipoPQR = $("#tbl_tipo_pqr").on("preXhr.dt", function(e, settings, data) {
-                data.municipio = $("#descripcion").val()
+function initTableBarrio(){
+    if (!$.fn.DataTable.isDataTable("#tbl_barrio")) {
+        tableBarrio = "";
+        tableBarrio = $("#tbl_barrio").on("preXhr.dt", function(e, settings, data) {
+                data.barrio = ""
         }).DataTable({ ///todo por una D jeje
             "aLengthMenu": [
                 [15, 30, 50],
@@ -67,16 +65,15 @@ function initTableEstadoActividad(){
             "searching": true,
 
             "ajax": {
-                "url": "parametros/ajax/listar_tipo_pqr.php",
+                "url": "parametros/ajax/listar_barrio.php",
                 "type": "POST"
             },
             "columns": [
                 { "data": "item", "searchable": false },
-                { "data": "descripcion",className: "alignCenter","searchable": true,"orderable": true,"name":"descripcion"},
-                { "data": "dias_vencimiento",className: "alignCenter","searchable": true,"orderable": true,"name":"dias_vencimiento"},
-                { "data": "descripcion_estado",className: "alignCenter","searchable": true,"orderable": false},
-                { "data": "estado","bVisible": false, className: "alignCenter","searchable": false,"orderable": false},
-                { "data": "id_tipo_pqr", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "municipio",className: "alignCenter","searchable": true,"orderable": true,"name":"m.descripcion"},
+                { "data": "barrio",className: "alignCenter","searchable": true,"orderable": true,"name":"b.descripcion"},
+                { "data": "id_municipio", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_barrio", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
             ],
             "order": [
                 [1, "DESC"]
@@ -85,48 +82,46 @@ function initTableEstadoActividad(){
                 url: "../../../../libreria/DataTableSp.json"
             },
             "rowCallback": function(row, data, dataIndex) {
-                var rowId = data.id_tipo_pqr;
+                var rowId = data.id_barrio;
                 //$(row).find("td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(8)").css("color", data.colorestado);
             }
         });
     }
-    $("#tbl_tipo_pqr tbody").on("click", "tr", function() {
-        $("#tbl_tipo_pqr tbody tr").removeClass("highlight");
+    $("#tbl_barrio tbody").on("click", "tr", function() {
+        $("#tbl_barrio tbody tr").removeClass("highlight");
         $(this).addClass("highlight");
-        dataDetalleTipoPQR = tableTipoPQR.row(this).data();
-        $("#id_tipo_pqr").val(dataDetalleTipoPQR.id_tipo_pqr);
+        dataDetalleBarrio = tableBarrio.row(this).data();
+        $("#id_barrio").val(dataDetalleBarrio.id_barrio);
     });
 }
 
-function nuevoEstadoActividad(){
-    $("#frm-titulo-tipo-pqr").html("Nuevo Tipo PQR");
-    $("#frm-tipo-pqr").modal("show"); 
-    $("#tbl_tipo_pqr tbody tr").removeClass("highlight");
+function nuevoBarrio(){
+    $("#frm-titulo-barrio").html("Nuevo Barrio");
+    $("#frm-barrio").modal("show"); 
+    $("#tbl_barrio tbody tr").removeClass("highlight");
     clearInput(".clear");
-    dataDetalleTipoPQR = "";
+    dataDetalleBarrio = "";
 }
 
-function editarEstadoActividad(dataDet){
-    console.log(dataDet);
+function editarBarrio(dataDet){
     if (dataDet.length == 0) {
-        toastr.warning("Seleccione el tipo de PQR a editar", null, opts);
+        toastr.warning("Seleccione el barrio a editar", null, opts);
     } 
     else {
-        $("#frm-titulo-tipo-pqr").html("Editar Tipo PQR");
+        $("#frm-titulo-barrio").html("Editar Barrio");
         //$("#txt_poste_no").val(dataDet.poste_no);
-        $("#txt_descripcion").val(dataDet.descripcion);
-        $("#txt_dia").val(dataDet.dias_vencimiento);
-        $("#slt_estado").val(dataDet.estado).change();
-        $("#frm-tipo-pqr").modal("show"); 
+        $("#txt_descripcion").val(dataDet.barrio);
+        $("#slt_municipio").val(dataDet.id_municipio).change();
+        $("#frm-barrio").modal("show"); 
     }
 }
 
-function eliminarEstadoActividad(dataDet){
+function eliminarBarrio(dataDet){
     if (dataDet.length == 0) {
-        toastr.warning("Seleccione el tipo PQR a eliminar", null, opts);
+        toastr.warning("Seleccione el barrio a eliminar", null, opts);
     } 
     else {
-        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar el tipo PQR "+dataDet.descripcion+"");
+        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar el barrio "+dataDet.barrio+"");
         $("#modal-conf").modal("show");
         $("#btn_si").off("click").on("click",function(event){      
             if (event.handled !== true) {
@@ -144,13 +139,13 @@ function eliminarEstadoActividad(dataDet){
 function guardarAccion(accion){
     switch(accion){
         case "nuevo":
-            var variable = $("#form-tipo-pqr").serialize()+"&accion="+accion;
+            var variable = $("#form-barrio").serialize()+"&accion="+accion;
             break;
         case "editar":
-            var variable = $("#form-tipo-pqr").serialize()+"&accion="+accion;
+            var variable = $("#form-barrio").serialize()+"&accion="+accion;
             break;
         case "eliminar":
-            var variable = "id_tipo_pqr="+$("#id_tipo_pqr").val()+"&accion="+accion;
+            var variable = "id_barrio="+$("#id_barrio").val()+"&accion="+accion;
             break;
     }
     $.ajax({
@@ -158,17 +153,17 @@ function guardarAccion(accion){
         type: "POST",
         dataType: "json",
         contentType: "application/x-www-form-urlencoded",
-        url:"parametros/ajax/guardar_tipo_pqr.php",
+        url:"parametros/ajax/guardar_barrio.php",
         data:variable,
         beforeSend:inicioEnvio,
         success:function(data){
             if(data.response.estado){
                 toastr.success(data.response.mensaje, null, opts);
-                $("#frm-tipo-pqr").modal("hide"); 
+                $("#frm-barrio").modal("hide"); 
                 clearInput(".clear");
                 accion="";
-                tableTipoPQR.ajax.reload();
-                dataDetalleTipoPQR = "";
+                tableBarrio.ajax.reload();
+                dataDetalleBarrio = "";
             }
             else{
                 toastr.error(data.response.mensaje, null, opts);

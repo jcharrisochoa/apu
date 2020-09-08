@@ -18,6 +18,7 @@ if(empty($_SESSION['id_tercero'])){
 	<?php
 }
 ?>
+<script src="../libreria/custom/custom.js"></script>
 <script type="text/javascript" src="georeferenciacion/js/georeferencia.js"></script>
 <ol class="breadcrumb" >
     <li>
@@ -100,12 +101,21 @@ if(empty($_SESSION['id_tercero'])){
 
                         <div class="col-xs-12 col-md-2">
                             <label for="fch_instalacion_ini" class="control-label">Fecha Inicial</label> 
-                            <input type="text" id="fch_instalacion_ini" name="fch_instalacion_ini" title="Fecha Instalacion Inicial"  class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
-                        </div>
+                            <div class="input-group">
+                                <input type="text" id="fch_instalacion_ini" name="fch_instalacion_ini" title="Fecha Instalacion Inicial"  class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
+                                <div class="input-group-addon">
+                                    <a href="#"><i class="entypo-calendar"></i></a>
+                                </div>
+                            </div>                        </div>
 
                         <div class="col-xs-12 col-md-2">
                             <label for="fch_instalacion_fin" class="control-label">Fecha Final</label> 
-                            <input type="text" id="fch_instalacion_fin" name="fch_instalacion_fin" title="Fecha Instalacion Final" class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
+                            <div class="input-group">
+                                <input type="text" id="fch_instalacion_fin" name="fch_instalacion_fin" title="Fecha Instalacion Final" class="form-control datepicker"  placeholder="YYYY-MM-DD"/>
+                                <div class="input-group-addon">
+                                    <a href="#"><i class="entypo-calendar"></i></a>
+                                </div>
+                            </div>
                         </div>                    
 
                         <div class="col-xs-12 col-md-2">

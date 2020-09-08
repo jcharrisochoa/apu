@@ -169,6 +169,8 @@ else{
                 <th style="text-align: center">direccion</th>
                 <th style="text-align: center">telefono</th>
                 <th style="text-align: center">email</th>
+                <th style="text-align: center">permitir_edicion</th>
+                <th style="text-align: center">permitir_eliminar</th>               
             </tr>
         </thead>
     </table>
@@ -337,7 +339,7 @@ else{
                             <div class="col-sm-6">&nbsp;</div>
                             <label class="col-sm-5 control-label" for="chk_actualizar_datos">¿Actualizar Informaci&oacute;n del usuario?</label>						
 							<div class="col-sm-1">
-                                <input tabindex="5" type="checkbox" class="icheck-11" id="chk_actualizar_datos">
+                                <input type="checkbox" name="chk_actualizar_datos" class="icheck-11" id="chk_actualizar_datos"/>
                             </div>                            
                         </div>
                     </div>
@@ -415,3 +417,24 @@ else{
         </div>
     </div>
 </div>
+<!--fin entrada-->
+
+<!--Detalle-->
+<div class="modal fade" id="modal-detalle-pqr" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="modal-titulo-detalle-pqr">Detalle PQR</h4>
+            </div>
+            
+            <div class="modal-body">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-blue btn-icon icon-left" id="btn_cerrar_detalle" data-dismiss="modal">Cerrar<i class="entypo-cancel"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--fin detalle-->

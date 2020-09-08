@@ -165,6 +165,8 @@ function clearInput(clas) {
     var collection = $(clas);
     collection.each(function() {
         switch ($(this).attr("type")) {
+            case "file":
+                $(this).val(null);
             case "text":
                 $(this).val("");
                 break;

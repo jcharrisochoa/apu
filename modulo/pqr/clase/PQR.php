@@ -87,7 +87,8 @@ class PQR extends General{
 
         $this->sql = "select p.*,m.descripcion as municipio,tp.descripcion as tipo_pqr,tr.descripcion as tipo_reporte,
                     mr.descripcion as medio_recepcion,us.id_tipo_identificacion,us.identificacion,us.nombre,us.direccion,
-                    us.telefono,us.email,ti.abreviatura,ep.descripcion as estado,tc.usuario,l.poste_no,l.luminaria_no
+                    us.telefono,us.email,ti.abreviatura,ep.descripcion as estado,tc.usuario,l.poste_no,l.luminaria_no,
+                    ep.permitir_edicion,ep.permitir_eliminar
                     from pqr p
                     join municipio m using(id_municipio) 
                     left join luminaria l using(id_luminaria)
@@ -126,9 +127,11 @@ class PQR extends General{
     function iniciarTransaccion(){
         $this->db->Execute("BEGIN;");
     }
+
     function finalizarTransaccion(){
         $this->db->Execute("COMMIT;");
     }
+
     function devolverTransaccion(){
         $this->db->Execute("ROLLBACK;");
     }
@@ -151,7 +154,20 @@ class PQR extends General{
             }
         }
         else{
-            $id_usuario_servicio = $post['id_usuario_servicio'];
+            if(!empty($post['chk_actualizar_datos'])){
+                $array = $this->actualizarUsuarioServicio($post);
+                if(!$array['estado']){
+                    $this->devolverTransaccion();
+                    $sw = false;
+                    return $array;
+                }
+                else{
+                    $id_usuario_servicio = $post['id_usuario_servicio'];
+                }
+            }
+            else{
+                $id_usuario_servicio = $post['id_usuario_servicio'];
+            }
         }
 
         if($sw){
@@ -197,7 +213,35 @@ class PQR extends General{
         $sw = true;
         $this->iniciarTransaccion();
 
-        $id_usuario_servicio = $post['id_usuario_servicio'];
+        //--Datos del usuario externo
+        if(empty($post['id_usuario_servicio'])){
+            $array = $this->crearUsuarioServicio($post);
+            if(!$array['estado']){
+                $this->devolverTransaccion();
+                $sw = false;
+                return $array;
+            }
+            else{
+                $id_usuario_servicio = $array['data'];
+            }
+        }
+        else{
+            if(!empty($post['chk_actualizar_datos'])){
+                $array = $this->actualizarUsuarioServicio($post);
+                if(!$array['estado']){
+                    $this->devolverTransaccion();
+                    $sw = false;
+                    return $array;
+                }
+                else{
+                    $id_usuario_servicio = $post['id_usuario_servicio'];
+                }
+            }
+            else{
+                $id_usuario_servicio = $post['id_usuario_servicio'];
+            }
+        }
+        //--
 
         $this->sql = "UPDATE pqr SET 
                     id_municipio=".$post['slt_municipio'].",
@@ -218,7 +262,8 @@ class PQR extends General{
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
         }
         else{
-            if(!empty($file)){
+            //print_r($file);
+            if(!empty($file['archivo']['name'])){
                 $archivo = $this->guardarArchivoPQR($post['id_pqr'],$_SESSION['id_tercero'],$file);
                 if(!$archivo['estado']){
                     $this->devolverTransaccion();
@@ -233,6 +278,29 @@ class PQR extends General{
                 $this->finalizarTransaccion();
                 return  array("estado"=>true,"data"=>"PQR actualizada");
             } 
+        }
+    }
+
+    function eliminarPQR($id_pqr){
+        $this->iniciarTransaccion();
+
+        $this->sql = "delete from archivo_pqr where id_pqr=".$id_pqr;
+        $result = $this->db->Execute($this->sql);
+        if(!$result){
+            $this->devolverTransaccion();
+            return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
+        }
+        else{
+            $this->sql = "delete from pqr where id_pqr=".$id_pqr;
+            $result = $this->db->Execute($this->sql);
+            if(!$result){
+                $this->devolverTransaccion();
+                return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
+            }
+            else{
+                $this->finalizarTransaccion();
+                return  array("estado"=>true,"data"=>"PQR eliminada");
+            }
         }
     }
 
@@ -260,6 +328,30 @@ class PQR extends General{
             return  array("estado"=>true,"data"=>$this->db->insert_id());
     }
 
+    function actualizarUsuarioServicio($post){
+
+        $dv = $this->calcularDV($post['txt_identificacion']);
+
+        $email = (!empty($post['txt_email']))?"'".$post['txt_email']."'":"null";
+
+        $this->sql = "update usuario_servicio set 
+        id_tipo_identificacion=".$post['slt_tipo_identificacion'].",
+        identificacion=".$post['txt_identificacion'].",
+        digito_verificacion=".$dv.",
+        nombre='".$post['txt_nombre']."',
+        direccion='".$post['txt_direccion']."',
+        telefono='".$post['txt_telefono']."',
+        email=".$email." 
+        where 
+        id_usuario_servicio=".$post['id_usuario_servicio'];
+        $result = $this->db->Execute($this->sql);
+        if(!$result)
+            return  array("estado"=>false,"data"=>"Error actualizando el usuario ".$this->db->ErrorMsg());
+        else
+            return  array("estado"=>true,"data"=>"Usuario actualizado");
+
+    }
+
     function guardarArchivoPQR($id_pqr,$id_tercero_registra,$file){
 
         $fileHandle  = fopen($file['archivo']['tmp_name'],"r");
@@ -267,6 +359,7 @@ class PQR extends General{
         $fileContent = addslashes($fileContent); 
 
         $ext = substr($file['archivo']['name'],strripos($file['archivo']['name'],"."),strlen($file['archivo']['name']));
+        $nombre = str_replace(' ','',$file['archivo']['name']);
 
         $this->sql = "INSERT INTO archivo_pqr(
                     id_pqr,tipo,tamano,
@@ -274,11 +367,11 @@ class PQR extends General{
                     )
                     VALUES(
                     ".$id_pqr.",'".$file['archivo']['type']."',".$file['archivo']['size'].",
-                    '".$ext."','".str_replace(' ','',$file['archivo']['name'])."','". $fileContent."',".$id_tercero_registra.",now()
+                    '".$ext."','".$nombre."','". $fileContent."',".$id_tercero_registra.",now()
                     );";
         $result = $this->db->Execute($this->sql);
         if(!$result)
-            return  array("estado"=>false,"data"=>"Error guardando el archivo ".$file['archivo']['name']." ".$this->db->ErrorMsg());
+            return  array("estado"=>false,"data"=>"Error guardando el archivo ".$nombre." ".$this->db->ErrorMsg());
         else
             return  array("estado"=>true,"data"=>$this->db->insert_id());                
     }
@@ -316,4 +409,5 @@ class PQR extends General{
         else
             return $this->result;
     }
+
 }

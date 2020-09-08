@@ -40,7 +40,6 @@ $(function(){
     }).addTo(apmap);
 });
 
-
 function listarBarrio() {
     $.ajax({
         async: true,
@@ -121,12 +120,14 @@ function buscar(){
         }
     });
 }
+
 function removeMarker(){
     for(i=0;i<arrayMarker.length;i++) {
         apmap.removeLayer(arrayMarker[i]);
     } 
     arrayMarker=[];
 }
+
 function verDetalle(dataDet) {
     if (dataDet.length == 0) {
         $("poste_no").html("");
@@ -154,6 +155,7 @@ function verDetalle(dataDet) {
         $("#modal-detalle-luminaria").modal("show");
     }
 }
+
 function InitTableActividad(dataDet) {
     //tableActividad = "";
     tableActividad = $("#tbl_actividad_luminaria").on("preXhr.dt", function(e, settings, data) {

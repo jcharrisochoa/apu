@@ -35,7 +35,9 @@ while (!$result->EOF){
         "direccion"             => $result->fields['direccion'],
         "telefono"              => $result->fields['telefono'],
         "email"                 => $result->fields['email'],
-        "comentario"                 => $result->fields['comentario']
+        "comentario"            => $result->fields['comentario'],
+        "permitir_edicion"      => $result->fields['permitir_edicion'],
+        "permitir_eliminar"     => $result->fields['permitir_eliminar']
 
         /*"longitud"      => $result->fields['latitud'],
         "id_pqr"  => $result->fields['id_pqr'],

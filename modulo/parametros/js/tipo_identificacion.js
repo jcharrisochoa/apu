@@ -1,34 +1,32 @@
-var tableTipoPQR = "";
-var dataDetalleTipoPQR = "";
+var tableTipoIdentificacion = "";
+var dataDetalleTipoIdentificacion = "";
 var accion = "";
 
 $(function(){
-    $("#txt_dia").numeric();
-
-    $("#btn_nuevo_tipo_pqr").click(function(){
+    $("#btn_nuevo_tipo_identificacion").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            nuevoEstadoActividad(); 
+            nuevoTipoIdentificacion(); 
             accion = "nuevo";     
             event.handld = true;
         }
         return false;
     });
     
-    $("#btn_editar_tipo_pqr").click(function(){
+    $("#btn_editar_tipo_identificacion").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            editarEstadoActividad(dataDetalleTipoPQR);
+            editarTipoIdentificacion(dataDetalleTipoIdentificacion);
             accion = "editar";
             event.handld = true;
         }
         return false;
     });
 
-    $("#btn_eliminar_tipo_pqr").click(function(){
+    $("#btn_eliminar_tipo_identificacion").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            eliminarEstadoActividad(dataDetalleTipoPQR);
+            eliminarTipoIdentificacion(dataDetalleTipoIdentificacion);
             accion = "eliminar";
             event.handld = true;
         }
@@ -46,13 +44,13 @@ $(function(){
         return false;
     });
 
-    initTableEstadoActividad();
+    initTableTipoIdentificacion();
 });
 
-function initTableEstadoActividad(){
-    if (!$.fn.DataTable.isDataTable("#tbl_tipo_pqr")) {
-        tableTipoPQR = "";
-        tableTipoPQR = $("#tbl_tipo_pqr").on("preXhr.dt", function(e, settings, data) {
+function initTableTipoIdentificacion(){
+    if (!$.fn.DataTable.isDataTable("#tbl_tipo_identificacion")) {
+        tableTipoIdentificacion = "";
+        tableTipoIdentificacion = $("#tbl_tipo_identificacion").on("preXhr.dt", function(e, settings, data) {
                 data.municipio = $("#descripcion").val()
         }).DataTable({ ///todo por una D jeje
             "aLengthMenu": [
@@ -67,16 +65,14 @@ function initTableEstadoActividad(){
             "searching": true,
 
             "ajax": {
-                "url": "parametros/ajax/listar_tipo_pqr.php",
+                "url": "parametros/ajax/listar_tipo_identificacion.php",
                 "type": "POST"
             },
             "columns": [
                 { "data": "item", "searchable": false },
                 { "data": "descripcion",className: "alignCenter","searchable": true,"orderable": true,"name":"descripcion"},
-                { "data": "dias_vencimiento",className: "alignCenter","searchable": true,"orderable": true,"name":"dias_vencimiento"},
-                { "data": "descripcion_estado",className: "alignCenter","searchable": true,"orderable": false},
-                { "data": "estado","bVisible": false, className: "alignCenter","searchable": false,"orderable": false},
-                { "data": "id_tipo_pqr", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "abreviatura",className: "alignCenter","searchable": true,"orderable": true,"name":"abreviatura"},
+                { "data": "id_tipo_identificacion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
             ],
             "order": [
                 [1, "DESC"]
@@ -85,48 +81,46 @@ function initTableEstadoActividad(){
                 url: "../../../../libreria/DataTableSp.json"
             },
             "rowCallback": function(row, data, dataIndex) {
-                var rowId = data.id_tipo_pqr;
+                var rowId = data.id_tipo_identificacion;
                 //$(row).find("td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(8)").css("color", data.colorestado);
             }
         });
     }
-    $("#tbl_tipo_pqr tbody").on("click", "tr", function() {
-        $("#tbl_tipo_pqr tbody tr").removeClass("highlight");
+    $("#tbl_tipo_identificacion tbody").on("click", "tr", function() {
+        $("#tbl_tipo_identificacion tbody tr").removeClass("highlight");
         $(this).addClass("highlight");
-        dataDetalleTipoPQR = tableTipoPQR.row(this).data();
-        $("#id_tipo_pqr").val(dataDetalleTipoPQR.id_tipo_pqr);
+        dataDetalleTipoIdentificacion = tableTipoIdentificacion.row(this).data();
+        $("#id_tipo_identificacion").val(dataDetalleTipoIdentificacion.id_tipo_identificacion);
     });
 }
 
-function nuevoEstadoActividad(){
-    $("#frm-titulo-tipo-pqr").html("Nuevo Tipo PQR");
-    $("#frm-tipo-pqr").modal("show"); 
-    $("#tbl_tipo_pqr tbody tr").removeClass("highlight");
+function nuevoTipoIdentificacion(){
+    $("#frm-titulo-tipo-identificacion").html("Nuevo Tipo de Identificacion");
+    $("#frm-tipo-identificacion").modal("show"); 
+    $("#tbl_tipo_identificacion tbody tr").removeClass("highlight");
     clearInput(".clear");
-    dataDetalleTipoPQR = "";
+    dataDetalleTipoIdentificacion = "";
 }
 
-function editarEstadoActividad(dataDet){
-    console.log(dataDet);
+function editarTipoIdentificacion(dataDet){
     if (dataDet.length == 0) {
-        toastr.warning("Seleccione el tipo de PQR a editar", null, opts);
+        toastr.warning("Seleccione el tipo de identificacion a editar", null, opts);
     } 
     else {
-        $("#frm-titulo-tipo-pqr").html("Editar Tipo PQR");
+        $("#frm-titulo-tipo-identificacion").html("Editar Tipo Identificacion");
         //$("#txt_poste_no").val(dataDet.poste_no);
         $("#txt_descripcion").val(dataDet.descripcion);
-        $("#txt_dia").val(dataDet.dias_vencimiento);
-        $("#slt_estado").val(dataDet.estado).change();
-        $("#frm-tipo-pqr").modal("show"); 
+        $("#txt_abreviatura").val(dataDet.abreviatura);
+        $("#frm-tipo-identificacion").modal("show"); 
     }
 }
 
-function eliminarEstadoActividad(dataDet){
+function eliminarTipoIdentificacion(dataDet){
     if (dataDet.length == 0) {
-        toastr.warning("Seleccione el tipo PQR a eliminar", null, opts);
+        toastr.warning("Seleccione el tipo de identificacion a eliminar", null, opts);
     } 
     else {
-        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar el tipo PQR "+dataDet.descripcion+"");
+        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar el tipo de identificacion "+dataDet.descripcion+"");
         $("#modal-conf").modal("show");
         $("#btn_si").off("click").on("click",function(event){      
             if (event.handled !== true) {
@@ -144,13 +138,13 @@ function eliminarEstadoActividad(dataDet){
 function guardarAccion(accion){
     switch(accion){
         case "nuevo":
-            var variable = $("#form-tipo-pqr").serialize()+"&accion="+accion;
+            var variable = $("#form-tipo-identificacion").serialize()+"&accion="+accion;
             break;
         case "editar":
-            var variable = $("#form-tipo-pqr").serialize()+"&accion="+accion;
+            var variable = $("#form-tipo-identificacion").serialize()+"&accion="+accion;
             break;
         case "eliminar":
-            var variable = "id_tipo_pqr="+$("#id_tipo_pqr").val()+"&accion="+accion;
+            var variable = "id_tipo_identificacion="+$("#id_tipo_identificacion").val()+"&accion="+accion;
             break;
     }
     $.ajax({
@@ -158,17 +152,17 @@ function guardarAccion(accion){
         type: "POST",
         dataType: "json",
         contentType: "application/x-www-form-urlencoded",
-        url:"parametros/ajax/guardar_tipo_pqr.php",
+        url:"parametros/ajax/guardar_tipo_identificacion.php",
         data:variable,
         beforeSend:inicioEnvio,
         success:function(data){
             if(data.response.estado){
                 toastr.success(data.response.mensaje, null, opts);
-                $("#frm-tipo-pqr").modal("hide"); 
+                $("#frm-tipo-identificacion").modal("hide"); 
                 clearInput(".clear");
                 accion="";
-                tableTipoPQR.ajax.reload();
-                dataDetalleTipoPQR = "";
+                tableTipoIdentificacion.ajax.reload();
+                dataDetalleTipoIdentificacion = "";
             }
             else{
                 toastr.error(data.response.mensaje, null, opts);

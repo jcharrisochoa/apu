@@ -69,7 +69,7 @@ class EstadoPQR{
     }
 
     function nuevoEstadoPQR($post){
-        $this->sql = "INSERT INTO estado_pqr(descripcion,abreviatura) VALUES('".$post['txt_descripcion']."');";
+        $this->sql = "INSERT INTO estado_pqr(descripcion,permitir_edicion,permitir_eliminar) VALUES('".$post['txt_descripcion']."','".$post['slt_permitir_edicion']."','".$post['slt_permitir_eliminar']."');";
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
@@ -78,7 +78,11 @@ class EstadoPQR{
     }
 
     function editarEstadoPQR($post){
-        $this->sql= "UPDATE estado_pqr SET descripcion='".$post['txt_descripcion']."' WHERE id_estado_pqr=".$post['id_estado_pqr'];
+        $this->sql= "UPDATE estado_pqr SET 
+        descripcion='".$post['txt_descripcion']."',
+        permitir_edicion='".$post['slt_permitir_edicion']."',
+        permitir_eliminar='".$post['slt_permitir_eliminar']."'
+        WHERE id_estado_pqr=".$post['id_estado_pqr'];
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
