@@ -7,6 +7,8 @@ $actividad = new Actividad($credencial['driver'],$credencial['host'], $credencia
 $result = $actividad->listarActividad($_POST);
 $count = $actividad->contarActividad($_POST);
 $i=0;
+$lista=array();
+
 while (!$result->EOF){
     $lista[$i]=array(                    
         "item"          => $i, //$value['item'],

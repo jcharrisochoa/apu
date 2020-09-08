@@ -1,9 +1,7 @@
-
 <?php
 require_once dirname(__FILE__) . "/../../../libreria/adodb/adodb.inc.php";
 
-class TipoActividad{
-
+class EstadoPQR{
     private $sql;
     public $db;
     private $result;
@@ -14,16 +12,28 @@ class TipoActividad{
         $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
     }
 
-    function contarTipoActividad($post){
+    function listarEstadoPQR(){
+        $this->sql = "select * from estado_pqr order by descripcion";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando los estados de pqr". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }        
+    }
+    
+    function contarEstadoPQR($post){
         $q = "";
        
         if(!empty($post['search']['value']))
             $q .= " and descripcion like '%".$post['search']['value']."%'";
             
-        $this->sql = "select count(1) as total from tipo_actividad where 1=1 ".$q;
+        $this->sql = "select count(1) as total from estado_pqr where 1=1 ".$q;
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
-            echo "Error Contando los tipos de actividad". $this->db->ErrorMsg();
+            echo "Error Contando los estados de pqr". $this->db->ErrorMsg();
             return false;
         }
         else{
@@ -31,7 +41,7 @@ class TipoActividad{
         }
     }
 
-    function tablaTipoActividad($post){
+    function tablaEstadoPQR($post){
         $q = "";
        
         if(!empty($post['search']['value']))
@@ -46,11 +56,11 @@ class TipoActividad{
         if (!empty($post['start']) or !empty($post['length']))
             $q .= " limit ".$post['start'].",".$post['length'];
 
-        $this->sql = "select * from tipo_actividad where 1=1 ".$q;
+        $this->sql = "select * from estado_pqr where 1=1 ".$q;
 
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
-            echo "Error Consultando los tipos de actividad". $this->db->ErrorMsg();
+            echo "Error Consultando los estados de pqr". $this->db->ErrorMsg();
             return false;
         }
         else{
@@ -58,20 +68,8 @@ class TipoActividad{
         }        
     }
 
-    function listarTipoActividad(){
-        $this->sql = "select * from tipo_actividad order by descripcion";
-        $this->result = $this->db->Execute($this->sql);
-        if(!$this->result){
-            echo "Error Consultando los tipos de actividad". $this->db->ErrorMsg();
-            return false;
-        }
-        else{
-            return $this->result;
-        }        
-    }
-
-    function nuevoTipoActividad($post){
-        $this->sql = "INSERT INTO tipo_actividad(descripcion) VALUES('".$post['txt_descripcion']."');";
+    function nuevoEstadoPQR($post){
+        $this->sql = "INSERT INTO estado_pqr(descripcion,abreviatura) VALUES('".$post['txt_descripcion']."');";
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
@@ -79,22 +77,22 @@ class TipoActividad{
             return  array("estado"=>true,"data"=>$this->db->insert_id());
     }
 
-    function editarTipoActividad($post){
-        $this->sql= "UPDATE tipo_actividad SET descripcion='".$post['txt_descripcion']."' WHERE id_tipo_actividad=".$post['id_tipo_actividad'];
+    function editarEstadoPQR($post){
+        $this->sql= "UPDATE estado_pqr SET descripcion='".$post['txt_descripcion']."' WHERE id_estado_pqr=".$post['id_estado_pqr'];
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
         else
-            return  array("estado"=>true,"data"=>"Tipo Actividad Actualizado");
+            return  array("estado"=>true,"data"=>"Estado PQR Actualizado");
 
     }
 
-    function eliminarTipoActividad($id_tipo_actividad){
-        $this->sql = "DELETE FROM tipo_actividad WHERE id_tipo_actividad=".$id_tipo_actividad;
+    function eliminarEstadoPQR($id_estado_pqr){
+        $this->sql = "DELETE FROM estado_pqr WHERE id_estado_pqr=".$id_estado_pqr;
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
         else
-            return  array("estado"=>true,"data"=>"Tipo Actividad Eliminado");
+            return  array("estado"=>true,"data"=>"Estado PQR Eliminado");
     }
 }

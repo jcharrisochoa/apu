@@ -1,60 +1,36 @@
 <?php
 session_start();
-/*
-	Sample Processing of Forgot password form via ajax
-	Page: extra-register.html
-*/
+include("../../libreria/adodb/adodb.inc.php");
+$url = file_get_contents("../../conexion/credencial.json");
+$credencial= json_decode($url, true);
+require_once "clase/Login.php";
+$login = new Login($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 
 # Response Data Array
 $resp = array();
-
-
-// Fields Submitted
-$username = $_POST["username"];
-$password = $_POST["password"];
-
-
 // This array of data is returned for demo purpose, see assets/js/neon-forgotpassword.js
-$resp['submitted_data'] = $_POST;
+//$resp['submitted_data'] = $_POST;
 
+$result = $login->login($_POST["username"],$_POST["password"]);
+if(!$result['estado']){
+	$resp['login_status']  = 'error';
+	$resp['login_message'] = $result['mensaje'];
+}
+else{
+	if($result['data']->NumRows()==0){
+		$resp['login_status']  = 'invalid';
+		$resp['login_message'] = "";
+	}
+	else{
+		$resp['login_status'] 	= 'success';	
+		$resp['login_message'] 	= "";
+		$resp['redirect_url'] 	= 'modulo/index.php';
 
-// Login success or invalid login data [success|invalid]
-// Your code will decide if username and password are correct
-$login_status = 'invalid';
+		$_SESSION['id_tercero'] = $result['data']->fields['id_tercero'];
+		$_SESSION['usuario'] 	= $result['data']->fields['usuario'];
+		$_SESSION['nombre'] 	= $result['data']->fields['nombre'];
+		$_SESSION['apellido'] 	= $result['data']->fields['apellido'];
 
-if(
-	($username == 'admin' && $password == 'admin') or 
-	($username == 'invitado' && $password == 'invitado') or
-	($username == 'interventoria' && $password == 'interventoria2020') 
-	)
-{
-	$login_status = 'success';
-	switch ($username){
-		case 'admin':
-			$_SESSION['nombre'] = "Administrador";
-		break;
-		case "invitado":
-			$_SESSION['nombre'] = "Invitado";
-		break;
-		case "interventoria":
-			$_SESSION['nombre'] = "Interventoria";
-		break;
 	}
 }
-
-$resp['login_status'] = $login_status;
-
-
-// Login Success URL
-if($login_status == 'success')
-{
-	// If you validate the user you may set the user cookies/sessions here
-		#setcookie("logged_in", "user_id");
-		#$_SESSION["logged_user"] = "user_id";
-	
-	// Set the redirect url after successful login
-	$resp['redirect_url'] = 'modulo/index.php';
-}
-
-
 echo json_encode($resp);

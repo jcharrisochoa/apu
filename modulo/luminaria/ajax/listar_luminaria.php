@@ -7,6 +7,7 @@ $luminaria = new Luminaria($credencial['driver'],$credencial['host'], $credencia
 $result = $luminaria->listarLuminaria($_POST);
 $count = $luminaria->contarLuminaria($_POST);
 $i=0;
+$lista=array();
 while (!$result->EOF){
     $lista[$i]=array(                    
         "item"          => $i, //$value['item'],
@@ -23,7 +24,13 @@ while (!$result->EOF){
         "fch_registro"  => $result->fields['fch_registro'],
         "usuario"       => $result->fields['usuario'],
         "estado"        => $result->fields['estado'],
-        "proveedor"     => $result->fields['proveedor']
+        "proveedor"     => $result->fields['proveedor'],
+        "id_municipio"          => $result->fields['id_municipio'],
+        "id_barrio"             => $result->fields['id_barrio'],
+        "id_tercero_proveedor"  => $result->fields['id_tercero_proveedor'],
+        "id_estado_luminaria"   => $result->fields['id_estado_luminaria'],
+        "id_tipo_luminaria"   => $result->fields['id_tipo_luminaria']
+
         );                    
     $i++;
     $result->MoveNext();

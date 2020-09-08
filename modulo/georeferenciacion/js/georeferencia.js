@@ -90,7 +90,10 @@ function buscar(){
 
         },
         beforeSend: inicioEnvio,
-        success: function(data) {             
+        success: function(data) { 
+           // alert(data.puntos.length)    
+            $("#modal-text-global").html("Se encontraron "+data.puntos.length+" registros");
+            $("#modal-mensaje-global").modal("show");        
             for (x in data.puntos) {                
                 var marker = new L.marker([data.puntos[x].longitud,data.puntos[x].latitud]).on('click', function(e) {
                     //console.log(this.luminaria);

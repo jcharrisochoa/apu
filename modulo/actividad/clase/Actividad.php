@@ -67,7 +67,11 @@ class Actividad{
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(ac.fch_actividad) >= '".$post['fechaini']."' and date(ac.fch_actividad) <= '".$post['fechafin']."'";
 
-        $q .= " order by fch_actividad desc";
+        $pos = $_POST['order']['0']['column'];	
+        $campo = $_POST['columns'][$pos]['name'];
+        $campo = ($campo=="")?"6":$campo;
+    
+        $q .= " order by ".$campo." ". $_POST['order']['0']['dir'];
 
         if (!empty($post['start']) or !empty($post['length']))
             $q .= " limit ".$post['start'].",".$post['length'];

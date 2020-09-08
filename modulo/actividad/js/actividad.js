@@ -17,28 +17,49 @@ var propiedades = {
 var tableActividad = "";
 var dataSet = [];
 $(function() {
-    $("#municipio").select2().change(function() {
+
+    $("#municipio").change(function() {
         listarBarrio();
     });
-    $("#barrio").select2();
-    $("#tipo_actividad").select2();
+    /*$("#barrio").select2();
+    $("#tipo_actividad").select2();*/
     $("#btn_buscar_actividad").click(function(event) {
         if (event.handled !== true) {
             event.preventDefault();
-            tableActividad.ajax.reload();
+            var json = tableActividad.ajax.reload(function(){
+                //console.log("f:"+tableActividad.page.info().recordsTotal)
+                $("#modal-text-global").html("Se encontraron "+tableActividad.page.info().recordsTotal+" registros");
+                $("#modal-mensaje-global").modal("show");
+            }
+            );
             event.handld = true;
         }
         return false;
     });
+    $("#btn_nueva_actividad").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            $("#frm-actividad").modal("show");
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_cerrar_detalle_actividad").click(function(){
+        $("actividad").html("");
+        $("#modal-detalle-actividad").modal("hide");
+    });
+
     InitTableActividad();
 });
+
 function listarBarrio() {
     $.ajax({
         async: true,
         type: "POST",
         dataType: "json",
         contentType: "application/x-www-form-urlencoded",
-        url: "ajax/listar_barrio.php",
+        url: "actividad/ajax/listar_barrio.php",
         data: {
             id_municipio: $("#municipio").val()
         },
@@ -72,37 +93,35 @@ function InitTableActividad() {
                 [15, 30, 50, 70, 100],
                 [15, 30, 50, 70, 100]
             ],
-            "bStateSave": false,
+            "bStateSave": true,
             "processing": true,
             "serverSide": true,
             "responsive": true,
             "bAutoWidth": true,
             "searching": false,
             "ajax": {
-                "url": "ajax/listar_actividad.php",
+                "url": "actividad/ajax/listar_actividad.php",
                 "type": "POST"
             },
             "columns": [
-
-                { "data": "item", "searchable": false },
-                { "data": "municipio", "searchable": false, "orderable": false },
-                { "data": "id_actividad", "searchable": false, "orderable": false },
-                { "data": "tipo", className: "alignLeft" },
-                { "data": "barrio", className: "alignLeft" },
-                { "data": "direccion", "searchable": false },
-                { "data": "fch_actividad", className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "poste_no", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "luminaria_no", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "tecnico", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "fch_reporte", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "tipo_reporte", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "estado_actividad", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "tipo_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "observacion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "item",className: "alignCenter","searchable": false,"orderable": false},
+                { "data": "municipio",className: "alignCenter","searchable": false,"orderable": true,"name":"m.descripcion"},
+                { "data": "id_actividad",className: "alignCenter","searchable": false,"orderable": true,"name":"ac.id_actividad"},
+                { "data": "tipo",className: "alignCenter","searchable": false,"orderable": true,"name":"ta.descripcion"},
+                { "data": "barrio",className: "alignLeft","searchable": false,"orderable": true,"name":"4"},
+                { "data": "direccion",className: "alignLeft","searchable": false,"orderable": true,"name":"ac.direccion"},
+                { "data": "fch_actividad",className: "alignCenter","searchable": false,"orderable": true,"name":"ac.fch_actividad"},
+                { "data": "poste_no","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "luminaria_no","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "tecnico","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "fch_reporte","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "tipo_reporte","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "estado_actividad","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "tipo_luminaria","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "observacion","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
             ],
             "order": [
-                [2, "DESC"],
-                [1, "DESC"]
+                [1,"DESC"]
             ],
             language: {
                 url: "../../../../libreria/DataTableSp.json"
@@ -116,6 +135,7 @@ function InitTableActividad() {
         verDetalle(data);
     });
 }
+
 function verDetalle(dataDet) {
     if (dataDet.length == 0) {
         $("actividad").html("");

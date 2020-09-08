@@ -1,9 +1,7 @@
-
 <?php
 require_once dirname(__FILE__) . "/../../../libreria/adodb/adodb.inc.php";
 
-class TipoActividad{
-
+class TipoIdentificacion{
     private $sql;
     public $db;
     private $result;
@@ -14,16 +12,28 @@ class TipoActividad{
         $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
     }
 
-    function contarTipoActividad($post){
+    function listarTipoIdentificacion(){
+        $this->sql = "select * from tipo_identificacion order by descripcion";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando los tipos de identificacion". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }        
+    }
+    
+    function contarTipoIdentificacion($post){
         $q = "";
        
         if(!empty($post['search']['value']))
             $q .= " and descripcion like '%".$post['search']['value']."%'";
             
-        $this->sql = "select count(1) as total from tipo_actividad where 1=1 ".$q;
+        $this->sql = "select count(1) as total from tipo_identificacion where 1=1 ".$q;
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
-            echo "Error Contando los tipos de actividad". $this->db->ErrorMsg();
+            echo "Error Contando los tipos de identificacion". $this->db->ErrorMsg();
             return false;
         }
         else{
@@ -31,7 +41,7 @@ class TipoActividad{
         }
     }
 
-    function tablaTipoActividad($post){
+    function tablaTipoIdentificacion($post){
         $q = "";
        
         if(!empty($post['search']['value']))
@@ -46,11 +56,11 @@ class TipoActividad{
         if (!empty($post['start']) or !empty($post['length']))
             $q .= " limit ".$post['start'].",".$post['length'];
 
-        $this->sql = "select * from tipo_actividad where 1=1 ".$q;
+        $this->sql = "select * from tipo_identificacion where 1=1 ".$q;
 
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
-            echo "Error Consultando los tipos de actividad". $this->db->ErrorMsg();
+            echo "Error Consultando los tipos de identificacion". $this->db->ErrorMsg();
             return false;
         }
         else{
@@ -58,20 +68,8 @@ class TipoActividad{
         }        
     }
 
-    function listarTipoActividad(){
-        $this->sql = "select * from tipo_actividad order by descripcion";
-        $this->result = $this->db->Execute($this->sql);
-        if(!$this->result){
-            echo "Error Consultando los tipos de actividad". $this->db->ErrorMsg();
-            return false;
-        }
-        else{
-            return $this->result;
-        }        
-    }
-
-    function nuevoTipoActividad($post){
-        $this->sql = "INSERT INTO tipo_actividad(descripcion) VALUES('".$post['txt_descripcion']."');";
+    function nuevoTipoIdentificacion($post){
+        $this->sql = "INSERT INTO tipo_identificacion(descripcion,abreviatura) VALUES('".$post['txt_descripcion']."','".$post['txt_abreviatura']."');";
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
@@ -79,22 +77,22 @@ class TipoActividad{
             return  array("estado"=>true,"data"=>$this->db->insert_id());
     }
 
-    function editarTipoActividad($post){
-        $this->sql= "UPDATE tipo_actividad SET descripcion='".$post['txt_descripcion']."' WHERE id_tipo_actividad=".$post['id_tipo_actividad'];
+    function editarTipoIdentificacion($post){
+        $this->sql= "UPDATE tipo_identificacion SET descripcion='".$post['txt_descripcion']."',abreviatura='".$post['txt_abreviatura']."' WHERE id_tipo_identificacion=".$post['id_tipo_identificacion'];
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
         else
-            return  array("estado"=>true,"data"=>"Tipo Actividad Actualizado");
+            return  array("estado"=>true,"data"=>"Tipo Identificacion Actualizado");
 
     }
 
-    function eliminarTipoActividad($id_tipo_actividad){
-        $this->sql = "DELETE FROM tipo_actividad WHERE id_tipo_actividad=".$id_tipo_actividad;
+    function eliminarTipoIdentificacion($id_tipo_identificacion){
+        $this->sql = "DELETE FROM tipo_identificacion WHERE id_tipo_identificacion=".$id_tipo_identificacion;
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
         else
-            return  array("estado"=>true,"data"=>"Tipo Actividad Eliminado");
+            return  array("estado"=>true,"data"=>"Tipo Identificacion Eliminado");
     }
 }

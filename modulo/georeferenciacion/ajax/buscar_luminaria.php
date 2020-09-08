@@ -5,6 +5,7 @@ $credencial= json_decode($url, true);
 require_once "../../luminaria/clase/Luminaria.php";
 $objLum = new Luminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $result = $objLum->listarLuminaria($_POST);
+$lista=array();
 while (!$result->EOF){
     $lista[]=array(                    
         "id_luminaria"  => $result->fields['id_luminaria'],

@@ -11,6 +11,7 @@ $result = $objPQR->buscarUsuarioServicio($_POST['identificacion']);
 
 if(!$result){
     $obj->id_usuario_servicio = "";
+    $obj->id_tipo_identificacion = "";
     $obj->nombre = "";
     $obj->direccion = "";
     $obj->telefono = "";
@@ -21,6 +22,7 @@ if(!$result){
 else{
     if($result->NumRows()==0){
         $obj->id_usuario_servicio = "";
+        $obj->id_tipo_identificacion = "";
         $obj->nombre = "";
         $obj->direccion = "";
         $obj->telefono = "";
@@ -30,6 +32,7 @@ else{
     }
     else{
         $obj->id_usuario_servicio = $result->fields['id_usuario_servicio'];
+        $obj->id_tipo_identificacion = $result->fields['id_tipo_identificacion'];
         $obj->nombre = $result->fields['nombre'];
         $obj->direccion = $result->fields['direccion'];
         $obj->telefono = $result->fields['telefono'];

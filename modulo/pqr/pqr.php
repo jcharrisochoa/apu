@@ -8,15 +8,21 @@ require_once "../parametros/clase/Municipio.php";
 require_once "../parametros/clase/TipoPQR.php";
 require_once "../parametros/clase/TipoReporte.php";
 require_once "../parametros/clase/MedioRecepcionPQR.php";
+require_once "../parametros/clase/TipoIdentificacion.php";
+require_once "../parametros/clase/EstadoPQR.php";
 $menu = new Menu($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjMun = new Municipio($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoPQR = new TipoPQR($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoRep = new TipoReporte($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjMedioRcp = new MedioRecepcionPQR($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjTipoId = new TipoIdentificacion($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjEstPQR = new EstadoPQR($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $municipiopqr      = $ObjMun->listarMunicipioContrato();
 $tipoPQR        = $ObjTipoPQR->listarTipoPQR();
 $tipoReporte    = $ObjTipoRep->listarTipoReporte();
 $medioRecepcion = $ObjMedioRcp->listarMedioRecepcionPQR();
+$tipoIdentificacion = $ObjTipoId->listarTipoIdentificacion();
+$estadoPQR          = $ObjEstPQR->listarEstadoPQR();
 if(empty($_SESSION['id_tercero'])){
 	?>
 	<script> 
@@ -51,6 +57,7 @@ else{
     </li>
 </ol>
 </hr>
+<!--
 <div class="row">
     <div class="form-group">
     <?php if($CREAR=="S"){ ?>
@@ -74,6 +81,23 @@ else{
         <div class="col-md-4">&nbsp;</div>
     </div>
 </div>
+-->
+
+<div class="row">
+	<div class="col-md-12">
+        <?php if($CREAR=="S"){ ?>
+        <button type="button" id="btn_nueva_pqr" style class="btn btn-green btn-icon icon-left">Nuevo<i class="entypo-plus"></i></button>
+        <?php } 
+        if($EDITAR=="S"){ ?>
+        <button type="button" id="btn_editar_pqr" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
+        <?php }  
+        if($ELIMINAR=="S"){ ?>
+        <button type="button" id="btn_eliminar_pqr" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
+        <?php } ?>
+        <button type="button" id="btn_detalle_pqr" class="btn btn-blue btn-icon icon-left">Detalle<i class="entypo-info"></i></button>
+    </div>
+</div>
+<br/>
 
 <!--Filtros-->
 <div class="row">
@@ -86,17 +110,42 @@ else{
                     <!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
                 </div>
             </div>
-            <div class="panel-body"> 
+            <div class="panel-body">
+                <div class="row">            
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-4">&nbsp;</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-4">&nbsp;</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-4">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="row">            
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-4">&nbsp;</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-4">&nbsp;</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-4">&nbsp;</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div> 
 <!--Fin Filtros-->
+
+
 <div class="table-responsive panel-shadow">
     <table id="tbl_lista_pqr" class="table table-bordered datatable table-responsive">
         <thead>
             <tr> 
                 <th style="text-align: center">#</th>
+                <th style="text-align: center">RADICADO</th>
                 <th style="text-align: center">MUNICIPIO</th>
                 <th style="text-align: center">TIPO</th>
                 <th style="text-align: center">REPORTE</th>
@@ -104,18 +153,27 @@ else{
                 <th style="text-align: center">TERCERO</th>
                 <th style="text-align: center">FECHA PQR</th>
                 <th style="text-align: center">USUARIO REGISTRA</th> 
-                <!--<th style="text-align: center">ID_LUMINARIA</th>     
-                <th style="text-align: center">FCH_INSTALACION</th>
-                <th style="text-align: center">FCH_REGISTRO</th>                                
-                <th style="text-align: center">ID_MUNICIPIO</th>
-                <th style="text-align: center">ID_BARRIO</th>
-                <th style="text-align: center">ID_TERCERO_PROVEEDOR</th>
-                <th style="text-align: center">ID_ESTADO_LUMINARIA</th>
-                <th style="text-align: center">ID_TIPO_LUMINARIA</th>-->
+                <th style="text-align: center">ESTADO</th> 
+                <th style="text-align: center">id_luminaria</th>
+                <th style="text-align: center">poste_no</th>
+                <th style="text-align: center">luminaria_no</th>
+                <th style="text-align: center">id_municipio</th>
+                <th style="text-align: center">id_tipo_pqr</th>
+                <th style="text-align: center">id_tipo_reporte</th>
+                <th style="text-align: center">id_medio_recepcion_pqr</th>
+                <th style="text-align: center">id_estado_pqr</th>
+                <th style="text-align: center">id_usuario_servicio</th>
+                <th style="text-align: center">id_tipo_identificacion</th>
+                <th style="text-align: center">identificacion</th>
+                <th style="text-align: center">nombre</th>
+                <th style="text-align: center">direccion</th>
+                <th style="text-align: center">telefono</th>
+                <th style="text-align: center">email</th>
             </tr>
         </thead>
     </table>
 </div>
+
 <!--Formulario de Entrada-->
 <div class="modal fade" id="frm-pqr" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
@@ -126,10 +184,10 @@ else{
             </div>
             
             <div class="modal-body">
-                <form id="form-luminaria">
+                <form id="form-pqr" name="form-pqr" enctype="multipart/form-data">
                     <input type="hidden" id="id_pqr" name="id_pqr" class="form-control clear" value="" />
                     <input type="hidden" id="id_luminaria" name="id_luminaria" class="form-control clear" value="" />
-                    <input type="hidden" id="id_usuario_servicio" name="id_usuario_servicio" class="form-control requerido clear">	
+                    <input type="hidden" id="id_usuario_servicio" name="id_usuario_servicio" class="form-control requerido clear" value=""/>	
                     <div class="row">
                         <div class="col-md-6">                            
                             <div class="form-group">
@@ -192,7 +250,7 @@ else{
                         </div>
                     </div>                    
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="fch_pqr" class="control-label">Fecha PQR*</label> 
                             <div class="input-group">
                                 <input type="text" id="fch_pqr" name="fch_pqr"  value="<?=date("Y-m-d")?>" class="form-control datepicker"  placeholder="YYYY-MM-DD" title=Fecha PQR/> 
@@ -201,11 +259,24 @@ else{
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-8">&nbsp;</div>
+                        <div class="col-md-6">                            
+                            <div class="form-group">
+                                <label for="slt_estado_pqr" class="control-label">Estado PQR*</label>
+                                <select id="slt_estado_pqr" name="slt_estado_pqr" class="form-control requerido clear" placeholder="Estado PQR" title="Estado PQR">
+                                    <option value="">-Seleccione-</option>
+                                    <?php
+                                    while(!$estadoPQR->EOF){
+                                        echo "<option value=\"".$estadoPQR->fields['id_estado_pqr']."\">".strtoupper($estadoPQR->fields['descripcion'])."</option>";
+                                        $estadoPQR->MoveNext();
+                                    }
+                                    ?>
+                                </select>
+                            </div>                        
+                        </div>
                     </div>
                     <hr/>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="txt_identificacion" class="control-label">Identificaci&oacute;n  (Sin D&iacute;gito de Verificaci&oacute;n)*</label>
                                 <div class="input-group">
@@ -216,6 +287,20 @@ else{
                                         <button type="button" class="btn btn-default btn-icon icon-left">Crear<i class="entypo-user-add"></i></button>
                                     </div>-->
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="slt_tipo_identificacion" class="control-label">Tipo de Identificaci&oacute;n*</label>
+                                <select id="slt_tipo_identificacion" name="slt_tipo_identificacion" class="form-control requerido clear" placeholder="Tipo Identififacion" title="Tipo Identififacion">
+                                    <option value="">-Seleccione-</option>
+                                    <?php
+                                    while(!$tipoIdentificacion->EOF){
+                                        echo "<option value=\"".$tipoIdentificacion->fields['id_tipo_identificacion']."\">".strtoupper($tipoIdentificacion->fields['descripcion'])."</option>";
+                                        $tipoIdentificacion->MoveNext();
+                                    }
+                                    ?>
+                                </select>
                             </div>
                         </div>
                     </div>  
@@ -286,12 +371,30 @@ else{
                                     <span class="fileinput-new">Seleccione el archivo</span>
                                     <span class="fileinput-exists">Cambiar</span>
                                     <i class="entypo-upload"></i>
-                                    <input type="file" name="archivo" id="archivo">
+                                    <input type="file" name="archivo" id="archivo" class="clear">
                                 </span>
                                 <span class="fileinput-filename"></span>
                                 <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
                             </div>
                         </div>
+                    </div>
+                    <div class="row" id="archivo-agregado" >
+                        <!--archivos Agregados-->
+                            <div class="col-md-12">
+                                <div class="panel panel-default panel-shadow" data-collapsed="1">
+                                    <div class="panel-heading">
+                                        <div class="panel-title">Archivos Cargados</div>                
+                                        <div class="panel-options">
+                                            <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                            <!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
+                                        </div>
+                                    </div>
+                                    <div class="panel-body" id="panel-archivo">
+                                                    
+                                    </div>
+                                </div>
+                            </div>
+                        <!--Fin archivos-->
                     </div>
                     <div class="row">
                         <div class="col-md-12">
