@@ -4,12 +4,12 @@ include("../../libreria/adodb/adodb.inc.php");
 $url = file_get_contents("../../conexion/credencial.json");
 $credencial= json_decode($url, true);
 require_once "../parametros/clase/Municipio.php";
-require_once "../parametros/clase/TipoActividad.php";
+require_once "../parametros/clase/TipoLuminaria.php";
 $ObjMun = new Municipio($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
-$ObjTipoAct = new TipoActividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjTipoLum = new TipoLuminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 
 $municipio = $ObjMun->listarMunicipioContrato();
-$tipoActividad = $ObjTipoAct->listarTipoActividad();
+$tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
 if($_SESSION['nombre']==""){
 	?>
 	<script> window.location = "../../index.php";</script>
@@ -52,6 +52,7 @@ if($_SESSION['nombre']==""){
     <link rel="stylesheet" type="text/css" href="../../libreria/entypo/css/entypo.css"/>             
     <link rel="stylesheet" type="text/css" href="../../libreria/css/jquery-ui-1.10.3.custom.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../libreria/css/bootstrap-colorselector.css"/>
+    <link rel="stylesheet" type="text/css" href="../../libreria/leaflet/leaflet.css"/>
 
     <script type="text/javascript" src="../../libreria/js/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="../../libreria/js/jquery.mask.js"></script>
@@ -75,7 +76,8 @@ if($_SESSION['nombre']==""){
     <script type="text/javascript" src="../../libreria/js/neon-custom.js"></script>
     <script type="text/javascript" src="../../libreria/js/jquery.blockUI.js"></script>
     <script type="text/javascript" src="../../libreria/js/custom.js"></script>
-    <script type="text/javascript" src="js/actividad.js"></script>
+    <script type="text/javascript" src="../../libreria/leaflet/leaflet.js"></script>
+    <script type="text/javascript" src="js/georeferencia.js"></script>
 </head>
 <body class="page-body  page-fade">
     <div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->	
@@ -85,7 +87,7 @@ if($_SESSION['nombre']==""){
                     <!-- logo -->
                     <div class="logo">
                         <a href="../index.php">
-                            <img src="../../libreria//img/logo.png" width="120" alt="" />
+                            <img src="../../libreria/img/logo.png" width="120" alt="" />
                         </a>
                     </div>
                     
@@ -119,12 +121,12 @@ if($_SESSION['nombre']==""){
                                 </a>
                             </li>
                             <li>
-                                <a href="../georeferencia/georeferencia.php">
+                                <a href="georeferencia.php">
                                     <span class="Georeferencia">Georeferencia</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="actividad.php">
+                                <a href="../actividad/actividad.php">
                                     <span class="Actividades en Terreno">Actividades</span>
                                 </a>
                             </li>						
@@ -183,15 +185,16 @@ if($_SESSION['nombre']==""){
                     <a href="../index.php"><i class="glyphicon glyphicon-home"></i> Inicio</a>
                 </li>
                 <li>
-                    <a href="#">Actividad</a>
+                    <a href="#">georeferencia</a>
                 </li>
                 <li class="active">
-                <strong>Listado Actividades</strong>
+                <strong>Mapa de Luminarias</strong>
                 </li>
             </ol>
-            </hr>
 
-            <div class="row">
+            </hr>
+            <!--Filtros-->
+            <div class="row">            
                 <div class="form-group">
                     <div class="col-xs-12 col-md-3">
                         <label for="municipio" class="control-label">Municipio</label> 
@@ -206,90 +209,82 @@ if($_SESSION['nombre']==""){
                         </select>              
                     </div>
 
-                    <div class="col-xs-12 col-md-2">
+                    <div class="col-xs-12 col-md-3">
                         <label for="barrio" class="control-label">Barrio</label> 
                         <select id="barrio" name="barrio" title="Barrio" class="form-control" data-allow-clear="true" data-placeholder="BARRIO">
                         <option value=""></option>
                         </select>
                     </div>
 
-                    <div class="col-xs-12 col-md-2">   
-                    <label for="tipo_actividad" class="control-label">Tipo Actividad</label>                  
-                        <select id="tipo_actividad" name="tipo_actividad" title="Tipo" class="form-control" data-allow-clear="true" data-placeholder="TIPO ACTIVIDAD">
-                        <option value=""></option>
-                        <?php
-                        while(!$tipoActividad->EOF){
-                            echo "<option value=\"".$tipoActividad->fields['id_tipo_actividad']."\">".strtoupper($tipoActividad->fields['descripcion'])."</option>";
-                            $tipoActividad->MoveNext();
-                        }
-                        ?>
-                        </select>
+                    <div class="col-xs-12 col-md-3">
+                        <label for="direccion" class="control-label">Direcci&oacute;n</label> 
+                        <input type="text" id="direccion" name="direccion"  class=" form-control" placeholder="DIRECCION"/> 
                     </div>
+
                     <div class="col-xs-12 col-md-2">
                         <label for="poste_no" class="control-label">Poste</label> 
                         <input type="text" id="poste_no" name="poste_no"  class="form-control" placeholder="POSTE"/> 
                     </div>
+                    <div class="col-xs-12 col-md-1"></div>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="form-group">
                     <div class="col-xs-12 col-md-2">
                         <label for="luminaria_no" class="control-label">Luminaria</label> 
                         <input type="text" id="luminaria_no" name="luminaria_no"  class="form-control" placeholder="LUMINARIA"/> 
                     </div>
-                    
+                    <div class="col-xs-12 col-md-3">
+                        <label for="Tipo" class="control-label">Tipo Luminaria</label>                     
+                        <select id="tipo" name="tipo" title="Tipo" class="form-control" data-allow-clear="true" data-placeholder="TIPO">
+                        <option value=""></option>
+                        <?php
+                        while(!$tipoLuminaria->EOF){
+                            echo "<option value=\"".$tipoLuminaria->fields['id_tipo_luminaria']."\">".strtoupper($tipoLuminaria->fields['descripcion'])."</option>";
+                            $tipoLuminaria->MoveNext();
+                        }
+                        ?>
+                        </select>
+                    </div>                    
+
+                    <div class="col-xs-12 col-md-2">
+                        <label for="fch_instalacion_ini" class="control-label">Fecha Inicial</label> 
+                        <input type="text" id="fch_instalacion_ini" name="fch_instalacion_ini" title="Fecha Instalacion Inicial"  class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
+                    </div>
+
+                    <div class="col-xs-12 col-md-2">
+                        <label for="fch_instalacion_fin" class="control-label">Fecha Final</label> 
+                        <input type="text" id="fch_instalacion_fin" name="fch_instalacion_fin" title="Fecha Instalacion Final" class="form-control datepicker"  placeholder="yyyy-mm-dd"/> 
+                    </div>                    
+
+                    <div class="col-xs-12 col-md-2">
+                        <br>
+                        <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_luminaria">
+                            <i class="glyphicon glyphicon-search"></i>BUSCAR
+                        </button> 
+                    </div>
+
                     <div class="col-xs-12 col-md-1"></div>
                 </div>
-                <div class="rows">
-                    <div class="form-group">
-                        <div class="col-xs-12 col-md-2">
-                            <label for="fch_actividad_ini" class="control-label">Fecha Inicial</label> 
-                            <input type="text" id="fch_actividad_ini" name="fch_actividad_ini" title="Fecha Actividad Inicial"  class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
-                        </div>
+            </div>             
+            <!--Fin Filtros-->
 
-                        <div class="col-xs-12 col-md-2">
-                            <label for="fch_actividad_fin" class="control-label">Fecha Final</label> 
-                            <input type="text" id="fch_actividad_fin" name="fch_actividad_fin" title="Fecha Actividad Final" class="form-control datepicker"  placeholder="yyyy-mm-dd"/> 
-                        </div>
-                        <div class="col-xs-12 col-md-2">
-                            </br>
-                            <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_buscar_actividad">
-                            <i class="glyphicon glyphicon-search"></i>BUSCAR</button> 
-                        </div>
-                        <div class="col-xs-12 col-md-6"></div>
-                    </div>
-                </div>
+            </br>
+
+            <div class="row" id="mapa">
             </div>
-
-
-            <div class="container-fluid">                
-                <div class="row">
-                    <div class="table-responsive"> 
-                        <table id="tbl_actividad" class="table table-bordered datatable">
-                            <thead>
-                                <tr> 
-                                    <th style="text-align: center">#</th>
-                                    <th style="text-align: center">MUNICIPIO</th>
-                                    <th style="text-align: center">ACTIVIDAD No</th>
-                                    <th style="text-align: center">TIPO</th>
-                                    <th style="text-align: center">BARRIO</th>
-                                    <th style="text-align: center">DIRECCION</th>
-                                    <th style="text-align: center">FCH ACTIVIDAD</th>                               
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>  
-            </div>
-
-            </hr>
+    
         </div>
     </div>
 
-    <!--Detalle Luminaria-->
-    <div class="modal fade" id="modal-detalle-actividad"> 
+     <!--Detalle Luminaria-->
+     <div class="modal fade" id="modal-detalle-luminaria"> 
             <div class="modal-dialog modal-lg" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="actividad"></h4>
+                        <h4 class="modal-title" id="poste_no"></h4>
                     </div>
             
                     <div id="modal-body-orden" class="modal-body">
@@ -309,8 +304,8 @@ if($_SESSION['nombre']==""){
                                     <div class="col-sm-12">
                                         <div class="col-ms-12 col-md-2"><label class="control-label">Poste.No</label></div>
                                         <div class="col-ms-12 col-md-4" style="color:#2ca02c; font-weight: bold;" id="td_poste_no"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Reporte</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_tipo_reporte"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Latitud</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_latitud"></div>
 
                                     </div>
                                 </div>
@@ -318,17 +313,17 @@ if($_SESSION['nombre']==""){
                                     <div class="col-sm-12">
                                         <div class="col-ms-12 col-md-2"><label class="control-label">Luminaria No</label></div>
                                         <div class="col-ms-12 col-md-4" id="td_luminaria_no"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Reporte</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_fch_reporte"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Longitud</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_longitud"></div>
 
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Luminaria</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_tipo_luminaria"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Actividad</label></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo</label></div>
                                         <div class="col-ms-12 col-md-4" id="td_tipo"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Instalación</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_fch_instalacion"></div>
 
                                     </div>
                                 </div>
@@ -336,31 +331,66 @@ if($_SESSION['nombre']==""){
                                      <div class="col-sm-12">
                                          <div class="col-ms-12 col-md-2"><label class="control-label">Municipio</label></div>
                                         <div class="col-ms-12 col-md-4" id="td_municipio"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Actividad</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_fch_instalacion"></div>               
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Usu.Registra</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_usuario"></div>               
                                      </div>
                                  </div>
                                 <div class="row">
                                      <div class="col-sm-12">
                                          <div class="col-ms-12 col-md-2"><label class="control-label">Barrio</label></div>
                                         <div class="col-ms-12 col-md-4" id="td_barrio"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tècnico</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_usuario"></div>               
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Registro</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_fch_registro"></div>               
                                      </div>
                                 </div>
                                 <div class="row">
                                      <div class="col-sm-12">
                                          <div class="col-ms-12 col-md-2"><label class="control-label">Direcci&oacute;n</label></div>
                                         <div class="col-ms-12 col-md-4" id="td_direccion"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Estado</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_estado"></div>               
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Proveedor</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_proveedor"></div>               
                                      </div>
                                 </div>
                                 <div class="row">
                                      <div class="col-sm-12">
-                                         <div class="col-ms-12 col-md-2"><label class="control-label">Observacion</label></div>
-                                        <div class="col-ms-12 col-md-10" id="td_observacion"></div>         
+                                         <div class="col-ms-12 col-md-2"><label class="control-label">Estado</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_estado"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label"></label></div>
+                                        <div class="col-ms-12 col-md-4" id=""></div>               
                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Historial de estados-->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="1" id="panel-encabezado"><!-- to apply shadow add class "panel-shadow" -->
+                            <!-- panel head -->
+                            <div class="panel-heading">
+                                <div class="panel-title">Actividad(es)</div>
+                                <div class="panel-options">
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                </div>
+                            </div>
+                            <div class="panel-body panel-encabezado panel-collapse">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered datatable" id="tbl_actividad_luminaria">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>C&oacute;digo</th>
+                                                <th>Tipo</th>
+                                                <th>Descripci&oacute;n</th>
+                                                <th>Direccion</th>
+                                                <th>Reclamo</th>
+                                                <th>Revision</th>                                
+                                                <th>T&eacute;cnico</th>        
+                                                <th>Estado</th>                               
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -368,7 +398,7 @@ if($_SESSION['nombre']==""){
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_cerrar_detalle_actividad">Cerrar<i class="glyphicon glyphicon-ok"></i></button>
+                <button type="button" class="btn btn-blue btn-icon icon-left btn-for" id="btn_cerrar_detalle_luminaria">Cerrar<i class="glyphicon glyphicon-ok"></i></button>
             
             </div>
         </div>
