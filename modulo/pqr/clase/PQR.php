@@ -88,7 +88,7 @@ class PQR extends General{
         $this->sql = "select p.*,m.descripcion as municipio,tp.descripcion as tipo_pqr,tr.descripcion as tipo_reporte,
                     mr.descripcion as medio_recepcion,us.id_tipo_identificacion,us.identificacion,us.nombre,us.direccion,
                     us.telefono,us.email,ti.abreviatura,ep.descripcion as estado,tc.usuario,l.poste_no,l.luminaria_no,
-                    ep.permitir_edicion,ep.permitir_eliminar
+                    ep.permitir_edicion,ep.permitir_eliminar,ti.abreviatura
                     from pqr p
                     join municipio m using(id_municipio) 
                     left join luminaria l using(id_luminaria)
@@ -403,6 +403,34 @@ class PQR extends General{
     
     function eliminarArchivo($id_archivo_pqr){
         $this->sql = "delete from archivo_pqr where id_archivo_pqr=".$id_archivo_pqr;
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result)
+            return false;
+        else
+            return $this->result;
+    }
+
+    function guardarComentarioPQR($id_pqr,$id_tercero,$comentario){
+        $this->sql = "INSERT INTO comentario_pqr(
+                    id_pqr,id_tercero,comentario,fch_registro
+                    )
+                    VALUES(
+                    ".$id_pqr.",".$id_tercero.",'".$comentario."',now()
+                    );";
+        $result = $this->db->Execute($this->sql);
+        if(!$result)
+            return  array("estado"=>false,"data"=>"Error agregando el comentario ".$this->db->ErrorMsg());
+        else
+            return  array("estado"=>true,"data"=>$this->db->insert_id()); 
+
+    }
+
+    function listarComentarioPQR($id_pqr){
+        $this->sql = "select cp.comentario,cp.fch_registro,t.nombre
+                    from comentario_pqr cp join tercero t using(id_tercero)
+                    where
+                    cp.id_pqr=".$id_pqr."
+                    order by cp.fch_registro";
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result)
             return false;

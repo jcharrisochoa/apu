@@ -81,6 +81,16 @@ $(function(){
         return false;
     });
 
+    $("#btn_agregar_comentario").click(function(){
+        if (event.handled !== true) {
+            event.preventDefault();
+            agregarComentario(); 
+            accion = "";     
+            event.handld = true;
+        }
+        return false;
+    });
+    
     $("#btn_buscar_punto_luminico").click(function(event) {
         if (event.handled !== true) {
             event.preventDefault();
@@ -109,6 +119,16 @@ $(function(){
         return false;
     });
     
+    $("#btn_agregar_archivo").click(function(){
+        if (event.handled !== true) {
+            event.preventDefault();
+            agregarArchivo();    
+            event.handld = true;
+        }
+        return false;
+    });
+
+
     //$("#frm-punto-luminico").on('hidden.bs.modal',function(){
        // $(this).modal('dispose');
         //$(this).off('hidden.bs.modal'); 
@@ -180,8 +200,8 @@ function InitTablePQR() {
                 { "data": "id_estado_pqr", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_usuario_servicio", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_tipo_identificacion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "tipo_identificacion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "identificacion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "nombre", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "direccion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "telefono", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "email", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
@@ -247,7 +267,7 @@ function editarPQR(dataDet){
             $("#txt_poste").val(dataDet.poste_no);
             $("#txt_luminaria").val(dataDet.luminaria_no);
             $("#txt_comentario").val(dataDet.comentario);
-            listarArchivo();
+            listarArchivo("panel-archivo",true);
             $("#frm-pqr").modal("show"); 
         }
     }
@@ -283,9 +303,26 @@ function verDetallePQR(){
         toastr.warning("Seleccione la PQR a visualizar", null, opts);
     } 
     else {
-        $("#modal-titulo-detalle-pqr").html("Detalle PQR No "+dataDetallePQR.id_pqr);
-        $("#modal-detalle-pqr").modal("show");
+        $("#td_municipio").html(dataDetallePQR.municipio);
+        $("#td_tipo_pqr").html(dataDetallePQR.tipo_pqr);
+        $("#td_tipo_reporte").html(dataDetallePQR.tipo_reporte);  
+        $("#td_fecha_pqr").html(dataDetallePQR.fch_pqr);
+        $("#td_estado_pqr").html(dataDetallePQR.estado);
+        $("#td_medio_recepcion").html(dataDetallePQR.medio_recepcion);
+        $("#td_identificacion").html(dataDetallePQR.identificacion);
+        $("#td_tipo_identificacion").html(dataDetallePQR.tipo_identificacion)
+        $("#td_nombre").html(dataDetallePQR.nombre);
+        $("#td_direccion").html(dataDetallePQR.direccion);
+        $("#td_telefono").html(dataDetallePQR.telefono);
+        $("#td_email").html(dataDetallePQR.email);
+        $("#td_poste").html(dataDetallePQR.poste_no);
+        $("#td_luminaria").html(dataDetallePQR.luminaria_no);
+        $("#td_comentario").html(dataDetallePQR.comentario);
         
+        listarArchivo("detalle-panel-archivo",false);
+        listarComentario();
+        $("#modal-titulo-detalle-pqr").html("Detalle PQR No "+dataDetallePQR.id_pqr);
+        $("#modal-detalle-pqr").modal("show");        
     }
 }
 
@@ -400,7 +437,36 @@ function guardarAccion(accion){
     });
 }
 
-function listarArchivo(){    
+function agregarArchivo(){
+    var formArchivoPQR = new FormData(document.getElementById("form-pqr-archivo"));
+    formArchivoPQR.append("id_pqr",dataDetallePQR.id_pqr); 
+    $.ajax({
+        async:true,
+        type: "POST",
+        dataType: "json",
+        processData: false,
+        contentType: false,
+        url:"pqr/ajax/guardar_archivo.php",
+        data:formArchivoPQR,
+        beforeSend:inicioEnvio,
+        success:function(data){
+            if(data.estado){
+                $(".fileinput").fileinput('clear');  //limpia el input type file             
+                listarArchivo("detalle-panel-archivo",false);             
+            }
+            else{
+                toastr.error(data.data, null, opts);
+            }            
+            $.unblockUI("");            
+        },
+        error:function(){
+            toastr.error("Error General", null, opts);
+            $.unblockUI(""); 
+        }
+    });
+}
+
+function listarArchivo(panel,eliminar){    
     $.ajax({
         async: true,
         type: "POST",
@@ -413,11 +479,16 @@ function listarArchivo(){
         beforeSend: inicioEnvio,
         success: function(data) {
             var html = "<table border=\"0\" cellpadding=\"2\" cellspacing=\"2\" width=\"100%\">";
+            var del = "";
             for (x in data) {
-                html = html + "<tr height='25'><td><i class=\"entypo-calendar\"></i>"+data[x].fch_registro+"</td><td>"+data[x].usuario+"</td><td><a href=\"pqr/ajax/descargar_archivo.php?id_archivo_pqr="+data[x].id_archivo_pqr+"\" targer=\"_blank\">"+data[x].nombre_archivo+"</a></td><td><a href=\"pqr/ajax/descargar_archivo.php?id_archivo_pqr="+data[x].id_archivo_pqr+"\" targer=\"_blank\"><i class=\"entypo-download\"></i></a></td><td><a href=\"#\" title=\"Eliminar Archivo\" onclick=\"eliminarArchivo("+data[x].id_archivo_pqr+",'"+data[x].nombre_archivo+"')\"><i class=\"entypo-trash\"></i></a></td></tr>";
+
+                if(eliminar)
+                    del = "<a href=\"#\" title=\"Eliminar Archivo\" onclick=\"eliminarArchivo("+data[x].id_archivo_pqr+",'"+data[x].nombre_archivo+"')\"><i class=\"entypo-trash\"></i></a>";
+                
+                html = html + "<tr height='25'><td><i class=\"entypo-calendar\"></i>"+data[x].fch_registro+"</td><td>"+data[x].usuario+"</td><td><a href=\"pqr/ajax/descargar_archivo.php?id_archivo_pqr="+data[x].id_archivo_pqr+"\" targer=\"_blank\">"+data[x].nombre_archivo+"</a></td><td><a href=\"pqr/ajax/descargar_archivo.php?id_archivo_pqr="+data[x].id_archivo_pqr+"\" targer=\"_blank\"><i class=\"entypo-download\"></i></a></td><td>"+del+"</td></tr>";
             }
             html = html + "</table>";
-            $("#panel-archivo").html(html);
+            $("#"+panel).html(html);
             $.unblockUI("");
         }
     });
@@ -450,4 +521,52 @@ function eliminarArchivo(id_archivo_pqr,nombre_archivo){
             }
         });
     }
+}
+
+function agregarComentario(){
+    if($.trim($("#txt_agregar_comentario").val())!=""){
+        $.ajax({
+            async: true,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            url: "pqr/ajax/guardar_comentario.php",
+            data: {
+                id_pqr: dataDetallePQR.id_pqr,
+                comentario:$("#txt_agregar_comentario").val()
+            },
+            beforeSend: inicioEnvio,
+            success: function(data) {
+                if(!data.estado)
+                    toastr.error(data.data, null, opts);
+
+                listarComentario();
+                $("#txt_agregar_comentario").val("");
+                $.unblockUI("");
+            }
+        });
+    }
+}
+
+function listarComentario(){
+    $.ajax({
+        async: true,
+        type: "POST",
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        url: "pqr/ajax/listar_comentarios.php",
+        data: {
+            id_pqr: dataDetallePQR.id_pqr
+        },
+        beforeSend: inicioEnvio,
+        success: function(data) {
+            var html = "<ul class=\"comments-list\">";
+            for (x in data)
+                html = html + "<li><div class=\"comment-details\"><div class=\"comment-head\"><i class=\"entypo-user\"></i> | <a href=\"#\">"+data[x].usuario+"</a> | "+data[x].fch_registro+"</div><p class=\"comment-text\">"+data[x].comentario+"</p></div></div></li>";
+            html = html + "</ul>"
+
+            $("#lista-comentario").html(html);
+            $.unblockUI("");
+        }
+    });
 }

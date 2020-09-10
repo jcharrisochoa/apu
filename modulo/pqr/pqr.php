@@ -164,8 +164,8 @@ else{
                 <th style="text-align: center">id_estado_pqr</th>
                 <th style="text-align: center">id_usuario_servicio</th>
                 <th style="text-align: center">id_tipo_identificacion</th>
+                <th style="text-align: center">tipo_identificacion</th>
                 <th style="text-align: center">identificacion</th>
-                <th style="text-align: center">nombre</th>
                 <th style="text-align: center">direccion</th>
                 <th style="text-align: center">telefono</th>
                 <th style="text-align: center">email</th>
@@ -372,7 +372,7 @@ else{
                                 <span class="btn btn-blue btn-file">
                                     <span class="fileinput-new">Seleccione el archivo</span>
                                     <span class="fileinput-exists">Cambiar</span>
-                                    <i class="entypo-upload"></i>
+                                    <i class="entypo-attach"></i>
                                     <input type="file" name="archivo" id="archivo" class="clear">
                                 </span>
                                 <span class="fileinput-filename"></span>
@@ -401,7 +401,7 @@ else{
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group no-margin">
-								<label for="txt_comentario" class="control-label">Comentarios*</label>								
+								<label for="txt_comentario" class="control-label">Comentarios/Asunto*</label>								
 								<textarea class="form-control autogrow requerido clear" id="txt_comentario" name="txt_comentario" placeholder="Comentarios" title="Comentarios"></textarea>
 							</div>	
                         </div>
@@ -420,7 +420,7 @@ else{
 <!--fin entrada-->
 
 <!--Detalle-->
-<div class="modal fade" id="modal-detalle-pqr" role="dialog" data-keyboard="false" data-backdrop="static">
+<div class="modal lg fade" id="modal-detalle-pqr" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">            
             <div class="modal-header">
@@ -429,6 +429,184 @@ else{
             </div>
             
             <div class="modal-body">
+                <!--Informacion General-->
+                <div class="row" id="comentario-agregado" >                    
+                    <div class="col-md-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="0">
+                            <div class="panel-heading">
+                                <div class="panel-title">Informaci&oacute;n General</div>                
+                                <div class="panel-options">
+                                    <a href="#" data-rel="reload" onclick="" title="Finalizar PQR"><i class="entypo-lock-open"></i></a>
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                    <!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
+                                </div>
+                            </div>
+                            <div class="panel-body" id="panel-comentario">
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Municipio</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_municipio"></div>
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Tipo PQR</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_tipo_pqr"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Tipo Reporte</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_tipo_reporte"></div>
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Medio Recepci&oacute;n</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_medio_recepcion"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Fecha PQR</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_fecha_pqr"></div>
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Estado PQR</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_estado_pqr"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Fecha Cierre</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_fecha_cierre_pqr"></div>
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Usuario Cierre</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_usuario_cierre"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Tipo Identificaci&oacute;n</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_tipo_identificacion"></div>
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Identificaci&oacute;n</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_identificacion"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Nombre</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_nombre"></div>
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Direcci&oacute;n</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_direccion"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Tel&eacute;fono</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_telefono"></div>
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">E-mail</label></div>
+                                        <div class="col-ms-12 col-md-3" id="td_email"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Poste</label></div>
+                                        <div class="col-ms-12 col-md-3" style="color:#2ca02c; font-weight: bold;" id="td_poste"></div>
+                                        <div class="col-ms-12 col-md-3"><label class="control-label">Luminaria</label></div>
+                                        <div class="col-ms-12 col-md-3"  style="color:#2ca02c; font-weight: bold;" id="td_luminaria"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="txt_comentario" class="control-label">Asunto</label>
+                                        <div id="td_comentario" class="scrollable" data-height="100" data-scroll-position="right" data-rail-color="#ccc" data-rail-opacity=".9" data-rail-width="8" data-rail-radius="10" data-autohide="0">
+                                    
+                                        </div>                                    
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Fin Info General-->
+
+                <!--Comentarios Agregados-->
+                <div class="row" id="comentario-agregado" >                    
+                    <div class="col-md-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="1">
+                            <div class="panel-heading">
+                                <div class="panel-title">Comentarios</div>                
+                                <div class="panel-options">
+                                    <a href="#" data-rel="reload" onclick="listarComentario();"><i class="entypo-arrows-ccw"></i></a>
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                    <!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
+                                </div>
+                            </div>
+                            <div class="panel-body" id="panel-comentario">
+                                <div class="row">
+                                    <div class="col-md-12">   
+                                        <div id="lista-comentario" class="scrollable" data-height="150" data-scroll-position="right" data-rail-color="#ccc" data-rail-opacity=".9" data-rail-width="8" data-rail-radius="10" data-autohide="0">
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="entypo-chat"></i></span>
+                                                <input type="text" class="form-control" id="txt_agregar_comentario" name="txt_agregar_comentario" placeholder="Nuevo Comentario" title="Nuevo Comentario">	                                    
+                                                <div class="input-group-btn">					
+                                                    <span class="input-group-btn">
+                                                        <button type="button" id="btn_agregar_comentario" class="btn btn-green">Enviar</button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Fin Comentario-->
+                <!--archivos Agregados-->
+                <div class="row">                    
+                    <div class="col-md-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="1">
+                            <div class="panel-heading">
+                                <div class="panel-title">Archivos Cargados</div>                
+                                <div class="panel-options">
+                                    <a href="#" data-rel="reload" onclick="listarArchivo('detalle-panel-archivo',false);"><i class="entypo-arrows-ccw"></i></a>
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>                                    
+                                    <!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="detalle-panel-archivo" class="scrollable" data-height="150" data-scroll-position="right" data-rail-color="#ccc" data-rail-opacity=".9" data-rail-width="8" data-rail-radius="10" data-autohide="0">
+                                        </div>
+                                    </div>
+                                </div>   
+                                <div class="row">
+                                    <form id="form-pqr-archivo" name="form-pqr-archivo" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <div class="col-md-10">
+                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                    <span class="btn btn-blue btn-file">
+                                                        <span class="fileinput-new">Seleccione el archivo</span>
+                                                        <span class="fileinput-exists">Cambiar</span>
+                                                        <i class="entypo-attach"></i>
+                                                        <input type="file" name="archivo" id="archivo" class="clear">
+                                                    </span>
+                                                    <span class="fileinput-filename"></span>
+                                                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="form-control btn btn-green" id="btn_agregar_archivo">Cargar</i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>   
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <!--Fin archivos-->
             </div>
 
             <div class="modal-footer">

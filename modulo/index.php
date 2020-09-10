@@ -166,7 +166,7 @@ if(empty($_SESSION['id_tercero'])){
 
 								<!-- Profile sub-links -->
 								<li>
-									<a href="extra-timeline.html">
+									<a href="#" onclick="cargarModulo('login/cambiar_clave.php');" >
 										<i class="entypo-user"></i>
 										Cambiar Clave
 									</a>
