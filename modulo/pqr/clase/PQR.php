@@ -16,21 +16,21 @@ class PQR extends General{
 
     function contarPQR($post){
         $q = "";
-        /*if(!empty($post['municipio']))
-            $q .= " and l.id_municipio=".$post['municipio'];
-        if(!empty($post['barrio']))
-            $q .= " and l.id_barrio=".$post['barrio'];
-        if(!empty($post['tipo']))
-            $q .= " and l.id_tipo_luminaria=".$post['tipo'];
-        if(!empty($post['direccion']))
-            $q .= " and l.direccion like '%".$post['direccion']."%'";
-        if(!empty($post['poste_no']))
-            $q .= " and l.poste_no = '".$post['poste_no']."'";
-        if(!empty($post['luminaria_no']))
-            $q .= " and l.luminaria_no = '".$post['luminaria_no']."'";
+        if(!empty($post['id_pqr']))
+            $q .= " and p.id_pqr =".$post['id_pqr'];
+        if(!empty($post['municipio']))
+            $q .= " and p.id_municipio=".$post['municipio'];
+        if(!empty($post['tipo_pqr']))
+            $q .= " and p.id_tipo_pqr=".$post['tipo_pqr'];
+        if(!empty($post['tipo_reporte']))
+            $q .= " and p.id_tipo_reporte=".$post['tipo_reporte'];
+        if(!empty($post['estado']))
+            $q .= " and p.id_estado_pqr=".$post['estado'];
+        if(!empty($post['nombre']))
+            $q .= " and us.nombre like '%".$post['nombre']."%'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
-            $q .= " and date(l.fch_instalacion) >= '".$post['fechaini']."' and date(l.fch_instalacion) <= '".$post['fechafin']."'";
-        */
+            $q .= " and date(p.fch_pqr) >= '".$post['fechaini']."' and date(p.fch_pqr) <= '".$post['fechafin']."'";
+
         $this->sql = "select count(1) as total        
                     from pqr p
                     join municipio m using(id_municipio) 
@@ -56,23 +56,23 @@ class PQR extends General{
     }
 
     function listarPQR($post){
-            $q = "";
-        /*if(!empty($post['municipio']))
-            $q .= " and l.id_municipio=".$post['municipio'];
-        if(!empty($post['barrio']))
-            $q .= " and l.id_barrio=".$post['barrio'];
-        if(!empty($post['tipo']))
-            $q .= " and l.id_tipo_luminaria=".$post['tipo'];
-        if(!empty($post['direccion']))
-            $q .= " and l.direccion like '%".$post['direccion']."%'";
-        if(!empty($post['poste_no']))
-            $q .= " and l.poste_no = '".$post['poste_no']."'";
-        if(!empty($post['luminaria_no']))
-            $q .= " and l.luminaria_no = '".$post['luminaria_no']."'";
+        $q = "";
+        if(!empty($post['id_pqr']))
+            $q .= " and p.id_pqr =".$post['id_pqr'];
+        if(!empty($post['municipio']))
+            $q .= " and p.id_municipio=".$post['municipio'];
+        if(!empty($post['tipo_pqr']))
+            $q .= " and p.id_tipo_pqr=".$post['tipo_pqr'];
+        if(!empty($post['tipo_reporte']))
+            $q .= " and p.id_tipo_reporte=".$post['tipo_reporte'];
+        if(!empty($post['estado']))
+            $q .= " and p.id_estado_pqr=".$post['estado'];
+        if(!empty($post['nombre']))
+            $q .= " and us.nombre like '%".$post['nombre']."%'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
-            $q .= " and date(l.fch_instalacion) >= '".$post['fechaini']."' and date(l.fch_instalacion) <= '".$post['fechafin']."'";
+            $q .= " and date(p.fch_pqr) >= '".$post['fechaini']."' and date(p.fch_pqr) <= '".$post['fechafin']."'";
 
-        */
+        
         if(!empty($post['order']['0']['column'])){
             $pos = $post['order']['0']['column'];	
             $campo = $post['columns'][$pos]['name'];
@@ -189,7 +189,7 @@ class PQR extends General{
             }
             else{
                 $id_pqr = $this->db->insert_id();
-                if(!empty($file)){
+                if(!empty($file['archivo']['name'])){
                     $archivo = $this->guardarArchivoPQR($id_pqr,$_SESSION['id_tercero'],$file);
                     if(!$archivo['estado']){
                         $this->devolverTransaccion();

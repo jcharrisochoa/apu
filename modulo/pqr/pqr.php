@@ -113,26 +113,108 @@ else{
             <div class="panel-body">
                 <div class="row">            
                     <div class="form-group">
-                        <div class="col-xs-12 col-md-4">&nbsp;</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-12 col-md-4">&nbsp;</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-12 col-md-4">&nbsp;</div>
+                        <div class="col-xs-12 col-md-3">
+                            <label for="municipio" class="control-label">Municipio</label> 
+                            <select id="municipio" name="municipio" title="Municipio" class="form-control" data-allow-clear="true" data-placeholder="MUNICIPIO">
+                            <option value="">-Todos-</option>
+                            <?php
+                            while(!$municipiopqr->EOF){
+                                echo "<option value=\"".$municipiopqr->fields['id_municipio']."\">".strtoupper($municipiopqr->fields['descripcion'])."</option>";
+                                $municipiopqr->MoveNext();
+                            }
+                            ?>
+                            </select>              
+                        </div>
+
+                        <div class="col-xs-12 col-md-3">
+                            <label for="tipo_pqr" class="control-label">Tipo PQR</label> 
+                            <select id="tipo_pqr" name="tipo_pqr" title="Tipo PQR" class="form-control" data-allow-clear="true" data-placeholder="TIPO PQR">
+                            <option value="">-Todos-</option>
+                            <?php
+                            while(!$tipoPQR->EOF){
+                                echo "<option value=\"".$tipoPQR->fields['id_tipo_pqr']."\">".strtoupper($tipoPQR->fields['descripcion'])."</option>";
+                                $tipoPQR->MoveNext();
+                            }
+                            ?>
+                            </select>
+                        </div>
+
+                        <div class="col-xs-12 col-md-3">
+                            <label for="tipo_reporte" class="control-label">Tipo Reporte</label> 
+                            <select id="tipo_reporte" name="tipo_reporte" title="Tipo Reporte" class="form-control" data-allow-clear="true" data-placeholder="TIPO REPORTE">
+                            <option value="">-Todos-</option>
+                            <?php
+                            while(!$tipoReporte->EOF){
+                                echo "<option value=\"".$tipoReporte->fields['id_tipo_reporte']."\">".strtoupper($tipoReporte->fields['descripcion'])."</option>";
+                                $tipoReporte->MoveNext();
+                            }
+                            ?>
+                            </select>
+                        </div>
+
+                        <div class="col-xs-12 col-md-3">
+                            <label for="estado_pqr" class="control-label">Estado PQR</label> 
+                            <select id="estado_pqr" name="estado_pqr" title="Estado PQR" class="form-control" data-allow-clear="true" data-placeholder="ESTADO PQR">
+                            <option value="">-Todos-</option>
+                            <?php
+                            while(!$estadoPQR->EOF){
+                                echo "<option value=\"".$estadoPQR->fields['id_estado_pqr']."\">".strtoupper($estadoPQR->fields['descripcion'])."</option>";
+                                $estadoPQR->MoveNext();
+                            }
+                            ?>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="row">            
+                    
                     <div class="form-group">
-                        <div class="col-xs-12 col-md-4">&nbsp;</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-12 col-md-4">&nbsp;</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-12 col-md-4">&nbsp;</div>
-                    </div>
+                        <div class="col-xs-12 col-md-4">
+                            <label for="radicado" class="control-label">Radicado</label> 
+                            <input type="text" id="radicado" name="radicado"  class="form-control" placeholder="RADICADO"/> 
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <label for="identificacion" class="control-label">Identificacion</label> 
+                            <input type="text" id="identificacion" name="identificacion"  class="form-control" placeholder="IDENTIFICACION"/> 
+                        </div>                    
+
+                        <div class="col-xs-12 col-md-4">
+                            <label for="nombre" class="control-label">Nombre / Razon Social (Reporta)</label> 
+                            <input type="text" id="nombre" name="nombre"  class="form-control" placeholder="NOMBRE, RAZON SOCIAL"/> 
+                        </div>                    
+                    </div> 
                 </div>
+                <div class="row">
+                    <div class="form-group">                                    
+                        <div class="col-xs-12 col-md-2">
+                            <label for="fch_pqr_ini" class="control-label">Fecha Inicial</label> 
+                            <div class="input-group">
+                                <input type="text" id="fch_pqr_ini" name="fch_pqr_ini" title="Fecha PQR Inicial"  class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
+                                <div class="input-group-addon">
+                                    <a href="#"><i class="entypo-calendar"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-2">
+                            <label for="fch_pqr_fin" class="control-label">Fecha Final</label> 
+                            <div class="input-group">
+                                <input type="text" id="fch_pqr_fin" name="fch_pqr_fin" title="Fecha PQR Final" class="form-control datepicker"  placeholder="YYYY-MM-DD"/>
+                                <div class="input-group-addon">
+                                    <a href="#"><i class="entypo-calendar"></i></a>
+                                </div>
+                            </div> 
+                        </div>
+
+                        <div class="col-xs-12 col-md-8">
+                        </br>   
+                            <button type="button" class="btn btn-blue btn-icon icon-left" id="btn_buscar_pqr" name="btn_buscar_pqr">
+                                Buscar
+                                <i class="entypo-search"></i>
+                            </button>
+                        </div>                                                               
+                    </div>
+                </div>                
             </div>
         </div>
     </div>
@@ -197,6 +279,7 @@ else{
                                 <select id="slt_municipio" name="slt_municipio" class="form-control requerido clear" placeholder="Municipio" title="Municipio">
                                     <option value="">-Seleccione-</option>
                                     <?php
+                                    $municipiopqr->moveFirst();
                                     while(!$municipiopqr->EOF){
                                         echo "<option value=\"".$municipiopqr->fields['id_municipio']."\">".strtoupper($municipiopqr->fields['descripcion'])."</option>";
                                         $municipiopqr->MoveNext();
@@ -212,6 +295,7 @@ else{
                                 <select id="slt_tipo_pqr" name="slt_tipo_pqr" class="form-control requerido clear" placeholder="Tipo PQR" title="Tipo PQR">
                                     <option value="">-Seleccione-</option>
                                     <?php
+                                    $tipoPQR->moveFirst();
                                     while(!$tipoPQR->EOF){
                                         echo "<option value=\"".$tipoPQR->fields['id_tipo_pqr']."\">".strtoupper($tipoPQR->fields['descripcion'])."</option>";
                                         $tipoPQR->MoveNext();
@@ -228,6 +312,7 @@ else{
                                 <select id="slt_tipo_reporte" name="slt_tipo_reporte" class="form-control requerido clear" placeholder="Tipo Reporte" title="Tipo Reporte">
                                     <option value="">-Seleccione-</option>
                                     <?php
+                                    $tipoReporte->moveFirst();
                                     while(!$tipoReporte->EOF){
                                         echo "<option value=\"".$tipoReporte->fields['id_tipo_reporte']."\">".strtoupper($tipoReporte->fields['descripcion'])."</option>";
                                         $tipoReporte->MoveNext();
@@ -267,6 +352,7 @@ else{
                                 <select id="slt_estado_pqr" name="slt_estado_pqr" class="form-control requerido clear" placeholder="Estado PQR" title="Estado PQR">
                                     <option value="">-Seleccione-</option>
                                     <?php
+                                    $estadoPQR->moveFirst();
                                     while(!$estadoPQR->EOF){
                                         echo "<option value=\"".$estadoPQR->fields['id_estado_pqr']."\">".strtoupper($estadoPQR->fields['descripcion'])."</option>";
                                         $estadoPQR->MoveNext();

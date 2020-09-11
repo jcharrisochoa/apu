@@ -5,6 +5,7 @@ var accion = "";
 
 $(function(){
     $("#txt_identificacion").numeric();
+    $("#identificacion").numeric();
 
     $("#txt_identificacion").keydown(function(event){
         if(event.keyCode == 13){
@@ -15,8 +16,21 @@ $(function(){
            };
        }
        //return false;
-   });
+    });
    
+    $("#btn_buscar_pqr").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            tablePQR.ajax.reload(function(){
+                $("#modal-text-global").html("Se encontraron "+tablePQR.page.info().recordsTotal+" registros");
+                $("#modal-mensaje-global").modal("show");
+                dataDetallePQR = "";
+            });   
+            event.handld = true;
+        }
+        return false;
+    });
+
     //$(".make-switch").bootstrapSwitch('toggleRadioState');
     $('input.icheck-11').iCheck({
         checkboxClass: 'icheckbox_square-blue',
@@ -146,6 +160,10 @@ $(function(){
         $("#txt_poste").val(dataDetallePuntoLuminico.poste_no);
         $("#txt_luminaria").val(dataDetallePuntoLuminico.luminaria_no);
     });
+    $("#frm-pqr").off().on('hidden.bs.modal',function(){
+        $("#modal-mensaje-global").css("z-index", "15001"); //foco del modal inicial
+        $('body').addClass('modal-open'); //render nuevamente el modal inicial
+    });
    
     InitTablePQR();
 });
@@ -161,7 +179,8 @@ function InitTablePQR() {
             data.fechaini = $("#fch_pqr_ini").val(),
             data.fechafin = $("#fch_pqr_fin").val(),
             data.nombre = $("#nombre").val(),
-            data.estado = $("#estado").val()
+            data.identificacion = $("#identificacion").val(),
+            data.estado = $("#estado_pqr").val()
         }).DataTable({
             "aLengthMenu": [
                 [15, 30, 50, 70, 100, 500],
