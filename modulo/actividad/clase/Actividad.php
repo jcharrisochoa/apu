@@ -12,6 +12,19 @@ class Actividad{
         $this->db->Connect( $host, $user, $password, $database);
         $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
     }
+
+    function iniciarTransaccion(){
+        $this->db->Execute("BEGIN;");
+    }
+
+    function finalizarTransaccion(){
+        $this->db->Execute("COMMIT;");
+    }
+
+    function devolverTransaccion(){
+        $this->db->Execute("ROLLBACK;");
+    }
+    
     function contarActividad($post){
         $q = "";
         if(!empty($post['municipio']))
@@ -50,6 +63,7 @@ class Actividad{
             return $this->result->fields['total'];
         }
     }
+    
     function listarActividad($post){
         $q = "";
         if(!empty($post['municipio']))

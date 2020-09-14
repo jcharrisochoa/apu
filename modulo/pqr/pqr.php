@@ -340,7 +340,7 @@ else{
                         <div class="col-md-6">
                             <label for="fch_pqr" class="control-label">Fecha PQR*</label> 
                             <div class="input-group">
-                                <input type="text" id="fch_pqr" name="fch_pqr"  value="<?=date("Y-m-d")?>" class="form-control datepicker"  placeholder="YYYY-MM-DD" title=Fecha PQR/> 
+                                <input type="text" id="fch_pqr" name="fch_pqr"  value="<?=date("Y-m-d")?>" class="form-control datepicker requerido" readonly  placeholder="YYYY-MM-DD" title=Fecha PQR/> 
                                 <div class="input-group-addon">
                                     <a href="#"><i class="entypo-calendar"></i></a>
                                 </div>
@@ -368,7 +368,8 @@ else{
                             <div class="form-group">
                                 <label for="txt_identificacion" class="control-label">Identificaci&oacute;n  (Sin D&iacute;gito de Verificaci&oacute;n)*</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control requerido clear" id="txt_identificacion" name="txt_identificacion" placeholder="Identifiaci&oacute;n" title="Identifiaci&oacute;n">	                                    <div class="input-group-btn">					
+                                    <input type="text" class="form-control requerido clear" id="txt_identificacion" name="txt_identificacion" placeholder="Identifiaci&oacute;n" title="Identifiaci&oacute;n">	                                    
+                                    <div class="input-group-btn">					
                                         <button type="button" id="btn_buscar_usuario_servicio" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
                                     </div>
                                     <!--<div class="input-group-btn">					
@@ -506,8 +507,8 @@ else{
 <!--fin entrada-->
 
 <!--Detalle-->
-<div class="modal lg fade" id="modal-detalle-pqr" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog">
+<div class="modal fade" id="modal-detalle-pqr" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" style="width: 50%">
         <div class="modal-content">            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

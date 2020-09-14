@@ -91,6 +91,32 @@ $(function() {
    $(".switch").not("[data-switch-no-init]").bootstrapSwitch();*/
 });
 
+//(panel scroll), uso en comentarios y archivos
+if($.isFunction($.fn.slimScroll)){
+    $(".scrollable").each(function(i, el){
+        var $this = $(el),
+            height = attrDefault($this, 'height', $this.height());
+
+        if($this.is(':visible')){
+            $this.removeClass('scrollable');
+
+            if($this.height() < parseInt(height, 10)){
+                height = $this.outerHeight(true) + 10;
+            }
+            $this.addClass('scrollable');
+        }
+
+        $this.css({maxHeight: ''}).slimScroll({
+            height: height,
+            position: attrDefault($this, 'scroll-position', 'right'),
+            color: attrDefault($this, 'rail-color', '#000'),
+            size: attrDefault($this, 'rail-width', 6),
+            borderRadius: attrDefault($this, 'rail-radius', 3),
+            opacity: attrDefault($this, 'rail-opacity', .3),
+            alwaysVisible: parseInt(attrDefault($this, 'autohide', 1), 10) == 1 ? false : true
+        });
+    });
+}
 
 var opts = {
     "closeButton": true,

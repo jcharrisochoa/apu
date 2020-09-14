@@ -388,7 +388,7 @@ else{
                             <div class="form-group">
                                 <label for="fch_instalacion" class="control-label">Instalaci&oacute;n</label>            
                                 <div class="input-group">
-                                    <input type="text" id="txt_fch_instalacion" name="txt_fch_instalacion" title="Fecha Instalaci&oacute;n" 
+                                    <input type="text" id="txt_fch_instalacion" name="txt_fch_instalacion" readonly title="Fecha Instalaci&oacute;n" 
                                     class="form-control datepicker requerido clear"  placeholder="YYYY-MM-DD" data-date-format="yyyy-mm-dd"/>
                                     <div class="input-group-addon">
                                         <a href="#"><i class="entypo-calendar"></i></a>

@@ -16,7 +16,20 @@ var propiedades = {
 };
 var tableActividad = "";
 var dataSet = [];
+var accion = "";
+var tableArticulo = [];
+var objArticulo = {id_articulo:"",descripcion:"",cantidad:""};
+var item    = 0;
+
 $(function() {
+
+    $("#txt_cantidad").numeric({
+        negative:false
+    });
+
+    $("#txt_codigo").numeric({
+        negative:false
+    });
 
     $("#municipio").change(function() {
         listarBarrio();
@@ -36,10 +49,12 @@ $(function() {
         }
         return false;
     });
+
     $("#btn_nueva_actividad").click(function(event) {
         if (event.handled !== true) {
             event.preventDefault();
-            $("#frm-actividad").modal("show");
+            nuevaActividad(); 
+            accion = "nuevo";     
             event.handld = true;
         }
         return false;
@@ -50,7 +65,53 @@ $(function() {
         $("#modal-detalle-actividad").modal("hide");
     });
 
+    $("#btn_agregar").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            agregarArticulo(); 
+            accion = "nuevo";     
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_eliminar").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            eliminarArticulo(); 
+            accion = "nuevo";     
+            event.handld = true;
+        }
+        return false;
+    });
+
+    
+
+
+    $("#txt_codigo").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               buscarArticulo(); 
+               event.handld = true;
+           };
+       }
+       //return false;
+    });
+
+    $("#txt_cantidad").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               agregarArticulo(); 
+               event.handld = true;
+           };
+       }
+       //return false;
+    });
+   
     InitTableActividad();
+    initTableArticulo();
 });
 
 function listarBarrio() {
@@ -93,7 +154,7 @@ function InitTableActividad() {
                 [15, 30, 50, 70, 100],
                 [15, 30, 50, 70, 100]
             ],
-            "bStateSave": true,
+            "bStateSave": false,
             "processing": true,
             "serverSide": true,
             "responsive": true,
@@ -160,4 +221,137 @@ function verDetalle(dataDet) {
         
         $("#modal-detalle-actividad").modal("show");
     }
+}
+
+function nuevaActividad(){
+    $("#frm-titulo-actividad").html("Nueva Actividad");
+    $("#frm-actividad").modal("show"); 
+    $("#tbl_actividad tbody tr").removeClass("highlight");
+    clearInput(".clear");
+    //tableActividad = "";
+}
+
+function buscarArticulo(){
+    if($.trim($("#txt_codigo").val())!=""){
+        $.ajax({
+            async:true,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            url:"global/buscar_articulo.php",
+            data:{
+                id_articulo:$("#txt_codigo").val()
+            },
+            beforeSend:inicioEnvio,
+            success:function(data){
+                if(data.estado){
+                    if(data.id_articulo == ""){
+                        toastr.warning(data.mensaje, null, opts);
+                    }
+                    else{
+                        toastr.success(data.mensaje, null, opts);
+                        $("#txt_cantidad").focus();
+                    }
+                    $("#txt_descripcion").val(data.descripcion);
+                }
+                else{
+                    toastr.error(data.mensaje, null, opts);
+                }            
+                $.unblockUI("");            
+            },
+            error:function(){
+                toastr.error("Error General", null, opts);
+                $.unblockUI(""); 
+            }
+        });
+    }
+    else{
+        $("#txt_descripcion").val("");
+        $("#id_articulo").val("");
+    }
+}
+
+function agregarArticulo(){
+    if(parseInt($("#txt_codigo").val())==0 ||  $("#txt_codigo").val()==""){
+        toastr.warning("Digite el codigo del art&iacute;culo a ingresar", null, opts);
+    }
+    else{
+        if($("#txt_descripcion").val()==""){
+            toastr.warning("Digite la descripcion del art&iacute;culo a ingresar", null, opts);
+        }
+        else{
+            if(parseFloat($("#txt_cantidad").val())==0 || $("#txt_cantidad").val()==""){
+            /* $("#modal-body").html("Digite la cantidad del producto a agregar en la orden");
+                $("#modal-msgbox").modal('show');*/
+                toastr.warning("Digite la cantidad a ingresar", null, opts);
+            }
+            else{
+                tableArticuloActividad.row.add({
+                    "item":item+1,
+                    "id_articulo":$("#txt_codigo").val(),
+                    "descripcion":$("#txt_descripcion").val(),
+                    "cantidad":$("#txt_cantidad").val()
+                }).draw();
+                item++;
+                clearInputAddArticulo();
+                $("#txt_codigo").focus();
+
+                $("#tbl_articulo_actividad tbody").on("click","tr", function () {         
+                    $("#tbl_articulo_actividad tbody tr").removeClass('highlight');
+                    $(this).addClass('highlight');
+                    if(tableArticuloActividad.row(this).length>0){
+                        var data=tableArticuloActividad.row(this).data();
+                        $("#item").val(data.item);
+                        $("#txt_codigo").val(data.id_articulo);
+                        $("#txt_descripcionpro").val(data.descripcion); 
+                        $("#txt_cantidad").val(data.cantidad);      
+                    }              
+                });
+            }
+        }
+    }
+}
+
+function eliminarArticulo(){
+    if($("#tbl_articulo_actividad tbody tr").hasClass('highlight')){
+        tableArticuloActividad.row('.highlight').remove().draw();
+        clearInputAddArticulo();
+        item--;
+    }
+    else{
+         toastr.warning("Seleccione el art&iacute;culo a eliminar", null, opts);
+    }
+}
+
+
+function initTableArticulo(){ 
+    tableArticuloActividad="";
+    tableArticuloActividad = $("#tbl_articulo_actividad").DataTable({  
+                                "aLengthMenu": [
+                                    [5, 10, 15, 20],
+                                    [5, 10, 15, 20]
+                                ],      
+                                "bStateSave": true,
+                                "bAutoWidth": true,
+                                "processing": true,        
+                                "responsive": true,
+                                "searching": false,
+                                data: dataSet,
+                                "columns": [          
+                                    {"data":"item",className: "alignCenter","searchable": false,"orderable": false},                                
+                                    {"data":"id_articulo",className: "alignCenter","searchable": false,"orderable": false},
+                                    {"data":"descripcion",className: "alignLeft","searchable": false,"orderable": false},
+                                    {"data":"cantidad",className:"alignRight"}
+                                ],
+                               
+                                language: {
+                                    url: "../../../../libreria/DataTableSp.json"
+                                }
+                            }); 
+}
+
+function clearInputAddArticulo(){
+    $("#txt_codigo").val("");
+    $("#txt_descripcion").val("");
+    $("#txt_cantidad").val("");
 }
