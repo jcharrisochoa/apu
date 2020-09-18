@@ -187,4 +187,23 @@ class Luminaria{
             return ($this->result->NumRows()==0)?false:true;
         }
     }
+
+    function buscarLuminaria($id_municipio,$luminaria_no){
+        $this->sql = "select l.id_luminaria,l.poste_no,l.direccion,l.id_barrio,l.latitud,l.longitud,l.fch_instalacion,
+                        tl.descripcion as tipo_luminaria,b.descripcion as barrio
+                        from luminaria l 
+                        join tipo_luminaria tl using(id_tipo_luminaria)
+                        join barrio b using(id_barrio)
+                        where 
+                        l.id_municipio=".$id_municipio." and 
+                        l.luminaria_no='".$luminaria_no."'";
+
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
 }

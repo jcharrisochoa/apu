@@ -5,7 +5,12 @@ var accion = "";
 
 $(function(){
     $("#txt_identificacion").numeric();
+
     $("#identificacion").numeric();
+
+    $("#slt_municipio").change(function(){
+        listarBarrioPuntoLuminico();
+    });
 
     $("#txt_identificacion").keydown(function(event){
         if(event.keyCode == 13){
@@ -29,6 +34,17 @@ $(function(){
             event.handld = true;
         }
         return false;
+    });
+
+    $("#txt_luminaria").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               buscarLuminaria(); 
+               event.handld = true;
+           };
+       }
+       //return false;
     });
 
     //$(".make-switch").bootstrapSwitch('toggleRadioState');
@@ -121,7 +137,20 @@ $(function(){
         }
         return false;
     });
-
+    
+    $("#btn_cancelar_punto_luminico").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            event.handld = true;
+            $("#id_luminaria").val("");
+            $("#txt_poste").val("");
+            $("#txt_luminaria").val("");
+            $("#txt_direccion_reporte").val("");
+            $("#slt_barrio_reporte").val("");
+        }
+        return false;
+    });
+    
     $("#btn_guardar_pqr").click(function(event) {
         if (event.handled !== true) {
             event.preventDefault();
@@ -159,6 +188,8 @@ $(function(){
         $("#id_luminaria").val(dataDetallePuntoLuminico.id_luminaria);
         $("#txt_poste").val(dataDetallePuntoLuminico.poste_no);
         $("#txt_luminaria").val(dataDetallePuntoLuminico.luminaria_no);
+        $("#txt_direccion_reporte").val(dataDetallePuntoLuminico.direccion);
+        $("#slt_barrio_reporte").val(dataDetallePuntoLuminico.id_barrio).change();
     });
     $("#frm-pqr").off().on('hidden.bs.modal',function(){
         $("#modal-mensaje-global").css("z-index", "15001"); //foco del modal inicial
@@ -179,6 +210,7 @@ function InitTablePQR() {
             data.fechaini = $("#fch_pqr_ini").val(),
             data.fechafin = $("#fch_pqr_fin").val(),
             data.nombre = $("#nombre").val(),
+            data.direccion = $("#direccion").val(),
             data.identificacion = $("#identificacion").val(),
             data.estado = $("#estado_pqr").val()
         }).DataTable({
@@ -204,9 +236,10 @@ function InitTablePQR() {
                 { "data": "municipio",className: "alignCenter","searchable": false,"orderable": true,"name":"m.descripcion"},
                 { "data": "tipo_pqr",className: "alignCenter","searchable": false,"orderable": true,"name":"tp.descripcion"},
                 { "data": "tipo_reporte",className: "alignCenter","searchable": false,"orderable": true,"name":"tr.descripcion"},
-                { "data": "medio_recepcion",className: "alignCenter","searchable": false,"orderable": true,"name":"mr.descripcion"},
-                { "data": "nombre",className: "alignCenter","searchable": false,"orderable": true,"name":"us.nombre"},
+                { "data": "nombre",className: "alignCenter","searchable": false,"orderable": true,"name":"p.nombre_usuario_servicio"},
                 { "data": "fch_pqr", className: "alignCenter", "searchable": false, "orderable": true,"name":"p.fch_pqr" },
+                { "data": "direccion_reporte", className: "alignCenter", "searchable": false, "orderable": true,"name":"p.direccion_reporte" },
+                { "data": "barrio_reporte", className: "alignCenter", "searchable": false, "orderable": false,},
                 { "data": "usuario", className: "alignCenter", "searchable": false, "orderable": true,"name":"tc.usuario" },
                 { "data": "estado", className: "alignCenter", "searchable": false, "orderable": true,"name":"ep.descripcion" },
                 { "data": "id_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
@@ -225,7 +258,12 @@ function InitTablePQR() {
                 { "data": "telefono", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "email", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "permitir_edicion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "permitir_eliminar", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "permitir_eliminar", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_barrio_reporte", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "medio_recepcion","bVisible": false,className: "alignCenter","searchable": false,"orderable": false},
+                { "data": "fch_cierre","bVisible": false,className: "alignCenter","searchable": false,"orderable": false},
+                { "data": "tercero_cierra","bVisible": false,className: "alignCenter","searchable": false,"orderable": false}
+                
             ],
             "order": [
                 [1, "DESC"]
@@ -245,6 +283,31 @@ function InitTablePQR() {
         $(this).addClass("highlight");
         dataDetallePQR = tablePQR.row(this).data();
         $("#id_pqr").val(dataDetallePQR.id_pqr);
+    });
+}
+
+function listarBarrioPuntoLuminico() {
+    var selected="";
+    $.ajax({
+        async: true,
+        type: "POST",
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        url: "pqr/ajax/listar_barrio.php",
+        data: {
+            id_municipio: $("#slt_municipio").val()
+        },
+        beforeSend: inicioEnvio,
+        success: function(data) {
+            console.log(data);
+            $("#slt_barrio_reporte").empty();
+            for (x in data.lista) {
+                selected = (dataDetallePQR.id_barrio_reporte ==  data.lista[x].id_barrio)?"selected":"";
+
+                $("#slt_barrio_reporte").append('<option value="' + data.lista[x].id_barrio + '"'+selected+'>' + data.lista[x].descripcion + '</option>');
+            }
+            $.unblockUI("");
+        }
     });
 }
 
@@ -286,6 +349,8 @@ function editarPQR(dataDet){
             $("#txt_poste").val(dataDet.poste_no);
             $("#txt_luminaria").val(dataDet.luminaria_no);
             $("#txt_comentario").val(dataDet.comentario);
+            $("#txt_direccion_reporte").val(dataDet.direccion_reporte);
+            $("#slt_barrio_reporte").val(dataDet.id_barrio_reporte).change();
             listarArchivo("panel-archivo",true);
             $("#frm-pqr").modal("show"); 
         }
@@ -336,8 +401,16 @@ function verDetallePQR(){
         $("#td_email").html(dataDetallePQR.email);
         $("#td_poste").html(dataDetallePQR.poste_no);
         $("#td_luminaria").html(dataDetallePQR.luminaria_no);
+        $("#td_direccion_reporte").html(dataDetallePQR.direccion_reporte);
+        $("#td_barrio_reporte").html(dataDetallePQR.barrio_reporte);
         $("#td_comentario").html(dataDetallePQR.comentario);
-        
+        $("#td_fecha_cierre_pqr").html(dataDetallePQR.fch_cierre);
+        $("#td_usuario_cierre").html(dataDetallePQR.tercero_cierra);
+        if(dataDetallePQR.fch_cierre == null)
+            $("#a_cerrar_pqr").html("<i class=\"entypo-lock-open\"></i>");
+        else
+            $("#a_cerrar_pqr").html("<i class=\"entypo-lock\"></i>"); 
+
         listarArchivo("detalle-panel-archivo",false);
         listarComentario();
         $("#modal-titulo-detalle-pqr").html("Detalle PQR No "+dataDetallePQR.id_pqr);
@@ -588,4 +661,88 @@ function listarComentario(){
             $.unblockUI("");
         }
     });
+}
+
+function buscarLuminaria(){
+    if($.trim($("#txt_luminaria").val())!="" && $("#slt_municipio").val()!=""){
+        $.ajax({
+            async:true,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            url:"global/buscar_luminaria.php",
+            data:{
+                id_municipio:$("#slt_municipio").val(),
+                luminaria_no:$("#txt_luminaria").val()
+            },
+            beforeSend:inicioEnvio,
+            success:function(data){
+                if(data.estado){
+                    if(data.id_luminaria == ""){
+                        toastr.warning(data.mensaje, null, opts);
+                    }
+                    else{
+                        toastr.success(data.mensaje, null, opts);
+                    }
+                    //$("#txt_tipo_luminaria").val(data.tipo_luminaria);
+                    $("#id_luminaria").val(data.id_luminaria);
+                    $("#txt_poste").val(data.poste_no);
+                    $("#txt_direccion_reporte").val(data.direccion);
+                    $("#slt_barrio_reporte").val(data.id_barrio);
+                }
+                else{
+                    toastr.error(data.mensaje, null, opts);
+                }            
+                $.unblockUI("");            
+            },
+            error:function(){
+                toastr.error("Error General", null, opts);
+                $.unblockUI(""); 
+            }
+        });
+    }
+    else{
+        
+        $("#id_luminaria").val("");
+        $("#txt_poste").val("");
+        $("#txt_direccion_reporte").val("");
+        $("#slt_barrio_reporte").val("");
+
+    }
+}
+
+function cerrarPQR(){
+    if(dataDetallePQR.fch_cierre == null ){
+        $.ajax({
+            async:true,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            url:"pqr/ajax/cerrar_pqr.php",
+            data:{
+                id_pqr:$("#id_pqr").val()
+            },
+            beforeSend:inicioEnvio,
+            success:function(data){
+                if(data.estado){
+                    toastr.success(data.mensaje, null, opts);  
+                    dataDetallePQR = "";
+                    tablePQR.ajax.reload(); 
+                    $("#modal-detalle-pqr").modal("hide");         
+                }
+                else{
+                    toastr.error(data.mensaje, null, opts);
+                }  
+
+                $.unblockUI("");            
+            },
+            error:function(){
+                toastr.error("Error General", null, opts);
+                $.unblockUI(""); 
+            }
+        });
+    }
+    else{
+        toastr.info("PQR ya fue cerrada", null, opts);  
+    }
 }

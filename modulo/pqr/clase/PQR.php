@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__) . "/../../../libreria/adodb/adodb.inc.php";
-require_once "../../parametros/clase/General.php";
+require_once dirname(__FILE__)."/../../parametros/clase/General.php";
 class PQR extends General{
 
     private $sql;
@@ -27,7 +27,9 @@ class PQR extends General{
         if(!empty($post['estado']))
             $q .= " and p.id_estado_pqr=".$post['estado'];
         if(!empty($post['nombre']))
-            $q .= " and us.nombre like '%".$post['nombre']."%'";
+            $q .= " and p.nombre_usuario_servicio like '%".$post['nombre']."%'";
+        if(!empty($post['direccion']))
+            $q .= " and p.direccion_reporte like '%".$post['direccion']."%'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(p.fch_pqr) >= '".$post['fechaini']."' and date(p.fch_pqr) <= '".$post['fechafin']."'";
 
@@ -38,8 +40,8 @@ class PQR extends General{
                     join tipo_pqr tp using(id_tipo_pqr)
                     join tipo_reporte tr using(id_tipo_reporte)
                     join medio_recepcion_pqr mr using(id_medio_recepcion_pqr)
-                    join usuario_servicio us using(id_usuario_servicio)
-                    join tipo_identificacion ti using(id_tipo_identificacion)
+                    left join usuario_servicio us using(id_usuario_servicio)
+                    left join tipo_identificacion ti using(id_tipo_identificacion)
                     join estado_pqr ep using(id_estado_pqr)
                     join tercero tc on(p.id_tercero_registra = tc.id_tercero)
                     where
@@ -68,7 +70,9 @@ class PQR extends General{
         if(!empty($post['estado']))
             $q .= " and p.id_estado_pqr=".$post['estado'];
         if(!empty($post['nombre']))
-            $q .= " and us.nombre like '%".$post['nombre']."%'";
+            $q .= " and p.nombre_usuario_servicio like '%".$post['nombre']."%'";
+        if(!empty($post['direccion']))
+            $q .= " and p.direccion_reporte like '%".$post['direccion']."%'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(p.fch_pqr) >= '".$post['fechaini']."' and date(p.fch_pqr) <= '".$post['fechafin']."'";
 
@@ -88,15 +92,18 @@ class PQR extends General{
         $this->sql = "select p.*,m.descripcion as municipio,tp.descripcion as tipo_pqr,tr.descripcion as tipo_reporte,
                     mr.descripcion as medio_recepcion,us.id_tipo_identificacion,us.identificacion,us.nombre,us.direccion,
                     us.telefono,us.email,ti.abreviatura,ep.descripcion as estado,tc.usuario,l.poste_no,l.luminaria_no,
-                    ep.permitir_edicion,ep.permitir_eliminar,ti.abreviatura
+                    ep.permitir_edicion,ep.permitir_eliminar,ti.abreviatura,p.id_barrio_reporte,
+                    p.direccion_reporte,p.nombre_usuario_servicio,p.direccion_usuario_servicio,p.telefono_usuario_servicio,p.fch_cierre,
+                    (select descripcion from barrio where id_municipio=p.id_municipio and id_barrio=p.id_barrio_reporte) as barrio_reporte,
+                    (select nombre from tercero where id_tercero=p.id_tercero_cierra) as tercero_cierra
                     from pqr p
                     join municipio m using(id_municipio) 
                     left join luminaria l using(id_luminaria)
                     join tipo_pqr tp using(id_tipo_pqr)
                     join tipo_reporte tr using(id_tipo_reporte)
                     join medio_recepcion_pqr mr using(id_medio_recepcion_pqr)
-                    join usuario_servicio us using(id_usuario_servicio)
-                    join tipo_identificacion ti using(id_tipo_identificacion)
+                    left join usuario_servicio us using(id_usuario_servicio)
+                    left join tipo_identificacion ti using(id_tipo_identificacion)
                     join estado_pqr ep using(id_estado_pqr)
                     join tercero tc on(p.id_tercero_registra = tc.id_tercero)
                     where
@@ -142,7 +149,7 @@ class PQR extends General{
         $sw = true;
         $this->iniciarTransaccion();
 
-        if(empty($post['id_usuario_servicio'])){
+        if(empty($post['id_usuario_servicio']) and !empty($post['txt_identificacion'])){
             $array = $this->crearUsuarioServicio($post);
             if(!$array['estado']){
                 $this->devolverTransaccion();
@@ -154,7 +161,7 @@ class PQR extends General{
             }
         }
         else{
-            if(!empty($post['chk_actualizar_datos'])){
+            if(!empty($post['chk_actualizar_datos']) and !empty($post['id_usuario_servicio']) and !empty($post['txt_identificacion'])){
                 $array = $this->actualizarUsuarioServicio($post);
                 if(!$array['estado']){
                     $this->devolverTransaccion();
@@ -166,7 +173,7 @@ class PQR extends General{
                 }
             }
             else{
-                $id_usuario_servicio = $post['id_usuario_servicio'];
+                $id_usuario_servicio = ($post['id_usuario_servicio']!="")?$post['id_usuario_servicio']:"null";
             }
         }
 
@@ -174,12 +181,14 @@ class PQR extends General{
             $this->sql = "INSERT INTO pqr(
                         id_municipio,id_tipo_pqr,id_tipo_reporte,id_medio_recepcion_pqr,
                         id_usuario_servicio,id_luminaria,comentario,id_tercero_registra,
-                        fch_registro,fch_pqr,id_estado_pqr
+                        fch_registro,fch_pqr,id_estado_pqr,id_barrio_reporte,direccion_reporte,
+                        nombre_usuario_servicio,direccion_usuario_servicio,telefono_usuario_servicio
                         )
                         VALUES(
                         ".$post['slt_municipio'].",".$post['slt_tipo_pqr'].",".$post['slt_tipo_reporte'].",".$post['slt_medio_recepcion'].",
                         ".$id_usuario_servicio.",".$id_luminaria.",'".$post['txt_comentario']."',".$_SESSION['id_tercero'].",
-                        now(),'".$post['fch_pqr']."',".$post['slt_estado_pqr']."
+                        now(),'".$post['fch_pqr']."',".$post['slt_estado_pqr'].",".$post['slt_barrio_reporte'].",'".$post['txt_direccion_reporte']."',
+                        '".$post['txt_nombre']."','".$post['txt_direccion']."','".$post['txt_telefono']."'
                         );";
 
             $result = $this->db->Execute($this->sql);
@@ -214,7 +223,7 @@ class PQR extends General{
         $this->iniciarTransaccion();
 
         //--Datos del usuario externo
-        if(empty($post['id_usuario_servicio'])){
+        if(empty($post['id_usuario_servicio']) and !empty($post['txt_identificacion'])){
             $array = $this->crearUsuarioServicio($post);
             if(!$array['estado']){
                 $this->devolverTransaccion();
@@ -226,7 +235,7 @@ class PQR extends General{
             }
         }
         else{
-            if(!empty($post['chk_actualizar_datos'])){
+            if(!empty($post['chk_actualizar_datos']) and !empty($post['id_usuario_servicio']) and !empty($post['txt_identificacion'])){
                 $array = $this->actualizarUsuarioServicio($post);
                 if(!$array['estado']){
                     $this->devolverTransaccion();
@@ -238,7 +247,7 @@ class PQR extends General{
                 }
             }
             else{
-                $id_usuario_servicio = $post['id_usuario_servicio'];
+                $id_usuario_servicio = ($post['id_usuario_servicio']!="")?$post['id_usuario_servicio']:"null";
             }
         }
         //--
@@ -252,7 +261,12 @@ class PQR extends General{
                     id_luminaria=".$id_luminaria.",
                     comentario='".$post['txt_comentario']."',
                     fch_pqr='".$post['fch_pqr']."',
-                    id_estado_pqr=".$post['slt_estado_pqr']."
+                    id_estado_pqr=".$post['slt_estado_pqr'].",
+                    id_barrio_reporte=".$post['slt_barrio_reporte'].",
+                    direccion_reporte='".$post['txt_direccion_reporte']."',
+                    nombre_usuario_servicio='".$post['txt_nombre']."',
+                    direccion_usuario_servicio='".$post['txt_direccion']."',
+                    telefono_usuario_servicio='".$post['txt_telefono']."'
                     WHERE
                     id_pqr=".$post['id_pqr'].";";
 
@@ -438,4 +452,34 @@ class PQR extends General{
             return $this->result;
     }
 
+    function buscarPQR($id_municipio,$id_pqr){
+        $this->sql = "select p.id_pqr,p.fch_pqr,p.comentario,tp.descripcion as tipo_pqr,tr.descripcion as tipo_reporte,
+                    l.id_luminaria,l.poste_no,l.direccion,l.id_barrio,l.latitud,l.longitud,l.fch_instalacion,
+                    tl.descripcion as tipo_luminaria,b.descripcion as barrio,l.luminaria_no
+                    from pqr p
+                    join tipo_pqr tp using(id_tipo_pqr)
+                    left join tipo_reporte tr using(id_tipo_reporte)
+                    left join luminaria l using(id_luminaria)
+                    left join tipo_luminaria tl using(id_tipo_luminaria)
+                    left join barrio b using(id_barrio)
+                    where
+                    p.id_municipio=".$id_municipio." and
+                    p.id_pqr=".$id_pqr;
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
+
+    function cerrarPQR($id_pqr,$id_tercero){
+        $this->sql = "update pqr set id_estado_pqr=2,fch_cierre=now(),id_tercero_cierra=".$id_tercero." where id_pqr=".$id_pqr;
+        $result = $this->db->Execute($this->sql);
+        if(!$result)
+            return  array("estado"=>false,"mensaje"=>"Error cerrarndo la PQR ".$this->db->ErrorMsg());
+        else
+            return  array("estado"=>true,"mensaje"=>"PQR Cerrada"); 
+    }
 }

@@ -263,7 +263,7 @@ if(empty($_SESSION['id_tercero'])){
 
 <!--Listado de Puntos Luminicos-->
 <div class="modal fade custom-width" id="frm-punto-luminico" role="dialog" data-keyboard="false" data-backdrop="static" >
-    <div class="modal-dialog" style="width: 90%;">
+    <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

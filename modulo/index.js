@@ -3,6 +3,10 @@ var dataDetallePuntoLuminico = "";
 
 $(function(){
     initTablePuntoLuminico();
+    
+    $("#flt_municipio").change(function(){
+        listarBarrio("flt_municipio","flt_barrio");
+    });
 });
 
 function cargarModulo(url){
@@ -92,7 +96,8 @@ function initTablePuntoLuminico(){
                 { "data": "luminaria_no",className: "alignCenter","searchable": false,"orderable": true,"name":"l.luminaria_no"},
                 { "data": "barrio",className: "alignCenter","searchable": false,"orderable": true,"name":"b.descripcion"},
                 { "data": "direccion",className: "alignCenter","searchable": false,"orderable": true,"name":"l.direccion"},
-                { "data": "id_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "id_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_barrio", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
             ],
             "order": [
                 [1, "DESC"]
@@ -116,6 +121,7 @@ function initTablePuntoLuminico(){
 }
 
 function listarBarrio(controlMunicipio,controlBarrio) {
+    console.log("lista barrio desde index");
     var selected = "";
     $.ajax({
         async: true,
@@ -130,9 +136,7 @@ function listarBarrio(controlMunicipio,controlBarrio) {
         success: function(data) {
             $("#"+controlBarrio).empty();
             for (x in data.lista) {
-
                //selected = (dataDetalleLuminaria.id_barrio == data.lista[x].id_barrio)?"selected":"";
-
                 $("#"+controlBarrio).append('<option value="' + data.lista[x].id_barrio + '"'+selected+'>' + data.lista[x].descripcion + '</option>');
             }
             $.unblockUI("");

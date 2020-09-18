@@ -284,7 +284,7 @@ else{
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="panel panel-default panel-shadow" data-collapsed="1" id="panel-encabezado"><!-- to apply shadow add class "panel-shadow" -->
+                        <div class="panel panel-default panel-shadow" data-collapsed="0" id="panel-encabezado"><!-- to apply shadow add class "panel-shadow" -->
                             <!-- panel head -->
                             <div class="panel-heading">
                                 <div class="panel-title"><i class="entypo-briefcase"></i>&nbsp;Informaci&oacute;n General de la actividad</div>
@@ -293,12 +293,12 @@ else{
                                 </div>
                             </div>
                             <div class="panel-body panel-encabezado">
-                                <form id="form-luminaria">
+                                <form id="form-actividad">
                                     <input type="hidden" id="id_luminaria" name="id_luminaria" class="form-control clear" value="" />
                                     <input type="hidden" id="id_pqr" name="id_pqr" class="form-control clear" value="" />
                                     <input type="hidden" id="id_actividad" name="id_actividad" class="form-control clear" value="" />
                                     <div class="row">
-                                        <div class="col-md-6">                            
+                                        <div class="col-md-12">                            
                                             <div class="form-group">
                                                 <label for="slt_municipio" class="control-label">Municipio*</label>                    
                                                 <select id="slt_municipio" name="slt_municipio" class="form-control requerido clear" placeholder="Municipio" title="Municipio">
@@ -313,14 +313,27 @@ else{
                                                 </select>
                                             </div>	                            
                                         </div>
-                                        
+                                    </div>
+                                    <div class="row">                
                                         <div class="col-md-6">                            
                                             <div class="form-group">
-                                                <label for="txt_luminaria" class="control-label">Punto Lum&iacute;nico*</label>     
+                                                <label for="txt_pqr" class="control-label"><input type="radio" name="tipo_busqueda" value="pqr" checked/>PQR / Reporte No.</label>     
                                                 <div class="input-group">                       
-                                                    <input type="text" class="form-control requerido clear" id="txt_luminaria" name="txt_luminaria" placeholder="Punto Luminico" title="Punto Luminico">
+                                                    <input type="text" class="form-control clear" id="txt_pqr" name="txt_pqr" placeholder="PQR / Reporte" title="PQR/Reporte">
                                                     <div class="input-group-btn">					
-                                                        <button type="button" id="btn_buscar_usuario_servicio" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
+                                                        <button type="button" id="btn_buscar_pqr" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>	                            
+                                        </div>
+
+                                        <div class="col-md-6">                            
+                                            <div class="form-group">
+                                                <label for="txt_luminaria" class="control-label"><input type="radio" name="tipo_busqueda" value="luminaria"/>Punto Lum&iacute;nico*</label>     
+                                                <div class="input-group">                       
+                                                    <input type="text" class="form-control requerido clear" id="txt_luminaria" name="txt_luminaria" readonly placeholder="Punto Luminico" title="Punto Luminico">
+                                                    <div class="input-group-btn">					
+                                                        <button type="button" id="btn_buscar_usuario_servicio" class="btn btn-blue btn-icon icon-left" disabled>Buscar<i class="entypo-search"></i></button>
                                                     </div>
                                                 </div>
                                             </div>	                            
@@ -358,16 +371,11 @@ else{
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-6">                            
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="txt_pqr" class="control-label">PQR / Reporte No.</label>     
-                                                <div class="input-group">                       
-                                                    <input type="text" class="form-control clear" id="txt_pqr" name="txt_luminaria" placeholder="PQR / Reporte" title="PQR/Reporte">
-                                                    <div class="input-group-btn">					
-                                                        <button type="button" id="btn_buscar_pqr" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>	                            
+                                                <label for="txt_tipo_pqr" class="control-label">Tipo PQR*</label>
+                                                <input type="text" id="txt_tipo_pqr" name="txt_tipo_pqr" class="form-control requerido clear" readonly placeholder="Tipo PQR" title="Tipo PQR">
+                                            </div>
                                         </div>
                                         <div class="col-md-6">                            
                                             <div class="form-group">
@@ -393,23 +401,18 @@ else{
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">                            
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="txt_fch_ejecucion" class="control-label">Fecha Ejecuci&oacute;n*</label>
-                                                <div class="input-group">
-                                                    <input type="text" id="fch_pqr" name="fch_pqr"  value="<?=date("Y-m-d")?>" class="form-control datepicker requerido clear" readonly  placeholder="YYYY-MM-DD" title="Fecha Ejecuci&oacute;n"/> 
-                                                    <div class="input-group-addon">
-                                                        <a href="#"><i class="entypo-calendar"></i></a>
-                                                    </div>
-                                                </div>
+                                                <label for="txt_tipo_reporte" class="control-label">Tipo Reporte</label>
+                                                <input type="text" id="txt_tipo_reporte" name="txt_tipo_reporte" class="form-control clear" readonly placeholder="Tipo Reporte" title="Tipo Reporte">
                                             </div>
-                                        </div>
+                                        </div>                        
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">                            
                                             <div class="form-group">
-                                                <label for="slt_tercero" class="control-label">Cuadrilla</label>
+                                                <label for="slt_tercero" class="control-label">Cuadrilla*</label>
                                                 <select id="slt_tercero" name="slt_tercero" class="form-control requerido clear" placeholder="T&eacute;cnico" title="T&eacute;cnico">
                                                     <option value="">-Seleccione-</option>
                                                     <?php
@@ -424,10 +427,25 @@ else{
                                         </div>
                                         <div class="col-md-6">                            
                                             <div class="form-group">
+                                                <label for="txt_fch_ejecucion" class="control-label">Fecha Ejecuci&oacute;n*</label>
+                                                <div class="input-group">
+                                                    <input type="text" id="fch_pqr" name="fch_pqr"  value="<?=date("Y-m-d")?>" class="form-control datepicker requerido clear" readonly  placeholder="YYYY-MM-DD" title="Fecha Ejecuci&oacute;n"/> 
+                                                    <div class="input-group-addon">
+                                                        <a href="#"><i class="entypo-calendar"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">                                        
+                                        <div class="col-md-6">                            
+                                            <div class="form-group">
                                             <label for="txt_placa_vehiculo" class="control-label">Placa Veh&iacute;culo</label>
                                                 <input type="text" id="txt_placa_vehiculo" name="txt_placa_vehiculo" class="form-control clear" style="text-transform: uppercase" placeholder="XXX-000" title="Placa Vehiculo" maxlength="6">
                                             </div>
                                         </div>
+                                        <div class="col-md-6"> </div>
                                     </div>
 
                                     <div class="row">
@@ -450,7 +468,7 @@ else{
                         <div class="panel panel-default panel-shadow" data-collapsed="0" id="panel-encabezado"><!-- to apply shadow add class "panel-shadow" -->
                             <!-- panel head -->
                             <div class="panel-heading">
-                                <div class="panel-title"><i class="entypo-tools">&nbsp;</i>Art&iacute;culo(s) / Serv&iacute;cio(s) Relacionado(s)</div>
+                                <div class="panel-title"><i class="entypo-tools">&nbsp;</i>Accion(es) / Serv&iacute;cio(s) Relacionado(s)</div>
                                 <div class="panel-options">
                                     <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
                                 </div>
@@ -462,7 +480,7 @@ else{
                                         <div class="form-group">
                                             <label for="txt_codigo" class="control-label">C&oacute;digo</label>
                                             <div class="input-group">                                                
-                                                <input type="text" id="txt_codigo" name="txt_codigo" class="form-control requerido clear" placeholder="C&oacute;digo" title="C&oacute;digo">
+                                                <input type="text" id="txt_codigo" name="txt_codigo" class="form-control requerido clear clear-articulo" placeholder="C&oacute;digo" title="C&oacute;digo">
                                                 <input type="hidden" id="item" name="item" value=""/>									
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-blue" type="button"><i class="entypo-search"></i></button>
@@ -474,13 +492,13 @@ else{
                                     <div class="col-md-5">
                                         <div class="form-group">
                                             <label for="txt_descripcion" class="control-label">Descripci&oacute;n</label>
-                                            <input type="text" id="txt_descripcion" name="txt_descripcion" class="form-control requerido clear" readonly placeholder="Descripci&oacute;n" title="Descripci&oacute;n">
+                                            <input type="text" id="txt_descripcion" name="txt_descripcion" class="form-control requerido clear clear-articulo" readonly placeholder="Descripci&oacute;n" title="Descripci&oacute;n">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="txt_cantidad" class="control-label">Cantidad</label>
-                                            <input type="text" id="txt_cantidad" name="txt_cantidad" class="form-control requerido clear" style="text-align: right" placeholder="0,00" title="Cantidad">
+                                            <input type="text" id="txt_cantidad" name="txt_cantidad" class="form-control requerido clear clear-articulo" style="text-align: right" placeholder="0,00" title="Cantidad">
                                         </div>
                                     </div>
                                     <div class="col-md-1">

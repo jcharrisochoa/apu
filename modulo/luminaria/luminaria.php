@@ -46,7 +46,7 @@ else{
         <a href="#">Luminaria</a>
     </li>
     <li class="active">
-    <strong>Registrar Punto Lum&iacute;nico</strong>
+    <strong>Gestion Hoja de Vida de la Luminaria</strong>
     </li>
 </ol>
 </hr>

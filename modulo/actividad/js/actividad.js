@@ -34,8 +34,11 @@ $(function() {
     $("#municipio").change(function() {
         listarBarrio();
     });
-    /*$("#barrio").select2();
-    $("#tipo_actividad").select2();*/
+    
+    /*$("#slt_municipio").change(function() {
+        clearInput(".clear");
+    });*/
+    
     $("#btn_buscar_actividad").click(function(event) {
         if (event.handled !== true) {
             event.preventDefault();
@@ -83,11 +86,30 @@ $(function() {
             event.handld = true;
         }
         return false;
+    });  
+    
+    $("#txt_luminaria").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               buscarLuminaria(); 
+               event.handld = true;
+           };
+       }
+       //return false;
     });
 
+    $("#txt_pqr").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               buscarPQR(); 
+               event.handld = true;
+           };
+       }
+       //return false;
+    });
     
-
-
     $("#txt_codigo").keydown(function(event){
         if(event.keyCode == 13){
            if(event.handled !== true){
@@ -112,6 +134,25 @@ $(function() {
    
     InitTableActividad();
     initTableArticulo();
+
+    $('input[type=radio][name=tipo_busqueda]').change(function() {
+        if (this.value == 'pqr') {
+            $("#txt_pqr").prop("readonly",false);
+            $("#txt_luminaria").prop("readonly",true);
+            $("#btn_buscar_pqr").prop("disabled",false);
+            $("#btn_buscar_usuario_servicio").prop("disabled",true);
+            
+            clearInput(".clear");
+        }
+        else if (this.value == 'luminaria') {
+            $("#txt_pqr").prop("readonly",true);
+            $("#txt_luminaria").prop("readonly",false);
+            $("#btn_buscar_pqr").prop("disabled",true);
+            $("#btn_buscar_usuario_servicio").prop("disabled",false);
+            clearInput(".clear");
+        }
+    });
+
 });
 
 function listarBarrio() {
@@ -293,7 +334,7 @@ function agregarArticulo(){
                     "cantidad":$("#txt_cantidad").val()
                 }).draw();
                 item++;
-                clearInputAddArticulo();
+                clearInput(".clear-articulo");
                 $("#txt_codigo").focus();
 
                 $("#tbl_articulo_actividad tbody").on("click","tr", function () {         
@@ -315,14 +356,13 @@ function agregarArticulo(){
 function eliminarArticulo(){
     if($("#tbl_articulo_actividad tbody tr").hasClass('highlight')){
         tableArticuloActividad.row('.highlight').remove().draw();
-        clearInputAddArticulo();
+        clearInput(".clear-articulo");
         item--;
     }
     else{
          toastr.warning("Seleccione el art&iacute;culo a eliminar", null, opts);
     }
 }
-
 
 function initTableArticulo(){ 
     tableArticuloActividad="";
@@ -350,8 +390,151 @@ function initTableArticulo(){
                             }); 
 }
 
-function clearInputAddArticulo(){
-    $("#txt_codigo").val("");
-    $("#txt_descripcion").val("");
-    $("#txt_cantidad").val("");
+function buscarLuminaria(){
+    if($.trim($("#txt_luminaria").val())!="" && $("#slt_municipio").val()!=""){
+        $.ajax({
+            async:true,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            url:"global/buscar_luminaria.php",
+            data:{
+                id_municipio:$("#slt_municipio").val(),
+                luminaria_no:$("#txt_luminaria").val()
+            },
+            beforeSend:inicioEnvio,
+            success:function(data){
+                if(data.estado){
+                    if(data.id_luminaria == ""){
+                        toastr.warning(data.mensaje, null, opts);
+                    }
+                    else{
+                        toastr.success(data.mensaje, null, opts);
+                    }
+                    $("#txt_tipo_luminaria").val(data.tipo_luminaria);
+                    $("#id_luminaria").val(data.id_luminaria);
+                    $("#txt_poste").val(data.poste_no);
+                    $("#txt_direccion").val(data.direccion);
+                    $("#txt_barrio").val(data.barrio);
+                }
+                else{
+                    toastr.error(data.mensaje, null, opts);
+                }            
+                $.unblockUI("");            
+            },
+            error:function(){
+                toastr.error("Error General", null, opts);
+                $.unblockUI(""); 
+            }
+        });
+    }
+    else{
+        $("#txt_tipo_luminaria").val("");
+        $("#id_luminaria").val("");
+        $("#txt_poste_no").val("");
+        $("#txt_direccion").val("");
+        $("#txt_barrio").val("");
+        $("#id_pqr").val("");
+        $("#txt_fch_pqr").val("");
+        $("#txt_tipo_pqr").val("");
+        $("#txt_tipo_reporte").val("");
+    }
+}
+
+function buscarPQR(){
+    if($.trim($("#txt_pqr").val())!="" && $("#slt_municipio").val()!=""){
+        $.ajax({
+            async:true,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            url:"global/buscar_pqr.php",
+            data:{
+                id_municipio:$("#slt_municipio").val(),
+                id_pqr:$("#txt_pqr").val()
+            },
+            beforeSend:inicioEnvio,
+            success:function(data){
+                if(data.estado){
+                    if(data.id_pqr == ""){
+                        toastr.warning(data.mensaje, null, opts);
+                    }
+                    else{
+                        toastr.success(data.mensaje, null, opts);
+                    }
+                    $("#id_pqr").val(data.id_pqr);
+                    $("#txt_fch_pqr").val(data.fch_pqr);
+                    $("#txt_tipo_pqr").val(data.tipo_pqr);
+                    $("#txt_tipo_reporte").val(data.tipo_reporte);
+                    $("#txt_luminaria").val(data.luminaria_no);
+                    $("#txt_tipo_luminaria").val(data.tipo_luminaria);
+                    $("#id_luminaria").val(data.id_luminaria);
+                    $("#txt_poste").val(data.poste_no);
+                    $("#txt_direccion").val(data.direccion);
+                    $("#txt_barrio").val(data.barrio);
+                    
+                }
+                else{
+                    toastr.error(data.mensaje, null, opts);
+                }            
+                $.unblockUI("");            
+            },
+            error:function(){
+                toastr.error("Error General", null, opts);
+                $.unblockUI(""); 
+            }
+        });
+    }
+    else{
+        $("#id_pqr").val("");
+        $("#txt_fch_pqr").val("");
+        $("#txt_tipo_pqr").val("");
+        $("#txt_tipo_reporte").val("");
+        $("#txt_tipo_luminaria").val("");
+        $("#id_luminaria").val("");
+        $("#txt_poste_no").val("");
+        $("#txt_direccion").val("");
+        $("#txt_barrio").val("");
+    }
+}
+
+function guardarAccion(accion){
+    switch(accion){
+        case "nuevo":
+            var variable = $("#form-actividad").serialize()+"&accion="+accion;
+            break;
+        case "editar":
+            var variable = $("#form-actividad").serialize()+"&accion="+accion;
+            break;
+        case "eliminar":
+            var variable = "id_actividad="+$("#id_actividad").val()+"&accion="+accion;
+            break;
+    }
+    $.ajax({
+        async:true,
+        type: "POST",
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        url:"actividad/ajax/guardar_accion.php",
+        data:variable,
+        beforeSend:inicioEnvio,
+        success:function(data){
+            if(data.response.estado){
+                toastr.success(data.response.mensaje, null, opts);
+                $("#frm-luminaria").modal("hide"); 
+                clearInput(".clear");
+                accion="";
+                tableLuminaria.ajax.reload();
+                dataDetalleLuminaria = "";
+            }
+            else{
+                toastr.error(data.response.mensaje, null, opts);
+            }            
+            $.unblockUI("");            
+        },
+        error:function(){
+            toastr.error("Error General", null, opts);
+            $.unblockUI(""); 
+        }
+    });
 }
