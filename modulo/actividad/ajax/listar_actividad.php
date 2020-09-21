@@ -23,9 +23,20 @@ while (!$result->EOF){
         "tecnico"       => $result->fields['tecnico'],
         "fch_reporte"   => $result->fields['fch_reporte'],
         "tipo_reporte"  => $result->fields['tipo_reporte'],
-        "estado_actividad"  => $result->fields['estado_actividad'],
-        "observacion"  => $result->fields['observacion'],
-        "tipo_luminaria"  => $result->fields['tipo_luminaria']
+        "estado_actividad"      => $result->fields['estado_actividad'],
+        "observacion"           => $result->fields['observacion'],
+        "tipo_luminaria"        => $result->fields['tipo_luminaria'],
+        "id_pqr"                => $result->fields['id_pqr'],
+        "tipo_pqr"              => $result->fields['tipo_pqr'],
+        "vehiculo"              => $result->fields['vehiculo'],
+        "id_vehiculo"           => $result->fields['id_vehiculo'],
+        "id_estado_actividad"   => $result->fields['id_estado_actividad'],
+        "id_tercero"            => $result->fields['id_tercero'],
+        "id_tipo_actividad"     => $result->fields['id_tipo_actividad'],
+        "id_tipo_luminaria"     => $result->fields['id_tipo_luminaria'],
+        "id_barrio"             => $result->fields['id_barrio'],
+        "id_luminaria"          => $result->fields['id_luminaria']
+
 
         );                    
     $i++;

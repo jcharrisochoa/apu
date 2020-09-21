@@ -9,18 +9,20 @@ $result = $pqr->buscarPQR($_POST['id_municipio'],$_POST['id_pqr']);
 $obj = new stdClass();
 
 if(!$result){
-    $obj->id_pqr        = "";
-    $obj->fch_pqr       = "";
-    $obj->tipo_pqr      = "";
-    $obj->tipo_reporte  = "";
-    $obj->id_luminaria  = "";
-    $obj->luminaria_no  = "";
-    $obj->tipo_luminaria  = "";
-    $obj->poste_no      = "";
-    $obj->direccion     = "";
-    $obj->barrio        = "";
-    $obj->mensaje       = "Error consultando la pqr ".$_POST['id_pqr'];
-    $obj->estado        = false;    
+    $obj->id_pqr                = "";
+    $obj->fch_pqr               = "";
+    $obj->tipo_pqr              = "";
+    $obj->tipo_reporte          = "";
+    $obj->id_luminaria          = "";
+    $obj->luminaria_no          = "";
+    $obj->tipo_luminaria        = "";
+    $obj->id_tipo_luminaria     = "";
+    $obj->poste_no              = "";
+    $obj->direccion             = "";
+    $obj->barrio                = "";
+    $obj->id_barrio             = "";
+    $obj->mensaje               = "Error consultando la pqr ".$_POST['id_pqr'];
+    $obj->estado                = false;    
 }
 else{
     if($result->NumRows()==0){
@@ -28,12 +30,14 @@ else{
         $obj->fch_pqr           = "";
         $obj->tipo_pqr          = "";
         $obj->tipo_reporte      = "";
-        $obj->id_luminaria  = "";
-        $obj->luminaria_no  = "";
-        $obj->tipo_luminaria  = "";
-        $obj->poste_no      = "";
-        $obj->direccion     = "";
-        $obj->barrio        = "";
+        $obj->id_luminaria      = "";
+        $obj->luminaria_no      = "";
+        $obj->tipo_luminaria    = "";
+        $obj->id_tipo_luminaria    = "";
+        $obj->poste_no          = "";
+        $obj->direccion         = "";
+        $obj->barrio            = "";
+        $obj->id_barrio         = "";
         $obj->mensaje           = "No existe la pqr ".$_POST['id_pqr'];
         $obj->estado            = true;
     }
@@ -45,9 +49,11 @@ else{
         $obj->id_luminaria      = $result->fields['id_luminaria'];
         $obj->luminaria_no      = $result->fields['luminaria_no'];
         $obj->tipo_luminaria    = $result->fields['tipo_luminaria'];
+        $obj->id_tipo_luminaria    = $result->fields['id_tipo_luminaria'];
         $obj->poste_no          = $result->fields['poste_no'];
         $obj->direccion         = $result->fields['direccion'];
         $obj->barrio            = $result->fields['barrio'];
+        $obj->id_barrio         = $result->fields['id_barrio'];
         $obj->mensaje           = "PQR encontrada";
         $obj->estado            = true;
     }

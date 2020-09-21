@@ -12,7 +12,7 @@ class EstadoActividad{
         $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
     }
 
-    function listarEstadoActividad($post){
+    function listarEstadoActividad(){
         $this->sql = "select * from estado_actividad order by descripcion";
         $this->result = $this->db->Execute($this->sql);
 

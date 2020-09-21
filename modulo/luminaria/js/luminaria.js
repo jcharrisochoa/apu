@@ -14,6 +14,24 @@ $(function() {
         listarBarrio("slt_municipio","slt_barrio");
     });
 
+    $("#div_oculto").hide();
+
+    $('input.icheck').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-yellow'
+    }).on('ifChecked', function(){
+        $("#div_oculto").show();
+        $("#slt_tipo_actividad").prop("disabled",false);
+        $("#slt_vehiculo").prop("disabled",false);
+        $("#slt_tipo_actividad").addClass("requerido");
+      }).on('ifUnchecked',function(){
+        $("#div_oculto").hide();
+            $("#slt_tipo_actividad").prop("disabled",true);
+            $("#slt_vehiculo").prop("disabled",true);
+            $("#slt_tipo_actividad").removeClass("requerido");
+      });
+
+    
     $("#txt_latitud").numeric();
 
     $("#txt_longitud").numeric();
@@ -141,7 +159,8 @@ function InitTableLuminaria() {
                 { "data": "id_barrio", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_tercero_proveedor", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_estado_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "id_tipo_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "id_tipo_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_tercero", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
 
             ],
             "order": [
@@ -231,6 +250,7 @@ function InitTableActividad(dataDet) {
 
 function nuevaLuminaria(){
     $("#frm-titulo-luminaria").html("Nuevo Punto Lum&iacute;nico");
+    $("#div_check_crear_actividad").show();
     $("#frm-luminaria").modal("show"); 
     $("#tbl_luminaria tbody tr").removeClass("highlight");
     clearInput(".clear");
@@ -255,6 +275,9 @@ function editarLuminaria(dataDet){
         $("#txt_fch_instalacion").val(dataDet.fch_instalacion);
         $("#slt_estado").val(dataDet.id_estado_luminaria).change();
         $("#slt_proveedor").val(dataDet.id_tercero_proveedor).change();
+        $("#slt_tercero").val(dataDet.id_tercero).change();
+        $("#div_check_crear_actividad").hide();
+        $('input.icheck').iCheck("uncheck");
         $("#frm-luminaria").modal("show"); 
     }
 }

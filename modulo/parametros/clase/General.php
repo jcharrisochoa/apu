@@ -39,4 +39,13 @@ class General{
             return $dv;
         }        
     }
+
+    function fix($var) {
+        if (is_array($var)) {
+            return array_map('fix', $var);
+        } elseif (get_magic_quotes_gpc()) {
+            return stripslashes($var);
+        }
+        return $var;
+    }
 }

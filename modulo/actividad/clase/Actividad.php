@@ -1,7 +1,8 @@
 <?php
 require_once dirname(__FILE__) . "/../../../libreria/adodb/adodb.inc.php";
+require_once dirname(__FILE__)."/../../parametros/clase/General.php";
 
-class Actividad{
+class Actividad extends General{
 
     private $sql;
     public $db;
@@ -24,7 +25,7 @@ class Actividad{
     function devolverTransaccion(){
         $this->db->Execute("ROLLBACK;");
     }
-    
+
     function contarActividad($post){
         $q = "";
         if(!empty($post['municipio']))
@@ -51,6 +52,9 @@ class Actividad{
                 left join tipo_reporte tr using(id_tipo_reporte)
                 left join tipo_actividad ta using(id_tipo_actividad)
                 join estado_actividad ea using(id_estado_actividad)
+                left join pqr p using(id_pqr)
+                left join tipo_pqr tp using(id_tipo_pqr)
+                left join vehiculo v using(id_vehiculo)
                 where 
                 1=1
                 ".$q;
@@ -95,16 +99,20 @@ class Actividad{
                 case when ac.id_barrio is null then ac.barrio else b.descripcion end as barrio,
                 ac.direccion,ac.fch_actividad,l.poste_no,l.luminaria_no,t.nombre as tecnico,
                 ac.fch_reporte,ac.observacion,tr.descripcion as tipo_reporte,ea.descripcion as estado_actividad,
-                tl.descripcion as tipo_luminaria
+                tl.descripcion as tipo_luminaria,ac.id_pqr,tp.descripcion as tipo_pqr,v.descripcion as vehiculo,ac.id_vehiculo,
+                ac.id_estado_actividad,ac.id_tercero,ac.id_tipo_actividad,ac.id_tipo_luminaria,ac.id_barrio,ac.id_luminaria
                 from actividad ac
                 join municipio m using(id_municipio)
+                left join tipo_luminaria tl using(id_tipo_luminaria)
                 left join tercero t using(id_tercero)
                 left join barrio b using(id_barrio)
-                left join luminaria l using(id_luminaria)
-                left join tipo_luminaria tl using(id_tipo_luminaria)
+                left join luminaria l using(id_luminaria)                
                 left join tipo_reporte tr using(id_tipo_reporte)
                 left join tipo_actividad ta using(id_tipo_actividad)
                 join estado_actividad ea using(id_estado_actividad)
+                left join pqr p using(id_pqr)
+                left join tipo_pqr tp using(id_tipo_pqr)
+                left join vehiculo v using(id_vehiculo)
                 where 
                 1=1                
                 ".$q;
@@ -117,4 +125,79 @@ class Actividad{
             return $this->result;
         }
     }
+
+    function nuevaActividad($post,$session){ 
+
+        $errorDetalle = false;
+        $id_luminaria = (!empty($post['id_luminaria']))?$post['id_luminaria']:"null";
+       
+        
+        $id_vehiculo = (!empty($post['slt_vehiculo']))?$post['slt_vehiculo']:"null";
+
+        
+        $this->iniciarTransaccion();
+        
+        if(!empty($post['id_pqr'])){
+            $id_pqr = $post['id_pqr'];
+            $this->sql = "select id_tipo_reporte from pqr where id_pqr=".$post['id_pqr'];
+            $result = $this->db->Execute($this->sql);
+            if(!$result){
+                return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
+                $this->devolverTransaccion();                
+            }
+            else{
+                $id_tipo_reporte = $result->fields['id_tipo_reporte'];
+            }
+        }
+        else{
+            $id_pqr = "null";
+            $id_tipo_reporte = "null";
+        }
+       
+
+        $this->sql = "INSERT INTO actividad(
+                        id_luminaria,id_municipio,id_barrio,barrio,id_tipo_actividad,id_tercero,id_tipo_reporte,
+                        id_estado_actividad,direccion,fch_actividad,fch_reporte,observacion,latitud,longitud,seq,id_pqr,
+                        id_tercero_registra,fch_registro,id_vehiculo,id_tipo_luminaria
+                        )
+                        VALUES(
+                        ".$id_luminaria.",".$post['slt_municipio'].",".$post['slt_barrio'].",null,".$post['slt_tipo_actividad'].",".$post['slt_tercero'].",
+                        ".$id_tipo_reporte.",".$post['slt_estado_actividad'].",'".$post['txt_direccion']."','".$post['txt_fch_ejecucion']."',
+                        '".$post['txt_fch_pqr']."','".$post['txt_observacion']."',0,0,1,
+                        ".$id_pqr.",".$session['id_tercero'].",now(),".$id_vehiculo.",".$post['slt_tipo_luminaria']."
+                        );";
+        $result = $this->db->Execute($this->sql);
+        if(!$result){
+            return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
+            $this->devolverTransaccion();
+            
+        }
+        else{
+            $id_actividad = $this->db->insert_id();
+            $jsonServicio = json_decode($this->fix($post['detalle']));
+            foreach($jsonServicio as $servicio){
+                $this->sql = "INSERT INTO articulo_actividad(
+                            id_actividad,id_articulo,cantidad
+                            )
+                            VALUES(
+                            ".$id_actividad.",".$servicio->id_articulo.",".$servicio->cantidad."
+                            );";
+                $result = $this->db->Execute($this->sql);
+                if(!$result){
+                    $array = array("estado"=>false,"data"=>"Error asociando el servicio con codigo (".$servicio->id_articulo.") a la actividad".$this->db->ErrorMsg());
+                    $this->devolverTransaccion();
+                    $errorDetalle = true;
+                    break;                    
+                }
+            } 
+            if($errorDetalle)
+                return $array;
+            else{
+                $this->finalizarTransaccion();
+                return  array("estado"=>true,"data"=>$this->db->insert_id());
+            }
+        }
+    }
+
+        
 }

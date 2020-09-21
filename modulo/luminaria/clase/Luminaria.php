@@ -7,6 +7,18 @@ class Luminaria{
     public $db;
     private $result;
 
+    function iniciarTransaccion(){
+        $this->db->Execute("BEGIN;");
+    }
+
+    function finalizarTransaccion(){
+        $this->db->Execute("COMMIT;");
+    }
+
+    function devolverTransaccion(){
+        $this->db->Execute("ROLLBACK;");
+    }
+
     function __construct($driver, $host, $user, $password, $database) {
         $this->db = NewADOConnection($driver);
         $this->db->Connect( $host, $user, $password, $database);
@@ -107,12 +119,14 @@ class Luminaria{
 
     function nuevaLuminaria($post){
 
+        $this->iniciarTransaccion();
+
         $latitud    = (!empty($post['txt_latitud']))?$post['txt_latitud']:"0";
         $longitud   = (!empty($post['txt_longitud']))?$post['txt_longitud']:"0";
         $proveedor  = (!empty($post['slt_proveedor']))?$post['slt_proveedor']:"null";
 
         if($this->validaExistePosteLuminaria($post['txt_poste_no'],$post['txt_luminaria_no'],$post['slt_municipio'])){
-            return  array("estado"=>false,"data"=>"Estos datos ya estan registrados,Poste No: ".$post['txt_poste_no'].",Luminaria No: ".$post['txt_luminaria_no']);
+            $array =  array("estado"=>false,"data"=>"Estos datos ya estan registrados,Poste No: ".$post['txt_poste_no'].",Luminaria No: ".$post['txt_luminaria_no']);
         }
         else{
             $this->sql = "INSERT INTO luminaria(
@@ -123,16 +137,51 @@ class Luminaria{
                         VALUES(
                         '".$post['txt_poste_no']."','".$post['txt_luminaria_no']."',".$post['slt_tipo_luminaria'].",
                         ".$post['slt_municipio'].",'".$post['txt_direccion']."',".$post['slt_barrio'].",".$latitud.",
-                        ".$longitud.",null,null,null,'".$post['txt_fch_instalacion']."',
+                        ".$longitud.",".$post['slt_tercero'].",null,null,'".$post['txt_fch_instalacion']."',
                         now(),".$_SESSION['id_tercero'].",".$post['slt_estado'].",".$proveedor."
                         );";
 
             $result = $this->db->Execute($this->sql);
-            if(!$result)
-                return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
-            else
-                return  array("estado"=>true,"data"=>$this->db->insert_id());
+            if(!$result){
+                $array = array("estado"=>false,"data"=>$this->db->ErrorMsg());
+                $this->devolverTransaccion();
+            }
+            else{
+                $id_luminaria = $this->db->insert_id();
+                if($post['chk_crear_actividad']=="on"){
+                    //--Crear Actividad Modernizacion
+                    $id_vehiculo = (!empty($post['slt_vehiculo']))?$post['slt_vehiculo']:"null";
+
+                    $this->sql = "INSERT INTO actividad(
+                        id_luminaria,id_municipio,id_barrio,barrio,id_tipo_actividad,id_tercero,id_tipo_reporte,
+                        id_estado_actividad,direccion,fch_actividad,fch_reporte,observacion,latitud,longitud,seq,id_pqr,
+                        id_tercero_registra,fch_registro,id_vehiculo,id_tipo_luminaria
+                        )
+                        VALUES(
+                        ".$id_luminaria.",".$post['slt_municipio'].",".$post['slt_barrio'].",null,".$post['slt_tipo_actividad'].",".$post['slt_tercero'].",
+                        null,1,'".$post['txt_direccion']."','".$post['txt_fch_instalacion']."',
+                        null,'CAMBIO DE TECNOLOGIA EXISTENTE - (ACTIVIDAD GENERADA AUTOMATICAMENTE)',0,0,1,
+                        null,".$_SESSION['id_tercero'].",now(),".$id_vehiculo.",".$post['slt_tipo_luminaria']."
+                        );";
+                    $result = $this->db->Execute($this->sql);
+                    if(!$result){
+                        $array = array("estado"=>false,"data"=>"Error Creando la actividad ".$this->db->ErrorMsg());
+                        $this->devolverTransaccion();                        
+                    }
+                    else{
+                        $array =  array("estado"=>true,"data"=> $id_luminaria);
+                        $this->finalizarTransaccion();
+                    }
+                }
+                else{
+                    $array =  array("estado"=>true,"data"=> $id_luminaria);
+                    $this->finalizarTransaccion();
+                }
+                
+            }
         }
+
+        return $array;
         
     }
 
@@ -152,6 +201,7 @@ class Luminaria{
                     longitud=".$longitud.",
                     fch_instalacion='".$post['txt_fch_instalacion']."',
                     id_estado_luminaria=".$post['slt_estado'].",
+                    id_tercero=".$post['slt_tercero'].",
                     id_tercero_proveedor=".$proveedor."
                     WHERE
                     id_luminaria=".$post['id_luminaria'];
@@ -190,7 +240,7 @@ class Luminaria{
 
     function buscarLuminaria($id_municipio,$luminaria_no){
         $this->sql = "select l.id_luminaria,l.poste_no,l.direccion,l.id_barrio,l.latitud,l.longitud,l.fch_instalacion,
-                        tl.descripcion as tipo_luminaria,b.descripcion as barrio
+                        tl.descripcion as tipo_luminaria,b.descripcion as barrio,l.id_tipo_luminaria
                         from luminaria l 
                         join tipo_luminaria tl using(id_tipo_luminaria)
                         join barrio b using(id_barrio)

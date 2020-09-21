@@ -3,7 +3,7 @@ var dataDetallePuntoLuminico = "";
 
 $(function(){
     initTablePuntoLuminico();
-    
+
     $("#flt_municipio").change(function(){
         listarBarrio("flt_municipio","flt_barrio");
     });
@@ -121,7 +121,6 @@ function initTablePuntoLuminico(){
 }
 
 function listarBarrio(controlMunicipio,controlBarrio) {
-    console.log("lista barrio desde index");
     var selected = "";
     $.ajax({
         async: true,

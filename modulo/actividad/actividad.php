@@ -6,14 +6,23 @@ $credencial= json_decode($url, true);
 require_once "../parametros/clase/Menu.php";
 require_once "../parametros/clase/Municipio.php";
 require_once "../parametros/clase/TipoActividad.php";
+require_once "../parametros/clase/TipoLuminaria.php";
 require_once "../parametros/clase/Tercero.php";
+require_once "../parametros/clase/Vehiculo.php";
+require_once "../parametros/clase/EstadoActividad.php";
 $menu = new Menu($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjMun = new Municipio($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoAct = new TipoActividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTercero = new Tercero($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjTipoLum = new TipoLuminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjVeh = new Vehiculo($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjEst = new EstadoActividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$vehiculo = $ObjVeh->listarVehiculo();
 $municipio = $ObjMun->listarMunicipioContrato();
-$tipoActividad = $ObjTipoAct->listarTipoActividad();
+$tipoActividad = $ObjTipoAct->listarTipoActividad("");
 $tercero = $ObjTercero->listarTecnico();
+$tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
+$estadoActividad = $ObjEst->listarEstadoActividad();
 
 if(empty($_SESSION['id_tercero'])){
 	?>
@@ -54,12 +63,14 @@ else{
         <button type="button" id="btn_editar_actividad" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
         <?php }  
         if($ELIMINAR=="S"){ ?>
-        <button type="button" id="btn_eliminar_actividad" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
+        <!--<button type="button" id="btn_eliminar_actividad" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>-->
         <?php } ?>
+        <button type="button" id="btn_detalle_actividad" class="btn btn-blue btn-icon icon-left">Detalle<i class="entypo-info"></i></button>
 
     </div>
 </div>
 <br/>
+<!--Filtros-->
 <div class="row">
 	<div class="col-md-12">
         <div class="panel panel-default panel-shadow" data-collapsed="1">
@@ -75,7 +86,7 @@ else{
                     <div class="form-group">
                         <div class="col-xs-12 col-md-3">
                             <label for="municipio" class="control-label">Municipio</label> 
-                            <select id="municipio" name="municipio" title="Municipio" class="form-control requerido" data-allow-clear="true" data-placeholder="MUNICIPIO">
+                            <select id="municipio" name="municipio" title="Municipio" class="form-control" data-allow-clear="true" data-placeholder="MUNICIPIO">
                             <option value="">-Todos-</option>
                             <?php
                             while(!$municipio->EOF){
@@ -155,6 +166,7 @@ else{
         </div>
     </div>
 </div>
+<!--fin Filtros-->
 
 <div class="table-responsive"> 
     <table id="tbl_actividad" class="table table-bordered datatable">
@@ -204,50 +216,68 @@ else{
                             <div class="panel-body panel-encabezado">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Poste.No</label></div>
-                                        <div class="col-ms-12 col-md-4" style="color:#2ca02c; font-weight: bold;" id="td_poste_no"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Reporte</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_tipo_reporte"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Luminaria No</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_luminaria_no"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Reporte</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_fch_reporte"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Luminaria</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_tipo_luminaria"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Actividad</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_tipo"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12">
                                         <div class="col-ms-12 col-md-2"><label class="control-label">Municipio</label></div>
                                         <div class="col-ms-12 col-md-4" id="td_municipio"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Actividad</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_fch_instalacion"></div>               
+                                        <div class="col-ms-12 col-md-6"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">PQR No</label></div>
+                                        <div class="col-ms-12 col-md-4 text-info" id="td_pqr"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Luminaria No</label></div>
+                                        <div class="col-ms-12 col-md-4 text-info" id="td_luminaria_no"></div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Reporte</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_fch_reporte"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Poste.No</label></div>
+                                        <div class="col-ms-12 col-md-4 text-info" id="td_poste_no"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Reporte</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_tipo_reporte"></div>
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Luminaria</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_tipo_luminaria"></div>                                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo PQR</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_tipo_pqr"></div>
                                         <div class="col-ms-12 col-md-2"><label class="control-label">Barrio</label></div>
                                         <div class="col-ms-12 col-md-4" id="td_barrio"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tècnico</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_usuario"></div>               
+                                                       
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tipo Actividad</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_tipo"></div>
                                         <div class="col-ms-12 col-md-2"><label class="control-label">Direcci&oacute;n</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_direccion"></div>
+                                        <div class="col-ms-12 col-md-4" id="td_direccion"></div>               
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">                                        
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Tècnico</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_usuario"></div>  
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Fch Actividad</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_fch_instalacion"></div>             
+                                    </div>
+                                </div>                                
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Veh&iacute;culo</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_vehiculo"></div>
                                         <div class="col-ms-12 col-md-2"><label class="control-label">Estado</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_estado"></div>               
+                                        <div class="col-ms-12 col-md-4" style="color:#2ca02c; font-weight: bold;" id="td_estado"></div>               
                                     </div>
                                 </div>
                                 <div class="row">
@@ -260,6 +290,35 @@ else{
                         </div>
                     </div>
                 </div>
+                <!---->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="0" id="panel-encabezado"><!-- to apply shadow add class "panel-shadow" -->
+                            <!-- panel head -->
+                            <div class="panel-heading">
+                                <div class="panel-title">Servicio(s) Realizado(s)</div>
+                                <div class="panel-options">
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                </div>
+                            </div>
+                            <div class="panel-body panel-encabezado">
+                                <div class="table-responsive"> 
+                                    <table id="tbl_servicio" class="table table-bordered datatable">
+                                        <thead>
+                                            <tr> 
+                                                <th style="text-align: center">#</th>
+                                                <th style="text-align: center">CODIGO</th>
+                                                <th style="text-align: center">DESCRIPCION</th>
+                                                <th style="text-align: center">CANTIDAD</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-blue btn-icon icon-left" id="btn_cerrar_detalle_actividad">
@@ -300,7 +359,7 @@ else{
                                     <div class="row">
                                         <div class="col-md-12">                            
                                             <div class="form-group">
-                                                <label for="slt_municipio" class="control-label">Municipio*</label>                    
+                                                <label for="slt_municipio" class="control-label text-danger">Municipio*</label>                    
                                                 <select id="slt_municipio" name="slt_municipio" class="form-control requerido clear" placeholder="Municipio" title="Municipio">
                                                     <option value="">-Seleccione-</option>
                                                     <?php
@@ -317,7 +376,7 @@ else{
                                     <div class="row">                
                                         <div class="col-md-6">                            
                                             <div class="form-group">
-                                                <label for="txt_pqr" class="control-label"><input type="radio" name="tipo_busqueda" value="pqr" checked/>PQR / Reporte No.</label>     
+                                                <label for="txt_pqr" class="control-label">PQR / Reporte No.</label>     
                                                 <div class="input-group">                       
                                                     <input type="text" class="form-control clear" id="txt_pqr" name="txt_pqr" placeholder="PQR / Reporte" title="PQR/Reporte">
                                                     <div class="input-group-btn">					
@@ -329,11 +388,11 @@ else{
 
                                         <div class="col-md-6">                            
                                             <div class="form-group">
-                                                <label for="txt_luminaria" class="control-label"><input type="radio" name="tipo_busqueda" value="luminaria"/>Punto Lum&iacute;nico*</label>     
+                                                <label for="txt_luminaria" class="control-label">Punto Lum&iacute;nico</label>     
                                                 <div class="input-group">                       
-                                                    <input type="text" class="form-control requerido clear" id="txt_luminaria" name="txt_luminaria" readonly placeholder="Punto Luminico" title="Punto Luminico">
+                                                    <input type="text" class="form-control clear" id="txt_luminaria" name="txt_luminaria" placeholder="Punto Luminico" title="Punto Luminico">
                                                     <div class="input-group-btn">					
-                                                        <button type="button" id="btn_buscar_usuario_servicio" class="btn btn-blue btn-icon icon-left" disabled>Buscar<i class="entypo-search"></i></button>
+                                                        <button type="button" id="btn_buscar_luminaria" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
                                                     </div>
                                                 </div>
                                             </div>	                            
@@ -341,54 +400,65 @@ else{
                                     </div>
                         
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="txt_poste" class="control-label">Poste No*</label>
-                                                <input type="text" id="txt_poste" name="txt_poste" class="form-control requerido clear" readonly placeholder="Poste No" title="Poste No">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="txt_tipo_luminaria" class="control-label">Tipo Luminaria*</label>
-                                                <input type="text" id="txt_tipo_luminaria" name="txt_tipo_luminaria" class="form-control requerido clear" readonly placeholder="Tipo Luminaria" title="Tipo Luminaria">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="txt_direccion" class="control-label">Direcci&oacute;n*</label>
-                                                <input type="text" id="txt_direccion" name="txt_direccion" class="form-control requerido clear" readonly placeholder="Direcci&oacute;n" title="Direcci&oacute;n">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="txt_barrio" class="control-label">Barrio*</label>
-                                                <input type="text" id="txt_barrio" name="txt_barrio" class="form-control requerido clear" readonly placeholder="Barrio" title="Barrio">
-                                            </div>
-                                        </div>                        
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="txt_tipo_pqr" class="control-label">Tipo PQR*</label>
-                                                <input type="text" id="txt_tipo_pqr" name="txt_tipo_pqr" class="form-control requerido clear" readonly placeholder="Tipo PQR" title="Tipo PQR">
-                                            </div>
-                                        </div>
                                         <div class="col-md-6">                            
                                             <div class="form-group">
                                                 <label for="txt_fch_pqr" class="control-label">Fecha PQR/Reporte</label>
                                                 <input type="text" id="txt_fch_pqr" name="txt_fch_pqr" class="form-control clear" readonly placeholder="Fecha PQR" title="Fecha PQR">
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="txt_poste" class="control-label">Poste No</label>
+                                                <input type="text" id="txt_poste" name="txt_poste" class="form-control clear" placeholder="00-0000" title="Poste No">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="txt_tipo_reporte" class="control-label">Tipo Reporte</label>
+                                                <input type="text" id="txt_tipo_reporte" name="txt_tipo_reporte" class="form-control clear" readonly placeholder="Tipo Reporte" title="Tipo Reporte">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="slt_tipo_luminaria" class="control-label text-danger">Tipo Luminaria*</label>
+                                                <select id="slt_tipo_luminaria" name="slt_tipo_luminaria" class="form-control requerido clear" placeholder="Tipo Luminaria" title="Tipo Luminaria">
+                                                    <option value="">-Seleccione-</option>
+                                                    <?php
+                                                    while(!$tipoLuminaria->EOF){
+                                                        echo "<option value=\"".$tipoLuminaria->fields['id_tipo_luminaria']."\">".strtoupper($tipoLuminaria->fields['descripcion'])."</option>";
+                                                        $tipoLuminaria->MoveNext();
+                                                    }
+                                                    ?>
+                                                </select>    
+                                            </div>
+                                        </div>                                                              
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="txt_tipo_pqr" class="control-label">Tipo PQR</label>
+                                                <input type="text" id="txt_tipo_pqr" name="txt_tipo_pqr" class="form-control  clear" readonly placeholder="Tipo PQR" title="Tipo PQR">
+                                            </div>
+                                        </div>                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="slt_barrio" class="control-label text-danger">Barrio*</label>
+                                                <!--<input type="text" id="txt_barrio" name="txt_barrio" class="form-control requerido clear" readonly placeholder="Barrio" title="Barrio">-->
+                                                <select id="slt_barrio" name="slt_barrio" class="form-control requerido clear" placeholder="Barrio" title="Barrio">
+                                                    <option value="">-Seleccione-</option>
+                                                </select>
+                                            </div>
+                                        </div>                                          
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">                            
                                             <div class="form-group">
-                                                <label for="slt_tipo_actividad" class="control-label">Tipo Actividad*</label>
+                                                <label for="slt_tipo_actividad" class="control-label text-danger">Tipo Actividad*</label>
                                                 <select id="slt_tipo_actividad" name="slt_tipo_actividad" class="form-control requerido clear" placeholder="Tipo Actividad" title="Tipo Actividad">
                                                     <option value="">-Seleccione-</option>
                                                     <?php
@@ -403,16 +473,16 @@ else{
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="txt_tipo_reporte" class="control-label">Tipo Reporte</label>
-                                                <input type="text" id="txt_tipo_reporte" name="txt_tipo_reporte" class="form-control clear" readonly placeholder="Tipo Reporte" title="Tipo Reporte">
+                                                <label for="txt_direccion" class="control-label text-danger">Direcci&oacute;n*</label>
+                                                <input type="text" id="txt_direccion" name="txt_direccion" class="form-control requerido clear" placeholder="Direcci&oacute;n" title="Direcci&oacute;n">
                                             </div>
-                                        </div>                        
+                                        </div>                   
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">                            
                                             <div class="form-group">
-                                                <label for="slt_tercero" class="control-label">Cuadrilla*</label>
+                                                <label for="slt_tercero" class="control-label text-danger">T&eacute;cnico / Reparador*</label>
                                                 <select id="slt_tercero" name="slt_tercero" class="form-control requerido clear" placeholder="T&eacute;cnico" title="T&eacute;cnico">
                                                     <option value="">-Seleccione-</option>
                                                     <?php
@@ -427,9 +497,9 @@ else{
                                         </div>
                                         <div class="col-md-6">                            
                                             <div class="form-group">
-                                                <label for="txt_fch_ejecucion" class="control-label">Fecha Ejecuci&oacute;n*</label>
+                                                <label for="txt_fch_ejecucion" class="control-label text-danger">Fecha Ejecuci&oacute;n*</label>
                                                 <div class="input-group">
-                                                    <input type="text" id="fch_pqr" name="fch_pqr"  value="<?=date("Y-m-d")?>" class="form-control datepicker requerido clear" readonly  placeholder="YYYY-MM-DD" title="Fecha Ejecuci&oacute;n"/> 
+                                                    <input type="text" id="txt_fch_ejecucion" name="txt_fch_ejecucion"  value="<?=date("Y-m-d")?>" class="form-control datepicker requerido clear" readonly  placeholder="YYYY-MM-DD" title="Fecha Ejecuci&oacute;n"/> 
                                                     <div class="input-group-addon">
                                                         <a href="#"><i class="entypo-calendar"></i></a>
                                                     </div>
@@ -441,17 +511,39 @@ else{
                                     <div class="row">                                        
                                         <div class="col-md-6">                            
                                             <div class="form-group">
-                                            <label for="txt_placa_vehiculo" class="control-label">Placa Veh&iacute;culo</label>
-                                                <input type="text" id="txt_placa_vehiculo" name="txt_placa_vehiculo" class="form-control clear" style="text-transform: uppercase" placeholder="XXX-000" title="Placa Vehiculo" maxlength="6">
+                                                <label for="slt_vehiculo" class="control-label">Veh&iacute;culo</label>
+                                                <select id="slt_vehiculo" name="slt_vehiculo" title="Vehiculo" class="form-control clear" data-allow-clear="true" data-placeholder="Vehiculo">
+                                                <option value="">-Seleccione-</option>
+                                                <?php
+                                                while(!$vehiculo->EOF){
+                                                    echo "<option value=\"".$vehiculo->fields['id_vehiculo']."\">".strtoupper($vehiculo->fields['descripcion'])."</option>";
+                                                    $vehiculo->MoveNext();
+                                                }
+                                                ?>
+                                                </select>   
+                                                
                                             </div>
                                         </div>
-                                        <div class="col-md-6"> </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="slt_estado_actividad" class="control-label text-danger">Estado Actividad*</label>
+                                                <select id="slt_estado_actividad" name="slt_estado_actividad" class="form-control requerido clear" placeholder="Estado Actividad" title="Estado Actividad">
+                                                    <option value="">-Seleccione-</option>
+                                                    <?php
+                                                    while(!$estadoActividad->EOF){
+                                                        echo "<option value=\"".$estadoActividad->fields['id_estado_actividad']."\">".strtoupper($estadoActividad->fields['descripcion'])."</option>";
+                                                        $estadoActividad->MoveNext();
+                                                    }
+                                                    ?>
+                                                </select>    
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group no-margin">
-                                                <label for="txt_observacion" class="control-label">Observaci&oacute;n*</label>								
+                                                <label for="txt_observacion" class="control-label text-danger">Observaci&oacute;n*</label>								
                                                 <textarea class="form-control autogrow requerido clear" id="txt_observacion" name="txt_observacion" placeholder="Observaci&oacute;n" title="Observaci&oacute;n"></textarea>
                                             </div>	
                                         </div>
@@ -480,7 +572,7 @@ else{
                                         <div class="form-group">
                                             <label for="txt_codigo" class="control-label">C&oacute;digo</label>
                                             <div class="input-group">                                                
-                                                <input type="text" id="txt_codigo" name="txt_codigo" class="form-control requerido clear clear-articulo" placeholder="C&oacute;digo" title="C&oacute;digo">
+                                                <input type="text" id="txt_codigo" name="txt_codigo" class="form-control clear clear-articulo" placeholder="C&oacute;digo" title="C&oacute;digo">
                                                 <input type="hidden" id="item" name="item" value=""/>									
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-blue" type="button"><i class="entypo-search"></i></button>
@@ -492,13 +584,13 @@ else{
                                     <div class="col-md-5">
                                         <div class="form-group">
                                             <label for="txt_descripcion" class="control-label">Descripci&oacute;n</label>
-                                            <input type="text" id="txt_descripcion" name="txt_descripcion" class="form-control requerido clear clear-articulo" readonly placeholder="Descripci&oacute;n" title="Descripci&oacute;n">
+                                            <input type="text" id="txt_descripcion" name="txt_descripcion" class="form-control clear clear-articulo" readonly placeholder="Descripci&oacute;n" title="Descripci&oacute;n">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="txt_cantidad" class="control-label">Cantidad</label>
-                                            <input type="text" id="txt_cantidad" name="txt_cantidad" class="form-control requerido clear clear-articulo" style="text-align: right" placeholder="0,00" title="Cantidad">
+                                            <input type="text" id="txt_cantidad" name="txt_cantidad" class="form-control clear clear-articulo" style="text-align: right" placeholder="0,00" title="Cantidad">
                                         </div>
                                     </div>
                                     <div class="col-md-1">
@@ -543,7 +635,7 @@ else{
             
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-icon icon-left" id="btn_cerrar_frm" data-dismiss="modal">Cerrar<i class="entypo-cancel"></i></button>
-                <button type="button" class="btn btn-blue btn-icon icon-left" id="btn_guardar_actividad">Guardar<i class="entypo-floppy"></i></button>
+                <button type="button" class="btn btn-blue btn-icon icon-left" id="btn_guardar_frm">Guardar<i class="entypo-floppy"></i></button>
             </div>
         </div>
     </div>

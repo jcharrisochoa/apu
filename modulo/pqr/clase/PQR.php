@@ -455,7 +455,7 @@ class PQR extends General{
     function buscarPQR($id_municipio,$id_pqr){
         $this->sql = "select p.id_pqr,p.fch_pqr,p.comentario,tp.descripcion as tipo_pqr,tr.descripcion as tipo_reporte,
                     l.id_luminaria,l.poste_no,l.direccion,l.id_barrio,l.latitud,l.longitud,l.fch_instalacion,
-                    tl.descripcion as tipo_luminaria,b.descripcion as barrio,l.luminaria_no
+                    tl.descripcion as tipo_luminaria,b.descripcion as barrio,l.luminaria_no,l.id_tipo_luminaria
                     from pqr p
                     join tipo_pqr tp using(id_tipo_pqr)
                     left join tipo_reporte tr using(id_tipo_reporte)

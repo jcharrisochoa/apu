@@ -17,10 +17,9 @@ var propiedades = {
 var tableActividad = "";
 var dataSet = [];
 var accion = "";
-var tableArticulo = [];
-var objArticulo = {id_articulo:"",descripcion:"",cantidad:""};
+var tableArticuloActividad = "";
 var item    = 0;
-
+var detalleActividad ;
 $(function() {
 
     $("#txt_cantidad").numeric({
@@ -32,12 +31,23 @@ $(function() {
     });
 
     $("#municipio").change(function() {
-        listarBarrio();
+        listarBarrioActividad("municipio","barrio");
     });
-    
-    /*$("#slt_municipio").change(function() {
-        clearInput(".clear");
-    });*/
+
+    $("#slt_municipio").change(function() {
+        listarBarrioActividad("slt_municipio","slt_barrio");
+    });
+     
+    $("#btn_guardar_frm").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            if(ValidarDatos(".requerido")){
+                guardarAccion(accion);
+            }   
+            event.handld = true;
+        }
+        return false;
+    });
     
     $("#btn_buscar_actividad").click(function(event) {
         if (event.handled !== true) {
@@ -88,6 +98,17 @@ $(function() {
         return false;
     });  
     
+    $("#btn_detalle_actividad").click(function(){
+        if (event.handled !== true) {
+            event.preventDefault();
+            verDetalle(detalleActividad);
+            accion = "nuevo";     
+            event.handld = true;
+        }
+        return false;
+        
+    });
+
     $("#txt_luminaria").keydown(function(event){
         if(event.keyCode == 13){
            if(event.handled !== true){
@@ -134,28 +155,10 @@ $(function() {
    
     InitTableActividad();
     initTableArticulo();
-
-    $('input[type=radio][name=tipo_busqueda]').change(function() {
-        if (this.value == 'pqr') {
-            $("#txt_pqr").prop("readonly",false);
-            $("#txt_luminaria").prop("readonly",true);
-            $("#btn_buscar_pqr").prop("disabled",false);
-            $("#btn_buscar_usuario_servicio").prop("disabled",true);
-            
-            clearInput(".clear");
-        }
-        else if (this.value == 'luminaria') {
-            $("#txt_pqr").prop("readonly",true);
-            $("#txt_luminaria").prop("readonly",false);
-            $("#btn_buscar_pqr").prop("disabled",true);
-            $("#btn_buscar_usuario_servicio").prop("disabled",false);
-            clearInput(".clear");
-        }
-    });
-
 });
 
-function listarBarrio() {
+function listarBarrioActividad(controlMunicipio,controlBarrio) {
+    var selected = "";
     $.ajax({
         async: true,
         type: "POST",
@@ -163,14 +166,14 @@ function listarBarrio() {
         contentType: "application/x-www-form-urlencoded",
         url: "actividad/ajax/listar_barrio.php",
         data: {
-            id_municipio: $("#municipio").val()
+            id_municipio: $("#"+controlMunicipio).val()
         },
         beforeSend: inicioEnvio,
         success: function(data) {
             console.log(data);
-            $("#barrio").empty();
+            $("#"+controlBarrio).empty();
             for (x in data.lista) {
-                $("#barrio").append('<option value="' + data.lista[x].id_barrio + '">' + data.lista[x].descripcion + '</option>');
+                $("#"+controlBarrio).append('<option value="' + data.lista[x].id_barrio + '">' + data.lista[x].descripcion + '</option>');
             }
             $.unblockUI("");
         }
@@ -220,7 +223,17 @@ function InitTableActividad() {
                 { "data": "tipo_reporte","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "estado_actividad","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "tipo_luminaria","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "observacion","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "observacion","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_pqr","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "tipo_pqr","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "vehiculo","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_vehiculo","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_estado_actividad","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_tercero","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_tipo_actividad","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_tipo_luminaria","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_luminaria","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_barrio","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
             ],
             "order": [
                 [1,"DESC"]
@@ -233,8 +246,8 @@ function InitTableActividad() {
     $("#tbl_actividad tbody").on("click", "tr", function() {
         $("#tbl_actividad tbody tr").removeClass("highlight");
         $(this).addClass("highlight");
-        var data = tableActividad.row(this).data();
-        verDetalle(data);
+        detalleActividad = tableActividad.row(this).data();
+        //verDetalle(data);
     });
 }
 
@@ -259,6 +272,9 @@ function verDetalle(dataDet) {
         $("#td_estado").html(dataDet.estado_actividad);
         $("#td_observacion").html(dataDet.observacion);
         $("#td_tipo_luminaria").html(dataDet.tipo_luminaria);
+        $("#td_pqr").html(dataDet.id_pqr);
+        $("#td_tipo_pqr").html(dataDet.tipo_pqr);
+        $("#td_vehiculo").html(dataDet.vehiculo);
         
         $("#modal-detalle-actividad").modal("show");
     }
@@ -411,11 +427,11 @@ function buscarLuminaria(){
                     else{
                         toastr.success(data.mensaje, null, opts);
                     }
-                    $("#txt_tipo_luminaria").val(data.tipo_luminaria);
+                    $("#slt_tipo_luminaria").val(data.id_tipo_luminaria).change();
                     $("#id_luminaria").val(data.id_luminaria);
                     $("#txt_poste").val(data.poste_no);
                     $("#txt_direccion").val(data.direccion);
-                    $("#txt_barrio").val(data.barrio);
+                    $("#slt_barrio").val(data.id_barrio).change();
                 }
                 else{
                     toastr.error(data.mensaje, null, opts);
@@ -429,11 +445,11 @@ function buscarLuminaria(){
         });
     }
     else{
-        $("#txt_tipo_luminaria").val("");
+        $("#slt_tipo_luminaria").val("").change();
         $("#id_luminaria").val("");
         $("#txt_poste_no").val("");
         $("#txt_direccion").val("");
-        $("#txt_barrio").val("");
+        $("#slt_barrio").val("").change();
         $("#id_pqr").val("");
         $("#txt_fch_pqr").val("");
         $("#txt_tipo_pqr").val("");
@@ -467,11 +483,11 @@ function buscarPQR(){
                     $("#txt_tipo_pqr").val(data.tipo_pqr);
                     $("#txt_tipo_reporte").val(data.tipo_reporte);
                     $("#txt_luminaria").val(data.luminaria_no);
-                    $("#txt_tipo_luminaria").val(data.tipo_luminaria);
+                    $("#slt_tipo_luminaria").val(data.id_tipo_luminaria).change();
                     $("#id_luminaria").val(data.id_luminaria);
                     $("#txt_poste").val(data.poste_no);
                     $("#txt_direccion").val(data.direccion);
-                    $("#txt_barrio").val(data.barrio);
+                    $("#slt_barrio").val(data.id_barrio).change();
                     
                 }
                 else{
@@ -490,21 +506,21 @@ function buscarPQR(){
         $("#txt_fch_pqr").val("");
         $("#txt_tipo_pqr").val("");
         $("#txt_tipo_reporte").val("");
-        $("#txt_tipo_luminaria").val("");
+        $("#slt_tipo_luminaria").val("").change();
         $("#id_luminaria").val("");
         $("#txt_poste_no").val("");
         $("#txt_direccion").val("");
-        $("#txt_barrio").val("");
+        $("#slt_barrio").val("").change();
     }
 }
 
 function guardarAccion(accion){
     switch(accion){
         case "nuevo":
-            var variable = $("#form-actividad").serialize()+"&accion="+accion;
+            var variable = $("#form-actividad").serialize()+"&detalle="+JSON.stringify(tableArticuloActividad.rows().data().toArray())+"&accion="+accion;
             break;
         case "editar":
-            var variable = $("#form-actividad").serialize()+"&accion="+accion;
+            var variable = $("#form-actividad").serialize()+"&detalle="+JSON.stringify(tableArticuloActividad.rows().data().toArray())+"&accion="+accion;
             break;
         case "eliminar":
             var variable = "id_actividad="+$("#id_actividad").val()+"&accion="+accion;
@@ -521,11 +537,12 @@ function guardarAccion(accion){
         success:function(data){
             if(data.response.estado){
                 toastr.success(data.response.mensaje, null, opts);
-                $("#frm-luminaria").modal("hide"); 
+                //$("#frm-actividad").modal("hide"); 
                 clearInput(".clear");
+                clearInput(".clear-articulo");
                 accion="";
-                tableLuminaria.ajax.reload();
-                dataDetalleLuminaria = "";
+                tableActividad.ajax.reload();
+                tableArticuloActividad.clear().draw();
             }
             else{
                 toastr.error(data.response.mensaje, null, opts);

@@ -7,13 +7,22 @@ require_once "../parametros/clase/Menu.php";
 require_once "../parametros/clase/Municipio.php";
 require_once "../parametros/clase/TipoLuminaria.php";
 require_once "../parametros/clase/EstadoLuminaria.php";
+require_once "../parametros/clase/Tercero.php";
+require_once "../parametros/clase/TipoActividad.php";
+require_once "../parametros/clase/Vehiculo.php";
 $menu = new Menu($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjMun = new Municipio($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoLum = new TipoLuminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjEstLum = new EstadoLuminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjTercero = new Tercero($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjTipoAct = new TipoActividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjVeh = new Vehiculo($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $municipio = $ObjMun->listarMunicipioContrato();
 $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
 $estadoLuminaria = $ObjEstLum->listarEstadoLuminaria(""); 
+$tercero = $ObjTercero->listarTecnico();
+$vehiculo = $ObjVeh->listarVehiculo();
+$tipoActividad = $ObjTipoAct->listarTipoActividad("S");
 if(empty($_SESSION['id_tercero'])){
 	?>
 	<script> 
@@ -430,12 +439,24 @@ else{
 
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <!--<div class="form-group">
                                 <label for="slt_proveedor" class="control-label">Proveedor</label>
                                 <select id="slt_proveedor" name="slt_proveedor" class="form-control clear" placeholder="Proveedor">
                                     <option value="">-Seleccione-</option>
                                 </select>
-                            </div>	
+                            </div>	-->
+                            <div class="form-group">
+                                <label for="slt_tercero" class="control-label">T&eacute;cnico / Instalador</label>
+                                <select id="slt_tercero" name="slt_tercero" class="form-control requerido clear" placeholder="T&eacute;cnico" title="T&eacute;cnico">
+                                    <option value="">-Seleccione-</option>
+                                    <?php
+                                    while(!$tercero->EOF){
+                                        echo "<option value=\"".$tercero->fields['id_tercero']."\">".strtoupper($tercero->fields['nombre']." ".$tercero->fields['apellido'])."</option>";
+                                        $tercero->MoveNext();
+                                    }
+                                    ?>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -451,7 +472,45 @@ else{
                                 </select>
                             </div>	
                         </div>
-                    </div>  
+                    </div> 
+                    <div class="row" id="div_check_crear_actividad">
+                        <div class="col-md-6">
+                            <input tabindex="5" type="checkbox" class="icheck" id="chk_crear_actividad" name="chk_crear_actividad">
+							<label for="chk_crear_actividad">¿Generar actividad de Instalaci&oacute;n?</label>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div> 
+                    <div class="row" id="div_oculto">
+                        <div class="col-md-6">                           
+                            <div class="form-group">
+                                <label for="slt_tipo_actividad" class="control-label">Tipo Actividad</label>
+                                <select id="slt_tipo_actividad" name="slt_tipo_actividad" disabled class="form-control clear" placeholder="Tipo Actividad" title="Tipo Actividad">
+                                    <option value="">-Seleccione-</option>
+                                    <?php
+                                    while(!$tipoActividad->EOF){
+                                        echo "<option value=\"".$tipoActividad->fields['id_tipo_actividad']."\">".strtoupper($tipoActividad->fields['descripcion'])."</option>";
+                                        $tipoActividad->MoveNext();
+                                    }
+                                    ?>
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="slt_vehiculo" class="control-label">Veh&iacute;culo</label>
+                                <select id="slt_vehiculo" name="slt_vehiculo" disabled class="form-control clear" placeholder="Veh&iacute;culo" title="Veh&iacute;culo">
+                                    <option value="">-Seleccione-</option> 
+                                    <?php
+                                    while(!$vehiculo->EOF){
+                                        echo "<option value=\"".$vehiculo->fields['id_vehiculo']."\">".strtoupper($vehiculo->fields['descripcion'])."</option>";
+                                        $vehiculo->MoveNext();
+                                    }
+                                    ?>                                   
+                                </select>
+                            </div>	
+                        </div>
+                    </div> 
                 </form>             
             </div>
 
