@@ -55,7 +55,7 @@ else{
         <a href="#">Luminaria</a>
     </li>
     <li class="active">
-    <strong>Gestion Hoja de Vida de la Luminaria</strong>
+    <strong>Gesti&oacute;n Hoja de Vida de la Luminaria</strong>
     </li>
 </ol>
 </hr>

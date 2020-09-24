@@ -12,7 +12,8 @@ while (!$result->EOF){
     $lista[$i]=array(                    
         "item"          => $i+1,
         "descripcion"     => $result->fields['descripcion'],
-        "id_tipo_actividad"   => $result->fields['id_tipo_actividad']
+        "id_tipo_actividad"   => $result->fields['id_tipo_actividad'],
+        "instalacion"   => $result->fields['instalacion']
         );                    
     $i++;
     $result->MoveNext();

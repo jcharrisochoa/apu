@@ -53,7 +53,7 @@ else{
         <a href="#">PQR</a>
     </li>
     <li class="active">
-    <strong>Regristrar PQR</strong>
+    <strong>Registrar PQR</strong>
     </li>
 </ol>
 </hr>

@@ -77,7 +77,7 @@ class TipoActividad{
     }
 
     function nuevoTipoActividad($post){
-        $this->sql = "INSERT INTO tipo_actividad(descripcion) VALUES('".$post['txt_descripcion']."');";
+        $this->sql = "INSERT INTO tipo_actividad(descripcion,instalacion) VALUES('".$post['txt_descripcion']."','".$post['slt_instalacion']."');";
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
@@ -86,7 +86,7 @@ class TipoActividad{
     }
 
     function editarTipoActividad($post){
-        $this->sql= "UPDATE tipo_actividad SET descripcion='".$post['txt_descripcion']."' WHERE id_tipo_actividad=".$post['id_tipo_actividad'];
+        $this->sql= "UPDATE tipo_actividad SET descripcion='".$post['txt_descripcion']."',instalacion='".$post['slt_instalacion']."' WHERE id_tipo_actividad=".$post['id_tipo_actividad'];
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());

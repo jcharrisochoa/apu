@@ -58,7 +58,7 @@ class Actividad extends General{
                 where 
                 1=1
                 ".$q;
-                $this->result = $this->db->Execute($this->sql);
+        $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
             echo "Error Contando las actividades". $this->db->ErrorMsg();
             return false;
@@ -100,7 +100,7 @@ class Actividad extends General{
                 ac.direccion,ac.fch_actividad,l.poste_no,l.luminaria_no,t.nombre as tecnico,
                 ac.fch_reporte,ac.observacion,tr.descripcion as tipo_reporte,ea.descripcion as estado_actividad,
                 tl.descripcion as tipo_luminaria,ac.id_pqr,tp.descripcion as tipo_pqr,v.descripcion as vehiculo,ac.id_vehiculo,
-                ac.id_estado_actividad,ac.id_tercero,ac.id_tipo_actividad,ac.id_tipo_luminaria,ac.id_barrio,ac.id_luminaria
+                ac.id_estado_actividad,ac.id_tercero,ac.id_tipo_actividad,ac.id_tipo_luminaria,ac.id_barrio,ac.id_luminaria,ac.id_municipio
                 from actividad ac
                 join municipio m using(id_municipio)
                 left join tipo_luminaria tl using(id_tipo_luminaria)
@@ -199,5 +199,157 @@ class Actividad extends General{
         }
     }
 
+    function eliminarActividad($id_actividad){
+        $this->iniciarTransaccion();
+        $this->sql = "delete from articulo_actividad where id_actividad=".$id_actividad;
+        $result = $this->db->Execute($this->sql);
+        if(!$result){
+            $array =  array("estado"=>false,"data"=>$this->db->ErrorMsg());
+            $this->devolverTransaccion();
+        }
+        else{
+            $this->sql = "delete from actividad where id_actividad=".$id_actividad;
+            $result = $this->db->Execute($this->sql);
+            if(!$result){
+                $array =  array("estado"=>false,"data"=>$this->db->ErrorMsg());
+                $this->devolverTransaccion();
+            }
+            else{
+                $this->finalizarTransaccion();
+                $array =  array("estado"=>true,"data"=>"Actividad eliminada");
+            }
+        }
+        return $array;
+    }
+
+    function editarActividad($post){
+        $array = array();
+        $errorDetalle = false;
         
+        $id_luminaria = (!empty($post['id_luminaria']))?$post['id_luminaria']:"null";       
+        $id_vehiculo = (!empty($post['slt_vehiculo']))?$post['slt_vehiculo']:"null";
+
+        $this->iniciarTransaccion();
+        
+        if(!empty($post['id_pqr'])){
+            $id_pqr = $post['id_pqr'];
+            $this->sql = "select id_tipo_reporte from pqr where id_pqr=".$post['id_pqr'];
+            $result = $this->db->Execute($this->sql);
+            if(!$result){
+                $array =  array("estado"=>false,"data"=>$this->db->ErrorMsg());
+                $this->devolverTransaccion();                
+            }
+            else{
+                $id_tipo_reporte = $result->fields['id_tipo_reporte'];
+                $array =  array("estado"=>true,"data"=>"");
+            }
+        }
+        else{
+            $id_pqr = "null";
+            $id_tipo_reporte = "null";
+            $array =  array("estado"=>true,"data"=>"");
+        }
+
+        if($array['estado']){
+            $this->sql = "UPDATE actividad SET
+                        id_luminaria=".$id_luminaria.",
+                        id_municipio=".$post['slt_municipio'].",
+                        id_barrio=".$post['slt_barrio'].",
+                        id_tipo_actividad=".$post['slt_tipo_actividad'].",
+                        id_tercero=".$post['slt_tercero'].",
+                        id_tipo_reporte=".$id_tipo_reporte.",
+                        id_estado_actividad=".$post['slt_estado_actividad'].",
+                        direccion='".$post['txt_direccion']."',
+                        fch_actividad='".$post['txt_fch_ejecucion']."',
+                        fch_reporte='".$post['txt_fch_pqr']."',
+                        observacion='".$post['txt_observacion']."',
+                        id_pqr=".$id_pqr.",
+                        id_vehiculo=".$id_vehiculo.",
+                        id_tipo_luminaria=".$post['slt_tipo_luminaria']."
+                        where
+                        id_actividad=".$post['id_actividad'];
+
+            $result = $this->db->Execute($this->sql);
+            if(!$result){
+                $array = array("estado"=>false,"data"=>"Error actualizando la actividad ".$this->db->ErrorMsg());
+                $this->devolverTransaccion();
+            }
+            else{
+                $this->sql = "delete from articulo_actividad where id_actividad=".$post['id_actividad'];
+                $result = $this->db->Execute($this->sql);
+                if(!$result){
+                    $array =  array("estado"=>false,"data"=>"Error Eliminando los servicios ".$this->db->ErrorMsg());
+                    $this->devolverTransaccion();
+                }
+                else{
+                    $jsonServicio = json_decode($this->fix($post['detalle']));
+                    foreach($jsonServicio as $servicio){
+                        $this->sql = "INSERT INTO articulo_actividad(
+                                    id_actividad,id_articulo,cantidad
+                                    )
+                                    VALUES(
+                                    ".$post['id_actividad'].",".$servicio->id_articulo.",".$servicio->cantidad."
+                                    );";
+                        $result = $this->db->Execute($this->sql);
+                        if(!$result){
+                            $array = array("estado"=>false,"data"=>"Error asociando el servicio con codigo (".$servicio->id_articulo.") a la actividad".$this->db->ErrorMsg());
+                            $this->devolverTransaccion();
+                            $errorDetalle = true;
+                            break;                    
+                        }
+                    } 
+                    if(!$errorDetalle){
+                        $this->finalizarTransaccion();
+                        $array =  array("estado"=>true,"data"=>"Actividad ".$post['id_actividad']." actualizada");
+                    }
+                }
+            }
+        }
+        return $array;
+    }
+
+    function listarServicioActividad($post){
+        $q = "";
+        if(!empty($post['id_actividad']))
+            $q .= " and aa.id_actividad=".$post['id_actividad'];
+
+        if (!empty($post['start']) or !empty($post['length']))
+            $q .= " limit ".$post['start'].",".$post['length'];
+
+        $this->sql = "select a.id_articulo,a.descripcion,aa.cantidad
+                    from articulo_actividad aa join articulo a using(id_articulo)
+                    where 
+                    1=1                
+                    ".$q;
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando los servicios ". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
+
+    function contarServicioActividad($post){
+        $q = "";
+
+        if(!empty($post['id_actividad']))
+            $q .= " and aa.id_actividad=".$post['id_actividad'];
+
+        $this->sql = "select count(aa.id_actividad) as total
+                      from articulo_actividad aa join articulo a using(id_articulo)
+                      where 
+                      1=1                
+                      ".$q;
+
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Contando los servicios ". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result->fields['total'];
+        }
+    }
 }

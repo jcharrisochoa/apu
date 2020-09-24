@@ -17,9 +17,10 @@ var propiedades = {
 var tableActividad = "";
 var dataSet = [];
 var accion = "";
-var tableArticuloActividad = "";
+var tableServicioActividad = "";
 var item    = 0;
-var detalleActividad ;
+var detalleActividad = "";
+
 $(function() {
 
     $("#txt_cantidad").numeric({
@@ -54,6 +55,7 @@ $(function() {
             event.preventDefault();
             var json = tableActividad.ajax.reload(function(){
                 //console.log("f:"+tableActividad.page.info().recordsTotal)
+                detalleActividad = "";
                 $("#modal-text-global").html("Se encontraron "+tableActividad.page.info().recordsTotal+" registros");
                 $("#modal-mensaje-global").modal("show");
             }
@@ -73,6 +75,26 @@ $(function() {
         return false;
     });
 
+    $("#btn_editar_actividad").click(function(){
+        if (event.handled !== true) {
+            event.preventDefault();
+            editarActividad(detalleActividad); 
+            accion = "editar";     
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_eliminar_actividad").click(function(){       
+        if (event.handled !== true) {
+            event.preventDefault();
+            eliminarActividad(detalleActividad);
+            accion = "eliminar";  
+            event.handld = true;
+        }
+        return false;
+    });
+
     $("#btn_cerrar_detalle_actividad").click(function(){
         $("actividad").html("");
         $("#modal-detalle-actividad").modal("hide");
@@ -82,7 +104,6 @@ $(function() {
         if (event.handled !== true) {
             event.preventDefault();
             agregarArticulo(); 
-            accion = "nuevo";     
             event.handld = true;
         }
         return false;
@@ -91,18 +112,26 @@ $(function() {
     $("#btn_eliminar").click(function(event) {
         if (event.handled !== true) {
             event.preventDefault();
-            eliminarArticulo(); 
-            accion = "nuevo";     
+            eliminarArticulo();    
             event.handld = true;
         }
         return false;
-    });  
+    }); 
+
+    $("#btn_cancelar").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            clearInput(".clear-articulo"); 
+            $("#tbl_articulo_actividad tbody tr").removeClass('highlight');    
+            event.handld = true;
+        }
+        return false;
+    }); 
     
     $("#btn_detalle_actividad").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            verDetalle(detalleActividad);
-            accion = "nuevo";     
+            verDetalle(detalleActividad);    
             event.handld = true;
         }
         return false;
@@ -170,10 +199,11 @@ function listarBarrioActividad(controlMunicipio,controlBarrio) {
         },
         beforeSend: inicioEnvio,
         success: function(data) {
-            console.log(data);
+            //console.log(data);
             $("#"+controlBarrio).empty();
             for (x in data.lista) {
-                $("#"+controlBarrio).append('<option value="' + data.lista[x].id_barrio + '">' + data.lista[x].descripcion + '</option>');
+                selected = (detalleActividad.id_barrio == data.lista[x].id_barrio)?"selected":"";
+                $("#"+controlBarrio).append('<option value="' + data.lista[x].id_barrio + '" '+selected+'>' + data.lista[x].descripcion + '</option>');
             }
             $.unblockUI("");
         }
@@ -233,7 +263,8 @@ function InitTableActividad() {
                 { "data": "id_tipo_actividad","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_tipo_luminaria","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_luminaria","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "id_barrio","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "id_barrio","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_municipio","bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
             ],
             "order": [
                 [1,"DESC"]
@@ -247,7 +278,7 @@ function InitTableActividad() {
         $("#tbl_actividad tbody tr").removeClass("highlight");
         $(this).addClass("highlight");
         detalleActividad = tableActividad.row(this).data();
-        //verDetalle(data);
+        $("#id_actividad").val(detalleActividad.id_actividad);
     });
 }
 
@@ -275,9 +306,43 @@ function verDetalle(dataDet) {
         $("#td_pqr").html(dataDet.id_pqr);
         $("#td_tipo_pqr").html(dataDet.tipo_pqr);
         $("#td_vehiculo").html(dataDet.vehiculo);
-        
+        if ($.fn.DataTable.isDataTable("#tbl_servicio")) {
+            tableServicioActividad.destroy();
+        }
+        InitTableServicio(dataDet);
         $("#modal-detalle-actividad").modal("show");
     }
+}
+
+function InitTableServicio(dataDet) {
+    tableServicioActividad = $("#tbl_servicio").on("preXhr.dt", function(e, settings, data) {
+        data.id_actividad = dataDet.id_actividad
+    }).DataTable({
+        "aLengthMenu": [
+            [3, 5, 10],
+            [3, 5, 10]
+        ],
+        "bStateSave": true,
+        "processing": true,
+        "serverSide": true,
+        "responsive": true,
+        "bAutoWidth": true,
+        "searching": false,
+        "ajax": {
+            "url": "actividad/ajax/listar_servicio_actividad.php",
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "item", className: "text-center", "searchable": false, "orderable": false,"width": "20%"  },
+            { "data": "codigo", className: "text-center", "searchable": false, "orderable": false},
+            { "data": "descripcion", className: "alignLeft", "searchable": false, "orderable": false },
+            { "data": "cantidad", className: "text-right", "searchable": false, "orderable": false }
+
+        ],
+        language: {
+            url: "../../../../libreria/DataTableSp.json"
+        }
+    });
 }
 
 function nuevaActividad(){
@@ -286,6 +351,35 @@ function nuevaActividad(){
     $("#tbl_actividad tbody tr").removeClass("highlight");
     clearInput(".clear");
     //tableActividad = "";
+}
+
+function editarActividad(dataDet){
+    if (dataDet.length == 0) {
+        toastr.warning("Seleccione la actividad a editar", null, opts);
+    } 
+    else {
+        $("#frm-titulo-actividad").html("Editar Actividad No "+dataDet.id_actividad);
+        $("#slt_municipio").val(dataDet.id_municipio).change();
+        //$("#slt_barrio").val(dataDet.id_barrio).change();
+        $("#id_luminaria").val(dataDet.id_luminaria);
+        $("#id_pqr").val(dataDet.id_pqr);
+        $("#txt_pqr").val(dataDet.id_pqr);
+        $("#txt_fch_pqr").val(dataDet.fch_reporte);        
+        $("#txt_tipo_reporte").val(dataDet.tipo_reporte);
+        $("#txt_tipo_pqr").val(dataDet.tipo_pqr);
+        $("#slt_tipo_luminaria").val(dataDet.id_tipo_luminaria).change();
+        $("#slt_tipo_actividad").val(dataDet.id_tipo_actividad).change();
+        $("#txt_direccion").val(dataDet.direccion);
+        $("#slt_tercero").val(dataDet.id_tercero).change();
+        $("#txt_fch_ejecucion").val(dataDet.fch_actividad);
+        $("#slt_vehiculo").val(dataDet.id_vehiculo);
+        $("#txt_observacion").val(dataDet.observacion);
+        $("#txt_poste").val(dataDet.poste_no);
+        $("#txt_luminaria").val(dataDet.luminaria_no);
+        $("#slt_estado_actividad").val(dataDet.id_estado_actividad);
+        listarServicioActividad();
+        $("#frm-actividad").modal("show"); 
+    }
 }
 
 function buscarArticulo(){
@@ -353,17 +447,17 @@ function agregarArticulo(){
                 clearInput(".clear-articulo");
                 $("#txt_codigo").focus();
 
-                $("#tbl_articulo_actividad tbody").on("click","tr", function () {         
+               /* $("#tbl_articulo_actividad tbody").on("click","tr", function () {         
                     $("#tbl_articulo_actividad tbody tr").removeClass('highlight');
                     $(this).addClass('highlight');
                     if(tableArticuloActividad.row(this).length>0){
                         var data=tableArticuloActividad.row(this).data();
                         $("#item").val(data.item);
                         $("#txt_codigo").val(data.id_articulo);
-                        $("#txt_descripcionpro").val(data.descripcion); 
+                        $("#txt_descripcion").val(data.descripcion); 
                         $("#txt_cantidad").val(data.cantidad);      
                     }              
-                });
+                });*/
             }
         }
     }
@@ -394,16 +488,27 @@ function initTableArticulo(){
                                 "searching": false,
                                 data: dataSet,
                                 "columns": [          
-                                    {"data":"item",className: "alignCenter","searchable": false,"orderable": false},                                
-                                    {"data":"id_articulo",className: "alignCenter","searchable": false,"orderable": false},
-                                    {"data":"descripcion",className: "alignLeft","searchable": false,"orderable": false},
-                                    {"data":"cantidad",className:"alignRight"}
+                                    {"data":"item",className: "text-center","searchable": false,"orderable": false,"width": "20%"},                                
+                                    {"data":"id_articulo",className: "text-center","searchable": false,"orderable": false},
+                                    {"data":"descripcion",className: "text-left","searchable": false,"orderable": false},
+                                    {"data":"cantidad",className:"text-right"}
                                 ],
                                
                                 language: {
                                     url: "../../../../libreria/DataTableSp.json"
                                 }
                             }); 
+    $("#tbl_articulo_actividad tbody").on("click","tr", function () {         
+        $("#tbl_articulo_actividad tbody tr").removeClass('highlight');
+        $(this).addClass('highlight');
+        if(tableArticuloActividad.row(this).length>0){
+            var data=tableArticuloActividad.row(this).data();
+            $("#item").val(data.item);
+            $("#txt_codigo").val(data.id_articulo);
+            $("#txt_descripcion").val(data.descripcion); 
+            $("#txt_cantidad").val(data.cantidad);      
+        }              
+    });
 }
 
 function buscarLuminaria(){
@@ -537,16 +642,70 @@ function guardarAccion(accion){
         success:function(data){
             if(data.response.estado){
                 toastr.success(data.response.mensaje, null, opts);
-                //$("#frm-actividad").modal("hide"); 
+                if(accion=="editar")
+                    $("#frm-actividad").modal("hide"); 
                 clearInput(".clear");
                 clearInput(".clear-articulo");
                 accion="";
                 tableActividad.ajax.reload();
                 tableArticuloActividad.clear().draw();
+                detalleActividad = "";
             }
             else{
                 toastr.error(data.response.mensaje, null, opts);
             }            
+            $.unblockUI("");            
+        },
+        error:function(){
+            toastr.error("Error General", null, opts);
+            $.unblockUI(""); 
+        }
+    });
+}
+
+function eliminarActividad(dataDet){
+    if (dataDet.length == 0) {
+        toastr.warning("Seleccione la actividad a eliminar", null, opts);
+    } 
+    else {
+        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar la actividad  No "+dataDet.id_actividad+" seleccionada ?");
+        $("#modal-conf").modal("show");
+        $("#btn_si").off("click").on("click",function(event){      
+            if (event.handled !== true) {
+                event.preventDefault();
+                $("#modal-conf").modal("hide");
+                $("#modal-body-conf").html("")
+                guardarAccion("eliminar");                     
+                event.handld = true;
+            }
+            return false;                
+        });  
+    }
+}
+
+function listarServicioActividad(){
+    $.ajax({
+        async:true,
+        type: "POST",
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        url:"actividad/ajax/listar_servicio_actividad.php",
+        data:{
+            id_actividad:detalleActividad.id_actividad,
+            draw:""
+        },
+        beforeSend:inicioEnvio,
+        success:function(data){
+            tableArticuloActividad.clear().draw();
+            $.each(data.data,function(i,det){
+                item++;
+                tableArticuloActividad.row.add({
+                    "item":item,
+                    "id_articulo":det['codigo'],
+                    "descripcion":det['descripcion'],
+                    "cantidad":det['cantidad']
+                }).draw();
+            });         
             $.unblockUI("");            
         },
         error:function(){

@@ -148,7 +148,7 @@ class Luminaria{
             }
             else{
                 $id_luminaria = $this->db->insert_id();
-                if($post['chk_crear_actividad']=="on"){
+                if(isset($post['chk_crear_actividad'])){
                     //--Crear Actividad Modernizacion
                     $id_vehiculo = (!empty($post['slt_vehiculo']))?$post['slt_vehiculo']:"null";
 

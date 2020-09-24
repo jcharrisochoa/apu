@@ -49,7 +49,7 @@ else{
         <a href="#">Actividad</a>
     </li>
     <li class="active">
-    <strong>Regristrar Actividad</strong>
+    <strong>Registrar Actividad</strong>
     </li>
 </ol>
 </hr>
@@ -63,7 +63,7 @@ else{
         <button type="button" id="btn_editar_actividad" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
         <?php }  
         if($ELIMINAR=="S"){ ?>
-        <!--<button type="button" id="btn_eliminar_actividad" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>-->
+        <button type="button" id="btn_eliminar_actividad" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
         <?php } ?>
         <button type="button" id="btn_detalle_actividad" class="btn btn-blue btn-icon icon-left">Detalle<i class="entypo-info"></i></button>
 
@@ -333,7 +333,7 @@ else{
 
 <!--Formulario de Entrada-->
 <div class="modal fade" id="frm-actividad" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog" style="width: 60%">
+    <div class="modal-dialog" style="width: 90%">
         <div class="modal-content">            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -581,7 +581,7 @@ else{
 
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="txt_descripcion" class="control-label">Descripci&oacute;n</label>
                                             <input type="text" id="txt_descripcion" name="txt_descripcion" class="form-control clear clear-articulo" readonly placeholder="Descripci&oacute;n" title="Descripci&oacute;n">
@@ -593,22 +593,38 @@ else{
                                             <input type="text" id="txt_cantidad" name="txt_cantidad" class="form-control clear clear-articulo" style="text-align: right" placeholder="0,00" title="Cantidad">
                                         </div>
                                     </div>
-                                    <div class="col-md-1">
+                                    <div class="col-md-3">
                                         <div class="form-group">    
-                                            <label for="btn_agregar" class="control-label">Agregar</label>
-                                            <button type="button" class="form-control btn btn-green"  id="btn_agregar" name="btn_agregar">
-                                                <i class="entypo-plus"></i>
-                                            </button>
+                                            <!--<label for="btn_agregar" class="control-label">Acciones</label>-->
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-green"  id="btn_agregar" name="btn_agregar">
+                                                    <i class="entypo-plus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger" id="btn_eliminar" name="btn_eliminar">
+                                                    <i class="entypo-minus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-default" id="btn_cancelar" name="btn_cancelar">
+                                                    <i class="entypo-cancel"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-1">  
+                                    <!--<div class="col-md-1">  
                                         <div class="form-group">    
-                                            <label for="btn_eliminar" class="control-label">Eliminar</label> 
+                                            <label for="btn_eliminar" class="control-label">(-)</label> 
                                             <button type="button" class="form-control btn btn-danger" id="btn_eliminar" name="btn_eliminar">
-                                                <i class="entypo-trash"></i>
+                                                <i class="entypo-minus"></i>
                                             </button>
                                         </div>
-                                    </div>                
+                                    </div>   
+                                    <div class="col-md-1">  
+                                        <div class="form-group">    
+                                            <label for="btn_eliminar" class="control-label">(c)</label> 
+                                            <button type="button" class="form-control btn btn-default" id="btn_cancelar" name="btn_cancelar">
+                                                <i class="entypo-cancel"></i>
+                                            </button>
+                                        </div>
+                                    </div> -->              
                                 </div>
 
                                 <!--class="scrollable" data-height="150" data-scroll-position="right" data-rail-color="#ccc" data-rail-opacity=".9" data-rail-width="8" data-rail-radius="10" data-autohide="0"-->

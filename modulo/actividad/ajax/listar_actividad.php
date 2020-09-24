@@ -35,7 +35,8 @@ while (!$result->EOF){
         "id_tipo_actividad"     => $result->fields['id_tipo_actividad'],
         "id_tipo_luminaria"     => $result->fields['id_tipo_luminaria'],
         "id_barrio"             => $result->fields['id_barrio'],
-        "id_luminaria"          => $result->fields['id_luminaria']
+        "id_luminaria"          => $result->fields['id_luminaria'],
+        "id_municipio"          => $result->fields['id_municipio']
 
 
         );                    

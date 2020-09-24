@@ -24,6 +24,18 @@ class Municipio{
         }
     }
 
+    function listarMunicipio(){
+        $this->sql = "select * from municipio order by descripcion";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando los municipios". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
+
     function contarMunicipio($post){
         $q = "";
        

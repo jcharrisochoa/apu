@@ -21,7 +21,7 @@ else{
 }
 ?>
 <script src="../libreria/custom/custom.js"></script>
-<script type="text/javascript" src="parametros/js/tipo_actividad.js"></script>
+<script type="text/javascript" src="parametros/js/articulo.js"></script>
 <style>
 .datepicker.datepicker-dropdown {
     z-index: 100000 !important;
@@ -35,20 +35,20 @@ else{
         <a href="#">Par&aacute;metros</a>
     </li>
     <li class="active">
-    <strong>Tipo Actividad</strong>
+    <strong>Servicio</strong>
     </li>
 </ol>
 </hr>
 <div class="row">
 	<div class="col-md-12">
         <?php if($CREAR=="S"){ ?>
-        <button type="button" id="btn_nuevo_tipo_actividad" style class="btn btn-green btn-icon icon-left">Nuevo<i class="entypo-plus"></i></button>
+        <button type="button" id="btn_nuevo_articulo" style class="btn btn-green btn-icon icon-left">Nuevo<i class="entypo-plus"></i></button>
         <?php } 
         if($EDITAR=="S"){ ?>
-        <button type="button" id="btn_editar_tipo_actividad" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
+        <button type="button" id="btn_editar_articulo" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
         <?php }  
         if($ELIMINAR=="S"){ ?>
-        <button type="button" id="btn_eliminar_tipo_actividad" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
+        <button type="button" id="btn_eliminar_articulo" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
         <?php } ?>
     </div>
 </div>
@@ -56,30 +56,31 @@ else{
 
 
 <div class="table-responsive panel-shadow">
-<table id="tbl_tipo_actividad" class="table table-bordered datatable table-responsive">
+<table id="tbl_articulo" class="table table-bordered datatable table-responsive">
     <thead>
         <tr> 
             <th style="text-align: center">#</th>
+            <th style="text-align: center">CODIGO</th>
             <th style="text-align: center">DESCRIPCION</th>
-            <th style="text-align: center">ID_TIPO_ACTIVIDAD</th>
-            <th style="text-align: center">TIPO INSTALACION</th>
+            <th style="text-align: center">CLA</th>
+            <th style="text-align: center">CLASE</th>
         </tr>
     </thead>
 </table>
 </div>
 
 
-<div class="modal fade" id="frm-tipo-actividad">
+<div class="modal fade" id="frm-articulo">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">				
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="frm-titulo-tipo-actividad">Titulo</h4>
+					<h4 class="modal-title" id="frm-titulo-articulo">Titulo</h4>
 				</div>
 				
 				<div class="modal-body">
-                    <form id="form-tipo-actividad">
-                        <input type="hidden" id="id_tipo_actividad" name="id_tipo_actividad" class="form-control clear" value="" />				
+                    <form id="form-articulo">
+                        <input type="hidden" id="id_articulo" name="id_articulo" class="form-control clear" value="" />				
                         <div class="row">
                             <div class="col-md-12">							
                                 <div class="form-group">
@@ -91,11 +92,11 @@ else{
                         <div class="row">
                             <div class="col-md-12">							
                                 <div class="form-group">
-                                    <label for="slt_instalacion" class="control-label">Tipo Instalaci&oacute;n</label>								
-                                    <select id="slt_instalacion" name="slt_instalacion" class="form-control requerido clear" placeholder="Tipo Instalaci&oacute;n" title="Tipo Instalaci&oacute;n">
+                                    <label for="slt_clase" class="control-label">Clase</label>								
+                                    <select id="slt_clase" name="slt_clase" class="form-control requerido clear" placeholder="Clase" title="Clase">
                                     <option value="">-Seleccione-</option>
-                                    <option value="N">NO</option>
-                                    <option value="S">SI</option>
+                                    <option value="S">SERVICIO</option>
+                                    <option value="M">MATERIAL</option>
                                 </select>
                                 </div>							
                             </div>
