@@ -3,12 +3,18 @@ session_start();
 include("../../libreria/adodb/adodb.inc.php");
 $url = file_get_contents("../../conexion/credencial.json");
 $credencial= json_decode($url, true);
+require_once "../parametros/clase/Tercero.php";
+$objTercero = new Tercero($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+
 if(empty($_SESSION['id_tercero'])){
 	?>
 	<script> 
 		window.location = "../../index.php";
 	</script>
 	<?php
+}
+else{
+    $tercero = $objTercero->buscarTercero($_SESSION['id_tercero']);
 }
 ?>
 <script src="../libreria/custom/custom.js"></script>
@@ -32,7 +38,7 @@ if(empty($_SESSION['id_tercero'])){
                 
         <div class="col-sm-2">					
             <a href="#" class="profile-picture">
-                <img src="../libreria/neon/assets/images/thumb-1@2x.png" class="img-responsive img-circle" />
+                <img src="<?="parametros/ajax/descargar_foto.php?id_tercero=".$tercero->fields['id_tercero']."&rand=".rand()?>" class="img-responsive img-circle" />
             </a>					
         </div>
         
@@ -45,7 +51,8 @@ if(empty($_SESSION['id_tercero'])){
                             <a href="#" class="user-status is-online tooltip-primary" data-toggle="tooltip" data-placement="top" data-original-title="Online"></a>
                             <!-- User statuses available classes "is-online", "is-offline", "is-idle", "is-busy" -->						
                         </strong>
-                        <span><a href="#">Usuario</a></span>
+                        <span><a href="#"><i class="entypo-user"></i><?=$tercero->fields['usuario']?></a></span>
+                        <span><a href="#"><i class="entypo-vcard"></i><?=$tercero->fields['abreviatura']." ".number_format($tercero->fields['identificacion'],0,'',',')?></a></span>
                     </div>
                 </li>
             </ul>					
@@ -58,32 +65,37 @@ if(empty($_SESSION['id_tercero'])){
                 <ul class="user-details">
                     <li>
                         <a href="#">
-                            <i class="entypo-location"></i>
-                            Colombia
+                            <i class="entypo-home"></i>
+                            <?=$tercero->fields['municipio'].", ".$tercero->fields['direccion']?>
                         </a>
                     </li>
-                    
+                    <li>
+                        <a href="#">
+                            <i class="entypo-phone"></i>
+                            <?=$tercero->fields['telefono']?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="entypo-mail"></i>
+                            <?=$tercero->fields['email']?>
+                        </a>
+                    </li>
                     <li>
                         <a href="#">
                             <i class="entypo-suitcase"></i>
-                            <span>Empleado</span>
+                            <span>
+                            <?=($tercero->fields['es_empleado']=="S")?"Empleado":"Usuario" ?>
+                            </span>
                         </a>
                     </li>
-                    
-                    <li>
-                        <a href="#">
-                            <i class="entypo-calendar"></i>
-                            16 October
-                        </a>
-                    </li>
-                </ul>					
+                </ul>		
+                			
                 
                 <!-- tabs for the profile links -->
-                <!--<ul class="nav nav-tabs">
-                    <li class="active"><a href="#profile-info">Profile</a></li>
-                    <li><a href="#biography">Bio</a></li>
-                    <li><a href="#profile-edit">Edit Profile</a></li>
-                </ul>-->
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#profile-save" id="btn_guardar">Guardar</a></li>
+                </ul>
                 
             </div>					
         </div>				
@@ -91,7 +103,7 @@ if(empty($_SESSION['id_tercero'])){
 		
 </div>
 <div class="row">
-    <form role="form" class="form-horizontal form-groups-bordered">
+    <form role="form" class="form-horizontal">
 			
         <div class="form-group">
             <label for="clave1" class="col-sm-3 control-label">Digita tu nueva clave</label>            
@@ -107,11 +119,11 @@ if(empty($_SESSION['id_tercero'])){
             </div>
         </div>
 
-        <div class="form-group">
+       <!--<div class="form-group">
             <div class="col-sm-offset-3 col-sm-5">
                 <button type="button" class="btn btn-blue btn-icon icon-left" id="btn_guardar">Guardar<i class="entypo-floppy"></i></button>
             </div>
-        </div>
+        </div>-->
     </form>
 </div>
 		

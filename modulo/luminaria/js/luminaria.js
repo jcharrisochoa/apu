@@ -160,7 +160,8 @@ function InitTableLuminaria() {
                 { "data": "id_tercero_proveedor", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_estado_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_tipo_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "id_tercero", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "id_tercero", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "instalador", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
 
             ],
             "order": [
@@ -202,7 +203,7 @@ function verDetalle(dataDet) {
         $("#td_fch_registro").html(dataDet.fch_registro);
         $("#td_usuario").html(dataDet.usuario);
         $("#td_estado").html(dataDet.estado);
-        $("#td_proveedor").html(dataDet.proveedor);
+        $("#td_instalador").html(dataDet.instalador);
         if ($.fn.DataTable.isDataTable("#tbl_actividad_luminaria")) {
             tableActividad.destroy();
         }

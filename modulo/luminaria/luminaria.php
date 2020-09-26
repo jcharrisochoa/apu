@@ -269,8 +269,8 @@ else{
                                         <div class="col-sm-12">
                                             <div class="col-ms-12 col-md-2"><label class="control-label">Direcci&oacute;n</label></div>
                                         <div class="col-ms-12 col-md-4" id="td_direccion"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label">Proveedor</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_proveedor"></div>               
+                                        <div class="col-ms-12 col-md-2"><label class="control-label">Instalador</label></div>
+                                        <div class="col-ms-12 col-md-4" id="td_instalador"></div>               
                                         </div>
                                 </div>
                                 <div class="row">

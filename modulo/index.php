@@ -155,7 +155,7 @@ if(empty($_SESSION['id_tercero'])){
 						<li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->
 		
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<img src="../libreria/neon/assets/images/thumb-1@2x.png" alt="" class="img-circle" width="44" />
+								<img src="<?="parametros/ajax/descargar_foto.php?id_tercero=".$_SESSION['id_tercero']."&rand=".rand()?>" alt="" class="img-circle" width="44" />
 								<?=$_SESSION['nombre']." ".$_SESSION['apellido']?>
 							</a>
 

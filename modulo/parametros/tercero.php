@@ -253,3 +253,91 @@ else{
         </div>
     </div>
 </div>
+
+<!--Detalle-->
+<div class="modal fade" id="modal-detalle-tercero" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" style="width: 80%">
+        <div class="modal-content">            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="modal-titulo-detalle-tercero">Perfil Tercero</h4>
+            </div>
+            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Perfil Disponible</h4>     
+                        <div role="form" class="search-form-full">     
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="txt_menu_disponible" id="txt_menu_disponible" placeholder="Buscar..." />
+                                <i class="entypo-search"></i>
+                            </div>            
+                        </div>
+                        <div class="scrollable" data-height="300" data-scroll-position="right" data-rail-color="#ccc" data-rail-opacity=".9" data-rail-width="8" data-rail-radius="10" data-autohide="0">        
+                            <table class="table table-bordered" id="tbl_perfil_disponible">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">M&oacute;dulo</th>
+                                        <th class="text-center" title="Crear"><i class="entypo-plus"></i></th>
+                                        <th class="text-center" title="Editar"><i class="entypo-pencil"></i></th>
+                                        <th class="text-center" title="Eliminar"><i class="entypo-trash"></i></th>
+                                        <th class="text-center" title="Imprimir"><i class="entypo-print"></i></th>
+                                        <th class="text-center" title="Acci&oacute;n"><i class="entypo-check"></i></th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody id="lista-perfil-disponible" >
+                                    <tr>
+                                        <td class="text-center">1</td>
+                                        <td class="text-center">Arlind</td>
+                                        <td class="text-center alert alert-success"><input type="checkbox" /></td>
+                                        <td class="text-center alert alert-warning"><input type="checkbox" /></td>
+                                        <td class="text-center alert alert-danger"><input type="checkbox" /></td>
+                                        <td class="text-center alert alert-info"><input type="checkbox" /></td>
+                                        <td class="text-center"><input type="checkbox" /></td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <div class="text-right"><button type="button" class="btn btn-green btn-icon icon-left" id="btn_agregar_perfil">Agregar<i class="entypo-plus"></i></button></div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>Perfil Agregado</h4>     
+                        <div role="form" class="search-form-full">     
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="txt_menu_asignado" id="txt_menu_asignado" placeholder="Buscar..." />
+                                <i class="entypo-search"></i>
+                            </div>            
+                        </div>  
+                        <div id="" class="scrollable" data-height="300" data-scroll-position="right" data-rail-color="#ccc" data-rail-opacity=".9" data-rail-width="8" data-rail-radius="10" data-autohide="0">        
+                            <table class="table table-bordered" id="tbl_perfil_agregado">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">M&oacute;dulo</th>
+                                        <th class="text-center" title="Crear"><i class="entypo-plus"></i></th>
+                                        <th class="text-center" title="Editar"><i class="entypo-pencil"></i></th>
+                                        <th class="text-center" title="Eliminar"><i class="entypo-trash"></i></th>
+                                        <th class="text-center" title="Imprimir"><i class="entypo-print"></i></th>
+                                        <th class="text-center" title="Acci&oacute;n"><i class="entypo-check"></i></th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody id="lista-perfil-asignado"></tbody>
+                            </table>
+                        </div>
+                        <div class="text-right"><button type="button" class="btn btn-danger btn-icon icon-left" id="btn_retirar_perfil">Retirar<i class="entypo-trash"></i></button></div>
+                    </div> 
+                       
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-blue btn-icon icon-left" id="btn_cerrar_detalle" data-dismiss="modal">Cerrar<i class="entypo-cancel"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--fin detalle-->

@@ -7,11 +7,7 @@ $tercero = new Tercero($credencial['driver'],$credencial['host'], $credencial['u
 $result = $tercero->buscarTercero($_POST['id_tercero']);
 
 $obj = new stdClass();
-/*
-t.id_tercero,t.id_tipo_identificacion,t.identificacion,t.nombre,t.apellido,t.razon_social,t.id_municipio,
-t.direccion,t.email,t.telefono,t.es_cliente,t.es_proveedor,t.es_empleado,t.es_usuario,t.usuario,t.id_tercero_registra,
-t.fch_registro,m.descripcion as municipio,d.descripcion as departamento,ti.abreviatura,t.ejecuta_labor_tecnica,t.estado,
-*/
+
 if(!$result){
     $obj->id_tercero                = "";
     $obj->id_tipo_identificacion    = "";
@@ -33,7 +29,7 @@ if(!$result){
     $obj->departamento              = "";
     $obj->abreviatura               = "";
     $obj->ejecuta_labor_tecnica     = "";
-    $obj->estado_tercero                    = "";
+    $obj->estado_tercero            = "";
     $obj->mensaje                   = "Error consultando el tercero ".$_POST['id_tercero'];
     $obj->estado                    = false;    
 }
@@ -59,7 +55,7 @@ else{
         $obj->departamento              = "";
         $obj->abreviatura               = "";
         $obj->ejecuta_labor_tecnica     = "";
-        $obj->estado_tercero                    = "";
+        $obj->estado_tercero            = "";
         $obj->mensaje                   = "No existe el tercero ";
         $obj->estado                    = true;
     }

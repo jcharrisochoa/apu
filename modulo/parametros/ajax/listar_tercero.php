@@ -15,9 +15,8 @@ while(!$result["data"]->EOF){
     ?>
     <!-- Single Member -->
     <div class="member-entry">				
-        <a href="extra-timeline.html" class="member-img">
+        <a href="#" class="member-img" data-value="<?=$result['data']->fields['id_tercero']?>">
             <img src="<?="parametros/ajax/descargar_foto.php?id_tercero=".$result["data"]->fields['id_tercero']."&rand=".rand()?>" class="img-rounded" />
-            <i class="entypo-forward"></i>
         </a>
         
         <div class="member-details">
@@ -60,6 +59,19 @@ while(!$result["data"]->EOF){
                     <a href="#"><?=($result["data"]->fields['telefono']!="")?$result["data"]->fields['telefono']:"- -"?></a>
                 </div>
                 <div class="clear"></div>
+
+                <div class="col-sm-4">
+                    <i class="entypo-suitcase"></i>
+                    <a href="#">Empleado:<?=($result["data"]->fields['es_empleado']=="S")?"SI":"NO"?></a>
+                </div>
+                
+                <div class="col-sm-4">
+                    <i class="entypo-tools"></i>
+                    <a href="#">Labor Técnica:<?=($result["data"]->fields['ejecuta_labor_tecnica']=="S")?"SI":"NO"?></a>
+                </div>
+                <div class="col-sm-4"></div>
+                <div class="clear"></div>
+
                 <div class="col-sm-8"> </div>
                 <div class="col-sm-4"> 
                     <?php if($_POST['editar']=="S" and $result["data"]->fields['super_usuario']=="N"){ ?>
@@ -68,7 +80,7 @@ while(!$result["data"]->EOF){
                     <?php if($_POST['eliminar']=="S" and $result["data"]->fields['super_usuario']=="N"){ ?>
                         <button type="button" id="" onclick="eliminarTercero(<?=$result['data']->fields['id_tercero']?>,'<?=$result['data']->fields['nombre'].' '.$result['data']->fields['apellido']?>');" class="btn btn-default"><i class="entypo-trash"></i></button>
                     <?php } ?>
-                    <button type="button" id="btn_detalle_empleado" class="btn btn-default"><i class="entypo-info"></i></button>
+                    <button type="button" id="" on class="btn btn-default btn-perfil" data-value="<?=$result['data']->fields['id_tercero']?>"><i class="entypo-info"></i></button>
                 </div>
             </div>
         </div>
@@ -91,3 +103,13 @@ while(!$result["data"]->EOF){
         </ul>
     </div>
 </div>
+<script>
+$(function(){
+    $(".btn-perfil").click(function(){
+        verPerfil($(this).attr("data-value"));
+    });
+    $(".member-img").click(function(){
+        verPerfil($(this).attr("data-value"));
+       
+    });
+});

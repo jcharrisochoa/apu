@@ -19,7 +19,7 @@ class Login{
                             where
                             usuario='".$usuario."' and
                             clave = md5('".$clave."') and
-                            es_usuario='S';";
+                            es_usuario='S' and estado='A';";
             $this->result = $this->db->Execute($this->sql);
 
             if(!$this->result){

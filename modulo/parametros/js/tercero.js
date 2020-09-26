@@ -17,6 +17,26 @@ $(function(){
        }
     });
 
+    $("#txt_menu_disponible").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               listarPerfilDisponible(); 
+               event.handld = true;
+           };
+       }
+    });
+
+    $("#txt_menu_asignado").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               listarPerfilAsignado(); 
+               event.handld = true;
+           };
+       }
+    });  
+
     $('input.icheck-11').iCheck({
         checkboxClass: 'icheckbox_square-blue',
         radioClass: 'iradio_square-yellow'
@@ -43,6 +63,24 @@ $(function(){
         $("#txt_clave_2").val("");
       });
 
+    $("#btn_retirar_perfil").click(function(){
+        if (event.handled !== true) {
+            event.preventDefault();
+            accionPerfil("retirar"); 
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_agregar_perfil").click(function(){
+        if (event.handled !== true) {
+            event.preventDefault();
+            accionPerfil("agregar"); 
+            event.handld = true;
+        }
+        return false;
+    });
+
     $("#btn_nuevo_empleado").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
@@ -53,26 +91,6 @@ $(function(){
         return false;
     });
     
-    /*$("#btn_editar_empleado").click(function(){
-        if (event.handled !== true) {
-            event.preventDefault();
-            editarTipoActividad(dataDetalleTipoActividad);
-            accion = "editar";
-            event.handld = true;
-        }
-        return false;
-    });
-
-    $("#btn_eliminar_empleado").click(function(){
-        if (event.handled !== true) {
-            event.preventDefault();
-            eliminarTipoActividad(dataDetalleTipoActividad);
-            accion = "eliminar";
-            event.handld = true;
-        }
-        return false;
-    });
-    */
     $("#btn_guardar_frm").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
@@ -96,11 +114,17 @@ $(function(){
 
     $("#frm-empleando").on('hidden.bs.modal',function(){ //accion cuando se cierra la ventana
         clearInput(".clear");
+        $(".fileinput").fileinput('clear'); 
+        $("#chk_usuario").iCheck('enable');
+        $("#chk_usuario").iCheck('uncheck');
+        $("#txt_clave").prop("disabled",true);
+        $("#txt_clave_2").prop("disabled",true);
         listarEmpleado(0);
         accion="";
     });
 
     listarEmpleado(0);
+
 });
 
 function listarEmpleado(start){
@@ -215,9 +239,7 @@ function eliminarTercero(id_tercero,nombre){
             event.handld = true;
         }
         return false;                
-    });
-
-    
+    });   
 }
 
 function guardarAccion(accion){
@@ -266,3 +288,126 @@ function guardarAccion(accion){
     });
 }
 
+function verPerfil(id_tercero){  
+    $("#id_tercero").val(id_tercero);
+    listarPerfilAsignado();
+    listarPerfilDisponible();
+    $("#modal-detalle-tercero").modal("show");  
+}
+
+function listarPerfilAsignado(){
+    $.ajax({
+        async:true,
+        type: "POST",
+        dataType: "html",
+        contentType: "application/x-www-form-urlencoded",
+        url:"parametros/ajax/listar_perfil_asignado.php",
+        data:{
+            id_tercero:$("#id_tercero").val(),
+            buscar:$("#txt_menu_asignado").val()
+        },
+        beforeSend:inicioEnvio,
+        success:function(data){
+              $("#lista-perfil-asignado").html(data);
+              $.unblockUI(""); 
+        },
+        error:function(){
+            toastr.error("Error General", null, opts);
+            $.unblockUI(""); 
+        }
+    });
+}
+
+function listarPerfilDisponible(){
+    $.ajax({
+        async:true,
+        type: "POST",
+        dataType: "html",
+        contentType: "application/x-www-form-urlencoded",
+        url:"parametros/ajax/listar_perfil_disponible.php",
+        data:{
+            id_tercero:$("#id_tercero").val(),
+            buscar:$("#txt_menu_disponible").val()
+        },
+        beforeSend:inicioEnvio,
+        success:function(data){
+              $("#lista-perfil-disponible").html(data);
+              $.unblockUI(""); 
+        },
+        error:function(){
+            toastr.error("Error General", null, opts);
+            $.unblockUI(""); 
+        }
+    });
+}
+
+function accionPerfil(accion){
+    var objPerfil = {id_menu:"",crear:"",editar:"",eliminar:"",imprimir:""};
+    var arrayPerfil = [];
+    objPerfil.id_menu = "";
+    objPerfil.crear ="";
+    objPerfil.editar="";
+    objPerfil.eliminar="";
+    objPerfil.imprimir="";
+
+    switch(accion){
+        case "retirar":       
+            $("#tbl_perfil_agregado tbody input[type=checkbox]").each(function(){
+                if($(this).is(":checked")){
+                    objPerfil.id_menu = $(this).val();
+                    objPerfil.crear ="";
+                    objPerfil.editar="";
+                    objPerfil.eliminar="";
+                    objPerfil.imprimir="";
+                    arrayPerfil.push(objPerfil);
+                    objPerfil = {id_menu:"",crear:"",editar:"",eliminar:"",imprimir:""};
+                    
+                }
+            });
+            break;
+        case "agregar":
+            $("#tbl_perfil_disponible tbody .chk input[type=checkbox]").each(function(){
+                if($(this).is(":checked")){
+                    objPerfil.id_menu = $(this).val();
+                    objPerfil.crear     = ($("#tr_"+$(this).val()+" .alert-success input[type=checkbox]").is(":checked"))?"S":"N";
+                    objPerfil.editar    = ($("#tr_"+$(this).val()+" .alert-warning input[type=checkbox]").is(":checked"))?"S":"N";
+                    objPerfil.eliminar  = ($("#tr_"+$(this).val()+" .alert-danger input[type=checkbox]").is(":checked"))?"S":"N";
+                    objPerfil.imprimir  = ($("#tr_"+$(this).val()+" .alert-info input[type=checkbox]").is(":checked"))?"S":"N"; 
+                    arrayPerfil.push(objPerfil);
+                    objPerfil = {id_menu:"",crear:"",editar:"",eliminar:"",imprimir:""};
+                }
+            });
+            break;            
+    }
+
+    if(arrayPerfil.length>0){
+        $.ajax({
+            async:true,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            url:"parametros/ajax/guardar_perfil.php",
+            data:{
+                id_tercero:$("#id_tercero").val(),
+                menu_array:JSON.stringify(arrayPerfil),
+                accion:accion
+            },
+            beforeSend:inicioEnvio,
+            success:function(data){
+                if(data.response.estado){
+                    toastr.success(data.response.mensaje, null, opts);
+                    listarPerfilAsignado();
+                    listarPerfilDisponible();
+                }
+                else{
+                    toastr.error(data.response.mensaje, null, opts);
+                }   
+                $.unblockUI(""); 
+            },
+            error:function(){
+                toastr.error("Error General", null, opts);
+                $.unblockUI(""); 
+            }
+        });
+    }
+}
