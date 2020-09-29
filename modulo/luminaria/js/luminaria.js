@@ -64,20 +64,44 @@ $(function() {
         return false;
     });
 
-    $("#btn_editar_luminaria").click(function(){
-        editarLuminaria(dataDetalleLuminaria);
-        accion = "editar";
+    $("#btn_editar_luminaria").click(function(){       
+        if (event.handled !== true) {
+            event.preventDefault();
+            editarLuminaria(dataDetalleLuminaria);
+            accion = "editar";   
+            event.handld = true;
+        }
+        return false;
     });
 
-    $("#btn_eliminar_luminaria").click(function(){
-        eliminarLuminaria(dataDetalleLuminaria);
-        accion = "eliminar";
+    $("#btn_eliminar_luminaria").click(function(){        
+        if (event.handled !== true) {
+            event.preventDefault();
+            eliminarLuminaria(dataDetalleLuminaria);
+            accion = "eliminar";   
+            event.handld = true;
+        }
+        return false;
     });
 
     $("#btn_guardar_luminaria").click(function(){
-        if(ValidarDatos(".requerido")){
-            guardarAccion(accion);
+        if (event.handled !== true) {
+            event.preventDefault();
+            if(ValidarDatos(".requerido")){
+                guardarAccion(accion);
+            }  
+            event.handld = true;
         }
+        return false;        
+    });
+
+    $("#btn_exportar_luminaria").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            exportarLuminaria(); 
+            event.handld = true;
+        }
+        return false;
     });
 
     $("#frm-luminaria").on('hidden.bs.modal',function(){ //accion cuando se cierra la ventana
@@ -131,6 +155,13 @@ function InitTableLuminaria() {
                 [15, 30, 50, 70, 100],
                 [15, 30, 50, 70, 100]
             ],
+            dom: 'Bfrtip',
+				buttons: [
+					'copyHtml5',
+					'excelHtml5',
+					'csvHtml5',
+					'pdfHtml5'
+				],
             "bStateSave": false,
             "processing": true,
             "serverSide": true,
@@ -344,3 +375,17 @@ function guardarAccion(accion){
     });
 }
 
+
+function exportarLuminaria(){
+    
+    var url = "luminaria_no="+$("#luminaria_no").val()+"&"+
+                "poste_no="+$("#poste_no").val()+"&"+
+                "municipio="+$("#municipio").val()+"&"+
+                "barrio="+$("#barrio").val()+"&"+
+                "fechaini="+$("#fch_instalacion_ini").val()+"&"+
+                "fechafin="+$("#fch_instalacion_fin").val()+"&"+
+                "direccion="+$("#direccion").val()+"&"+
+                "tipo="+$("#tipo").val();
+
+    window.open("luminaria/ajax/exportar_luminaria.php?"+url);
+}

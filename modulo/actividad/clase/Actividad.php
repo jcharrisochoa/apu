@@ -85,11 +85,13 @@ class Actividad extends General{
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(ac.fch_actividad) >= '".$post['fechaini']."' and date(ac.fch_actividad) <= '".$post['fechafin']."'";
 
-        $pos = $_POST['order']['0']['column'];	
-        $campo = $_POST['columns'][$pos]['name'];
-        $campo = ($campo=="")?"6":$campo;
-    
-        $q .= " order by ".$campo." ". $_POST['order']['0']['dir'];
+        if(!empty($post['order']['0']['column'])){
+            $pos = $_POST['order']['0']['column'];	
+            $campo = $_POST['columns'][$pos]['name'];
+            $campo = ($campo=="")?"6":$campo;
+        
+            $q .= " order by ".$campo." ". $_POST['order']['0']['dir'];
+        }
 
         if (!empty($post['start']) or !empty($post['length']))
             $q .= " limit ".$post['start'].",".$post['length'];
@@ -350,6 +352,45 @@ class Actividad extends General{
         }
         else{
             return $this->result->fields['total'];
+        }
+    }
+
+    function resumenActividadPeriodo($post){
+       
+        $q = "";
+
+        if(!empty($post['tipo_actividad'])){
+            $q = " and id_tipo_actividad=".$post['tipo_actividad'];
+        }
+
+        if(!empty($post['periodo'])){
+            $q .= " and year(fch_actividad)=".$post['periodo'];
+        }
+
+        $this->sql = "select descripcion, 
+                    (select count(1) from actividad where month(fch_actividad)=1 and id_municipio=m.id_municipio ".$q.") as ene,
+                    (select count(1) from actividad where month(fch_actividad)=2 and id_municipio=m.id_municipio ".$q.") as feb,
+                    (select count(1) from actividad where month(fch_actividad)=3 and id_municipio=m.id_municipio ".$q.") as mar,
+                    (select count(1) from actividad where month(fch_actividad)=4 and id_municipio=m.id_municipio ".$q.") as abr,
+                    (select count(1) from actividad where month(fch_actividad)=5 and id_municipio=m.id_municipio ".$q.") as may,
+                    (select count(1) from actividad where month(fch_actividad)=6 and id_municipio=m.id_municipio ".$q.") as jun,
+                    (select count(1) from actividad where month(fch_actividad)=7 and id_municipio=m.id_municipio ".$q.") as jul,
+                    (select count(1) from actividad where month(fch_actividad)=8 and id_municipio=m.id_municipio ".$q.") as ago,
+                    (select count(1) from actividad where month(fch_actividad)=9 and id_municipio=m.id_municipio ".$q.") as sep,
+                    (select count(1) from actividad where month(fch_actividad)=10 and id_municipio=m.id_municipio ".$q.") as oct,
+                    (select count(1) from actividad where month(fch_actividad)=11 and id_municipio=m.id_municipio ".$q.") as nov,
+                    (select count(1) from actividad where month(fch_actividad)=12 and id_municipio=m.id_municipio ".$q.") as dic 
+                    from municipio m
+                    where 
+                    m.tiene_contrato='S'
+                    order by m.descripcion";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando resumen de actividades ". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
         }
     }
 }

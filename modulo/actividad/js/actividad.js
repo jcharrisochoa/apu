@@ -138,6 +138,16 @@ $(function() {
         
     });
 
+    $("#btn_exportar_actividad").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            exportarActividad(); 
+            event.handld = true;
+        }
+        return false;
+    });
+
+    
     $("#txt_luminaria").keydown(function(event){
         if(event.keyCode == 13){
            if(event.handled !== true){
@@ -713,4 +723,17 @@ function listarServicioActividad(){
             $.unblockUI(""); 
         }
     });
+}
+
+function exportarActividad(){
+    
+    var url = "luminaria_no="+$("#luminaria_no").val()+"&"+
+                "poste_no="+$("#poste_no").val()+"&"+
+                "municipio="+$("#municipio").val()+"&"+
+                "barrio="+$("#barrio").val()+"&"+
+                "tipo_actividad ="+$("#tipo_actividad").val()+"&"+
+                "fechaini="+$("#fch_actividad_ini").val()+"&"+
+                "fechafin="+$("#fch_actividad_fin").val();
+
+    window.open("actividad/ajax/exportar_actividad.php?"+url);
 }

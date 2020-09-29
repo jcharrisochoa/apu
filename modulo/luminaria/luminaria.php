@@ -71,6 +71,9 @@ else{
         <button type="button" id="btn_eliminar_luminaria" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
         <?php } ?>
         <button type="button" id="btn_detalle_luminaria" class="btn btn-blue btn-icon icon-left">Detalle<i class="entypo-info"></i></button>
+        <?php if($IMPRIMIR=="S"){ ?>
+        <button type="button" id="btn_exportar_luminaria" class="btn btn-primary btn-icon icon-left">Descargar<i class="entypo-down"></i></button>
+        <?php } ?>
     </div>
 </div>
 <br/>

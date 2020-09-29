@@ -290,9 +290,36 @@ function guardarAccion(accion){
 
 function verPerfil(id_tercero){  
     $("#id_tercero").val(id_tercero);
+    $.ajax({
+        async:true,
+        type: "POST",
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        url:"parametros/ajax/buscar_tercero.php",
+        data:{
+            id_tercero:id_tercero
+        },
+        beforeSend:inicioEnvio,
+        success:function(data){
+            if(data.estado){
+                $("#modal-titulo-detalle-tercero").html("Perfil Usuario "+data.nombre+" "+data.apellido);
+                $("#modal-detalle-tercero").modal("show");
+            }
+            else{
+                toastr.error(data.mensaje, null, opts);
+            }            
+            $.unblockUI("");            
+        },
+        error:function(){
+            toastr.error("Error General", null, opts);
+            $.unblockUI(""); 
+        }
+    });
+
+
     listarPerfilAsignado();
     listarPerfilDisponible();
-    $("#modal-detalle-tercero").modal("show");  
+     
 }
 
 function listarPerfilAsignado(){

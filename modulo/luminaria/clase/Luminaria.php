@@ -95,7 +95,7 @@ class Luminaria{
         $this->sql = "select l.id_luminaria,l.poste_no,l.luminaria_no,m.descripcion as municipio,l.direccion,b.descripcion as barrio,l.latitud,l.longitud,l.fch_instalacion,
                     el.descripcion as estado,tl.descripcion as tipo,l.potencia,l.referencia,l.fch_registro,tc. usuario,
                     (select razon_social from tercero where id_tercero = l.id_tercero_proveedor) as proveedor,
-                    (select concat(nombre,' ',apellido) from tercero where id_tercero = l.id_tercero) as instalador,
+                    (select concat(nombre,' ',coalesce(apellido,'')) from tercero where id_tercero = l.id_tercero) as instalador,
                     l.id_municipio,l.id_barrio,l.id_tercero,id_tercero_proveedor,l.id_estado_luminaria,
                     l.id_tipo_luminaria
                     from luminaria l
@@ -136,8 +136,8 @@ class Luminaria{
                         )
                         VALUES(
                         '".$post['txt_poste_no']."','".$post['txt_luminaria_no']."',".$post['slt_tipo_luminaria'].",
-                        ".$post['slt_municipio'].",'".$post['txt_direccion']."',".$post['slt_barrio'].",".$latitud.",
-                        ".$longitud.",".$post['slt_tercero'].",null,null,'".$post['txt_fch_instalacion']."',
+                        ".$post['slt_municipio'].",'".$post['txt_direccion']."',".$post['slt_barrio'].",".str_replace(",",".",$latitud).",
+                        ".str_replace(",",".",$longitud).",".$post['slt_tercero'].",null,null,'".$post['txt_fch_instalacion']."',
                         now(),".$_SESSION['id_tercero'].",".$post['slt_estado'].",".$proveedor."
                         );";
 
@@ -197,8 +197,8 @@ class Luminaria{
                     id_municipio=".$post['slt_municipio'].",
                     direccion='".$post['txt_direccion']."',
                     id_barrio=".$post['slt_barrio'].",
-                    latitud=".$latitud.",
-                    longitud=".$longitud.",
+                    latitud=".str_replace(",",".",$latitud).",
+                    longitud=".str_replace(",",".",$longitud).",
                     fch_instalacion='".$post['txt_fch_instalacion']."',
                     id_estado_luminaria=".$post['slt_estado'].",
                     id_tercero=".$post['slt_tercero'].",
