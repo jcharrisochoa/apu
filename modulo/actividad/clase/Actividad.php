@@ -42,6 +42,8 @@ class Actividad extends General{
             $q .= " and l.luminaria_no = '".$post['luminaria_no']."'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(ac.fch_actividad) >= '".$post['fechaini']."' and date(ac.fch_actividad) <= '".$post['fechafin']."'";
+        if(!empty($post['id_pqr']))
+            $q .= " and ac.id_pqr=".$post['id_pqr'];
         
             $this->sql = "select count(ac.id_actividad) as total
                 from actividad ac
@@ -84,6 +86,8 @@ class Actividad extends General{
             $q .= " and l.luminaria_no = '".$post['luminaria_no']."'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
             $q .= " and date(ac.fch_actividad) >= '".$post['fechaini']."' and date(ac.fch_actividad) <= '".$post['fechafin']."'";
+        if(!empty($post['id_pqr']))
+            $q .= " and ac.id_pqr=".$post['id_pqr'];
 
         if(!empty($post['order']['0']['column'])){
             $pos = $_POST['order']['0']['column'];	
@@ -355,6 +359,7 @@ class Actividad extends General{
         }
     }
 
+    //--Informes y graficos--
     function resumenActividadPeriodo($post){
        
         $q = "";
@@ -387,6 +392,54 @@ class Actividad extends General{
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
             echo "Error Consultando resumen de actividades ". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
+
+    function totalActividadTipoPeriodo(){
+        $this->sql = "select count(*) as cantidad,year(fch_actividad) as periodo,ta.descripcion as tipo
+                        from actividad a
+                        right join tipo_actividad ta using(id_tipo_actividad)
+                        group by year(fch_actividad),ta.descripcion
+                        order by year(fch_actividad)";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando cantidad de actividades ". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
+
+    function cantidadActividadMunicipio(){
+        $this->sql = "select count(*) as cantidad ,m.descripcion as municipio
+                    from actividad a join municipio m using(id_municipio)
+                    group by m.descripcion
+                    order by m.descripcion";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando cantidad de actividades ". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
+
+    function cantidadActividadPeriodoActualMes(){
+        $this->sql = "select count(*) as cantidad,month(fch_actividad) as mes
+                        from actividad a 
+                        where
+                        year(fch_actividad)=year(now())
+                        group by month(fch_actividad)
+                        order by month(fch_actividad)";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando cantidad de actividades ". $this->db->ErrorMsg();
             return false;
         }
         else{

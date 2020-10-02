@@ -2,6 +2,7 @@ var tablePQR = "";
 var dataDetallePQR = "";
 var dataSet = [];
 var accion = "";
+var tableActividad = "";
 
 $(function(){
     $("#txt_identificacion").numeric();
@@ -56,7 +57,16 @@ $(function(){
     $("#btn_buscar_usuario_servicio").click(function(event) {
         if (event.handled !== true) {
             event.preventDefault();
-            buscarUsuarioServicio();    
+            if($.trim($("#txt_identificacion").val())==""){
+                $("#frm-usuario-servicio").modal("show"); 
+                $("#frm-usuario-servicio").css("z-index", "15001");
+                tableUsuarioServicio.ajax.reload();
+                detalleUsuarioServicio = "";
+
+            }
+            else{
+                buscarUsuarioServicio();    
+            }
             event.handld = true;
         }
         return false;
@@ -129,6 +139,7 @@ $(function(){
                 $("#frm-punto-luminico").css("z-index", "15001");
                 $("#flt_municipio").val($("#slt_municipio").val()).change();
                 tablePuntoLuminico.ajax.reload();
+                dataDetallePuntoLuminico = "";
             }
             else
                 toastr.warning("Seleccione el municipio", null, opts);
@@ -147,6 +158,20 @@ $(function(){
             $("#txt_luminaria").val("");
             $("#txt_direccion_reporte").val("");
             $("#slt_barrio_reporte").val("");
+        }
+        return false;
+    });
+    
+    $("#btn_cancelar_usuario_servicio").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            event.handld = true;
+            $("#id_usuario_servicio").val("");
+            $("#txt_identificacion").val("");
+            $("#txt_nombre").val("");
+            $("#txt_direccion").val("");
+            $("#txt_telefono").val("");
+            $("#slt_tipo_identificacion").val("");
         }
         return false;
     });
@@ -171,15 +196,6 @@ $(function(){
         return false;
     });
 
-
-    //$("#frm-punto-luminico").on('hidden.bs.modal',function(){
-       // $(this).modal('dispose');
-        //$(this).off('hidden.bs.modal'); 
-      //  $('body').removeClass('modal-open');
-        //$('.modal-backdrop').remove();
-        //$("#frm-pqr").modal("show"); 
-    //});
-
     $("#frm-punto-luminico").off().on('hidden.bs.modal',function(){
         //$(".modal-backdrop").not(':first').remove();
         $("#frm-pqr").css("z-index", "15000"); //foco del modal inicial
@@ -191,6 +207,19 @@ $(function(){
         $("#txt_direccion_reporte").val(dataDetallePuntoLuminico.direccion);
         $("#slt_barrio_reporte").val(dataDetallePuntoLuminico.id_barrio).change();
     });
+
+    $("#frm-usuario-servicio").off().on('hidden.bs.modal',function(){
+        $("#frm-pqr").css("z-index", "15000"); //foco del modal inicial
+        $('body').addClass('modal-open'); //render nuevamente el modal inicial
+        //console.log(detalleUsuarioServicio);
+        $("#id_usuario_servicio").val(detalleUsuarioServicio.id_usuario_servicio);
+        $("#txt_identificacion").val(detalleUsuarioServicio.identificacion);
+        $("#txt_nombre").val(detalleUsuarioServicio.nombre);
+        $("#txt_direccion").val(detalleUsuarioServicio.direccion);
+        $("#txt_telefono").val(detalleUsuarioServicio.telefono);
+        $("#slt_tipo_identificacion").val(detalleUsuarioServicio.id_tipo_identificacion).change();
+    });
+
     $("#frm-pqr").off().on('hidden.bs.modal',function(){
         $("#modal-mensaje-global").css("z-index", "15001"); //foco del modal inicial
         $('body').addClass('modal-open'); //render nuevamente el modal inicial
@@ -413,6 +442,10 @@ function verDetallePQR(){
 
         listarArchivo("detalle-panel-archivo",false);
         listarComentario();
+        if ($.fn.DataTable.isDataTable("#tbl_actividad_pqr")) {
+            tableActividad.destroy();
+        }
+        InitTableActividad(dataDetallePQR);
         $("#modal-titulo-detalle-pqr").html("Detalle PQR No "+dataDetallePQR.id_pqr);
         $("#modal-detalle-pqr").modal("show");        
     }
@@ -745,4 +778,41 @@ function cerrarPQR(){
     else{
         toastr.info("PQR ya fue cerrada", null, opts);  
     }
+}
+
+function InitTableActividad(dataDet) {
+
+    tableActividad = $("#tbl_actividad_pqr").on("preXhr.dt", function(e, settings, data) {
+        data.id_pqr = dataDet.id_pqr
+    }).DataTable({
+        "aLengthMenu": [
+            [3, 5, 10],
+            [3, 5, 10]
+        ],
+        "bStateSave": false,
+        "processing": true,
+        "serverSide": true,
+        "responsive": true,
+        "bAutoWidth": true,
+        "searching": false,
+        "ajax": {
+            "url": "pqr/ajax/listar_actividad.php",
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "item", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "codigo", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "tipo", className: "alignRight", "searchable": false, "orderable": false },
+            { "data": "descripcion", "searchable": false, "orderable": false },
+            { "data": "direccion", "searchable": false, "orderable": false },
+            { "data": "fch_reclamo", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "fch_ejecucion", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "tecnico", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "estado_actividad", className: "alignCenter", "searchable": false, "orderable": false },
+
+        ],
+        language: {
+            url: "../../../../libreria/DataTableSp.json"
+        }
+    });
 }

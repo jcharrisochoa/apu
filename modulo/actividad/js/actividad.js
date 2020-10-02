@@ -20,6 +20,8 @@ var accion = "";
 var tableServicioActividad = "";
 var item    = 0;
 var detalleActividad = "";
+var tablePQR = "";
+var detallePQR = "";
 
 $(function() {
 
@@ -147,12 +149,16 @@ $(function() {
         return false;
     });
 
-    
     $("#txt_luminaria").keydown(function(event){
         if(event.keyCode == 13){
            if(event.handled !== true){
                event.preventDefault();
-               buscarLuminaria(); 
+               if($("#slt_municipio").val()!=""){
+                    buscarLuminaria();
+               }
+               else{
+                    toastr.warning("Seleccione el municipio", null, opts);
+               } 
                event.handld = true;
            };
        }
@@ -163,7 +169,12 @@ $(function() {
         if(event.keyCode == 13){
            if(event.handled !== true){
                event.preventDefault();
-               buscarPQR(); 
+               if($("#slt_municipio").val()!=""){
+                    buscarPQR(); 
+               }
+               else{
+                    toastr.warning("Seleccione el municipio", null, opts);  
+               }
                event.handld = true;
            };
        }
@@ -191,9 +202,188 @@ $(function() {
        }
        //return false;
     });
-   
+
+    $("#btn_buscar_luminaria").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            if($("#slt_municipio").val()!=""){
+                if($("#txt_luminaria").val()!=""){
+                    buscarLuminaria(); 
+                }
+                else{
+                    $("#frm-punto-luminico").modal("show"); 
+                    $("#frm-punto-luminico").css("z-index", "15001");
+                    $("#flt_municipio").val($("#slt_municipio").val()).change();
+                    tablePuntoLuminico.ajax.reload();
+                    dataDetallePuntoLuminico = "";
+                }
+            }
+            else
+                toastr.warning("Seleccione el municipio", null, opts);
+
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_cancelar_punto_luminico").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            event.handld = true;
+            $("#id_luminaria").val("");
+            $("#txt_poste").val("");
+            $("#txt_luminaria").val("");
+            $("#txt_direccion").val("");
+            $("#slt_barrio").val("");
+            $("#slt_tipo_luminaria").val("");
+        }
+        return false;
+    });
+
+    $("#frm-punto-luminico").off().on('hidden.bs.modal',function(){
+        $("#frm-actividad").css("z-index", "15000"); //foco del modal inicial
+        $('body').addClass('modal-open'); 
+        //console.log(dataDetallePuntoLuminico);
+        $("#id_luminaria").val(dataDetallePuntoLuminico.id_luminaria);
+        $("#txt_poste").val(dataDetallePuntoLuminico.poste_no);
+        $("#txt_luminaria").val(dataDetallePuntoLuminico.luminaria_no);
+        $("#txt_direccion").val(dataDetallePuntoLuminico.direccion);
+        $("#slt_barrio").val(dataDetallePuntoLuminico.id_barrio).change();
+        $("#slt_tipo_luminaria").val(dataDetallePuntoLuminico.id_tipo_luminaria).change();
+    });
+
+    $("#btn_buscar_pqr").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            if($("#slt_municipio").val()!=""){
+                if($("#txt_pqr").val()!=""){
+                    buscarPQR(); 
+                }
+                else{
+                    $("#frm-pqr").modal("show"); 
+                    $("#frm-pqr").css("z-index", "15001");
+                    tablePQR.ajax.reload();
+                    detallePQR = "";
+                }
+            }
+            else
+                toastr.warning("Seleccione el municipio", null, opts);
+
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_cancelar_pqr").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            event.handld = true;
+            $("#id_pqr").val("");
+            $("#txt_pqr").val("");
+            $("#txt_fch_pqr").val("");
+            $("#txt_tipo_reporte").val("");
+            $("#txt_tipo_pqr").val("");
+            $("#txt_luminaria").val("");
+            $("#slt_tipo_luminaria").val("").change();
+            $("#id_luminaria").val("");
+            $("#txt_poste").val("");
+            $("#txt_direccion").val("");
+            $("#slt_barrio").val("").change();
+    
+        }
+        return false;
+    });
+    
+    $("#frm-pqr").off().on('hidden.bs.modal',function(){
+        $("#frm-actividad").css("z-index", "15000"); //foco del modal inicial
+        $('body').addClass('modal-open'); 
+        $("#id_pqr").val(detallePQR.id_pqr);
+        $("#txt_pqr").val(detallePQR.id_pqr);
+        $("#txt_fch_pqr").val(detallePQR.fecha_reporte);
+        $("#txt_tipo_reporte").val(detallePQR.tipo_reporte);
+        $("#txt_tipo_pqr").val(detallePQR.tipo_pqr);
+
+        $("#txt_luminaria").val(detallePQR.luminaria_no);
+        $("#slt_tipo_luminaria").val(detallePQR.id_tipo_luminaria).change();
+        $("#id_luminaria").val(detallePQR.id_luminaria);
+        $("#txt_poste").val(detallePQR.poste_no);
+        $("#txt_direccion").val(detallePQR.direccion_luminaria);
+        $("#slt_barrio").val(detallePQR.id_barrio_luminaria).change();
+
+        detallePQR = "";
+    });
+
+    $("#btn_filtrar_pqr").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();            
+            tablePQR.ajax.reload();
+            detallePQR = "";
+            event.handld = true;
+        }
+        return false;
+    });
+    
+    $("#flt_radicado").numeric({
+        negative:false,
+        decimal:false
+    });
+
+    $("#flt_identificacion_pqr").numeric({
+        negative:false,
+        decimal:false
+    });
+
+    $("#flt_radicado").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               tablePQR.ajax.reload();
+                detallePQR = "";
+               event.handld = true;
+           };
+       }
+       //return false;
+    });
+
+    $("#flt_direccion_usuario_pqr").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               tablePQR.ajax.reload();
+                detallePQR = "";
+               event.handld = true;
+           };
+       }
+       //return false;
+    });
+
+    $("#flt_nombre").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               tablePQR.ajax.reload();
+                detallePQR = ""; 
+               event.handld = true;
+           };
+       }
+       //return false;
+    });
+
+    $("#flt_identificacion_pqr").keydown(function(event){
+        if(event.keyCode == 13){
+           if(event.handled !== true){
+               event.preventDefault();
+               tablePQR.ajax.reload();
+                detallePQR = ""; 
+               event.handld = true;
+           };
+       }
+       //return false;
+    });
+
     InitTableActividad();
     initTableArticulo();
+    InitTablePQR();
 });
 
 function listarBarrioActividad(controlMunicipio,controlBarrio) {
@@ -736,4 +926,63 @@ function exportarActividad(){
                 "fechafin="+$("#fch_actividad_fin").val();
 
     window.open("actividad/ajax/exportar_actividad.php?"+url);
+}
+
+function InitTablePQR() {
+    if (!$.fn.DataTable.isDataTable("#tbl_pqr")) {
+        tablePQR = $("#tbl_pqr").on("preXhr.dt", function(e, settings, data) {
+            data.municipio = $("#slt_municipio").val(),
+            data.id_pqr     = $("#flt_radicado").val(),
+            data.direccion  = $("#flt_direccion_usuario_pqr").val(),
+            data.nombre     = $("#flt_nombre").val(),
+            data.identificacion = $("#flt_identificacion_pqr").val(),
+            data.fechaini   = $("#flt_fch_pqr_ini").val(),
+            data.fechafin   = $("#flt_fch_pqr_fin").val()
+        }).DataTable({ ///todo por una D jeje
+            "aLengthMenu": [
+                [10, 15, 20],
+                [10, 15, 20]
+            ],
+            "bStateSave": false,
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "bAutoWidth": true,
+            "searching": false,
+            "ajax": {
+                "url": "actividad/ajax/listar_pqr.php",
+                "type": "POST"
+            },
+            "columns": [
+                { "data": "item",className: "text-center","searchable": false,"orderable": false},
+                { "data": "id_pqr",className: "text-center","searchable": false,"orderable": true,"name":"p.id_pqr"},
+                { "data": "nombre",className: "text-left","searchable": false,"orderable": true,"name":"p.nombre_usuario_servicio"},
+                { "data": "direccion",className: "text-left","searchable": false,"orderable": true,"name":"p.direccion_reporte"},
+                { "data": "barrio",className: "text-left","searchable": false,"orderable": true,"name":"b.descripcion"},
+                { "data": "tipo_reporte",className: "text-left","searchable": false,"orderable": true,"name":"tr.descripcion"},
+                { "data": "tipo_pqr",className: "text-left","searchable": false,"orderable": true,"name":"tp.descripcion"},
+                { "data": "fecha_reporte", className: "text-center", "searchable": false, "orderable": true,"name":"p.fch_pqr" },
+                { "data": "estado", className: "text-center", "searchable": false, "orderable": false },
+                { "data": "id_luminaria","bVisible": false, className: "text-center", "searchable": false, "orderable": false },
+                { "data": "luminaria_no","bVisible": false, className: "text-center", "searchable": false, "orderable": false },
+                { "data": "poste_no","bVisible": false, className: "text-center", "searchable": false, "orderable": false },
+                { "data": "id_tipo_luminaria","bVisible": false, className: "text-center", "searchable": false, "orderable": false },
+                { "data": "id_barrio_luminaria","bVisible": false, className: "text-center", "searchable": false, "orderable": false },
+                { "data": "direccion_luminaria","bVisible": false, className: "text-center", "searchable": false, "orderable": false }
+
+            ],
+            "order": [
+                [1,"DESC"]
+            ],
+            language: {
+                url: "../../../../libreria/DataTableSp.json"
+            }
+        });
+    }
+    $("#tbl_pqr tbody").on("click", "tr", function() {
+        $("#tbl_pqr tbody tr").removeClass("highlight");
+        $(this).addClass("highlight");
+        detallePQR = tablePQR.row(this).data();
+        $("#frm-pqr").modal("hide");
+    });
 }

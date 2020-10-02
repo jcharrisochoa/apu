@@ -92,10 +92,11 @@ class PQR extends General{
         $this->sql = "select p.*,m.descripcion as municipio,tp.descripcion as tipo_pqr,tr.descripcion as tipo_reporte,
                     mr.descripcion as medio_recepcion,us.id_tipo_identificacion,us.identificacion,us.nombre,us.direccion,
                     us.telefono,us.email,ti.abreviatura,ep.descripcion as estado,tc.usuario,l.poste_no,l.luminaria_no,
+                    l.direccion as direccion_luminaria,l.id_tipo_luminaria,l.id_barrio as id_barrio_luminaria,
                     ep.permitir_edicion,ep.permitir_eliminar,ti.abreviatura,p.id_barrio_reporte,
                     p.direccion_reporte,p.nombre_usuario_servicio,p.direccion_usuario_servicio,p.telefono_usuario_servicio,p.fch_cierre,
-                    (select descripcion from barrio where id_municipio=p.id_municipio and id_barrio=p.id_barrio_reporte) as barrio_reporte,
-                    (select nombre from tercero where id_tercero=p.id_tercero_cierra) as tercero_cierra
+                    (select nombre from tercero where id_tercero=p.id_tercero_cierra) as tercero_cierra,
+                    b.descripcion as barrio_reporte
                     from pqr p
                     join municipio m using(id_municipio) 
                     left join luminaria l using(id_luminaria)
@@ -106,6 +107,7 @@ class PQR extends General{
                     left join tipo_identificacion ti using(id_tipo_identificacion)
                     join estado_pqr ep using(id_estado_pqr)
                     join tercero tc on(p.id_tercero_registra = tc.id_tercero)
+                    left join barrio b on(b.id_barrio = p.id_barrio_reporte)
                     where
                     1=1
                     ".$q;

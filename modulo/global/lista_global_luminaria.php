@@ -10,16 +10,16 @@ $i=0;
 $lista=array();
 while (!$result->EOF){
     $lista[$i]=array(                    
-        "item"          => $i+1, //$value['item'],
-        "municipio"     => $result->fields['municipio'],
-        "tipo"          => $result->fields['tipo'],
-        "poste_no"      => $result->fields['poste_no'],
-        "luminaria_no"  => $result->fields['luminaria_no'],
-        "barrio"        => $result->fields['barrio'],
-        "direccion"     => $result->fields['direccion'],
-        "id_luminaria"  => $result->fields['id_luminaria'],
-        //"id_municipio"          => $result->fields['id_municipio'],
-        "id_barrio"             => $result->fields['id_barrio']
+        "item"                  => $i+1, //$value['item'],
+        "municipio"             => $result->fields['municipio'],
+        "tipo"                  => $result->fields['tipo'],
+        "poste_no"              => $result->fields['poste_no'],
+        "luminaria_no"          => $result->fields['luminaria_no'],
+        "barrio"                => $result->fields['barrio'],
+        "direccion"             => $result->fields['direccion'],
+        "id_luminaria"          => $result->fields['id_luminaria'],
+        "id_barrio"             => $result->fields['id_barrio'],
+        "id_tipo_luminaria"     => $result->fields['id_tipo_luminaria']
         );                    
     $i++;
     $result->MoveNext();

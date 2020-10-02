@@ -408,11 +408,9 @@ else{
                                                 <div class="input-group">
                                                     <input type="text" class="form-control clear" id="txt_identificacion" name="txt_identificacion" placeholder="Identifiaci&oacute;n" title="Identifiaci&oacute;n">	                                    
                                                     <div class="input-group-btn">					
-                                                        <button type="button" id="btn_buscar_usuario_servicio" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
+                                                        <button type="button" id="btn_buscar_usuario_servicio" class="btn btn-blue"><i class="entypo-search"></i></button>
+                                                        <button id="btn_cancelar_usuario_servicio" class="btn btn-default "><i class="entypo-cancel"></i></button>
                                                     </div>
-                                                    <!--<div class="input-group-btn">					
-                                                        <button type="button" class="btn btn-default btn-icon icon-left">Crear<i class="entypo-user-add"></i></button>
-                                                    </div>-->
                                                 </div>
                                             </div>
                                         </div>
@@ -820,6 +818,23 @@ else{
                                 </div>
                             </div>
                             <div class="panel-body" id="panel-comentario">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered datatable " id="tbl_actividad_pqr">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>C&oacute;digo</th>
+                                                <th>Tipo</th>
+                                                <th>Descripci&oacute;n</th>
+                                                <th>Direccion</th>
+                                                <th>Reclamo</th>
+                                                <th>Revision</th>
+                                                <th>T&eacute;cnico</th> 
+                                                <th>Estado</th>                                      
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

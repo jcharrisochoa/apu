@@ -71,6 +71,9 @@ if(empty($_SESSION['id_tercero'])){
 	<script src="../libreria/neon/assets/js/bootstrap-datepicker.js"></script>
 	<script src="../libreria/neon/assets/js/datatables/DataTables-1.10.9/js/jquery.dataTables.min.js"></script>
 	<script src="../libreria/neon/assets/js/icheck/icheck.min.js"></script>
+	<script src="../libreria/neon/assets/js/morris.min.js"></script>
+	<script src="../libreria/neon/assets/js/raphael-min.js"></script>
+	
 	<!-- JavaScripts initializations and stuff -->
 	<script src="../libreria/neon/assets/js/neon-custom.js"></script>
 	<script src="../libreria/neon/assets/js/toastr.js"></script>
@@ -219,7 +222,74 @@ if(empty($_SESSION['id_tercero'])){
 		
 			</div>
 
-			<div class="row" id="contenido"></div>
+			<div class="row" id="contenido">
+			<!---	<div class="row">
+					<div class="col-md-12">
+						<p>GRAFICOS SOLO DEL PERIODO ACTUAL /// HACER UNA CARPETA SOLO PARA EL DASHBOARD</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="panel panel-primary" data-collapsed="0">					
+							<div class="panel-heading">
+								<div class="panel-title">Actividades del Periodo</div>                
+								<div class="panel-options">
+									<a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+								</div>
+							</div>            
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-12">   
+										<div id="chart_actividad_periodo_actual">
+										
+										</div>
+									</div>
+								</div>
+							</div>					
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="panel panel-primary" data-collapsed="0">					
+							<div class="panel-heading">
+								<div class="panel-title">Actividades del Periodo</div>                
+								<div class="panel-options">
+									<a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+								</div>
+							</div>            
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-12">   
+										<div id="chart_actividad_tipo_periodo">
+										
+										</div>
+									</div>
+								</div>
+							</div>					
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="panel panel-primary" data-collapsed="0">					
+							<div class="panel-heading">
+								<div class="panel-title">Actividades del Periodo</div>                
+								<div class="panel-options">
+									<a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+								</div>
+							</div>            
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-12">   
+										<div id="chart_actividad_municipio">
+										
+										</div>
+									</div>
+								</div>
+							</div>					
+						</div>
+					</div>
+				</div>
+			-->
+			</div>
 		
 		</div>
 	</div>
@@ -273,7 +343,7 @@ if(empty($_SESSION['id_tercero'])){
 				<!--Filtros-->
 				<div class="row">
 					<div class="col-md-12">
-						<div class="panel panel-default panel-shadow" data-collapsed="1">
+						<div class="panel panel-default panel-shadow" data-collapsed="0">
 							<div class="panel-heading">
 								<div class="panel-title">Filtros</div>                
 								<div class="panel-options">
@@ -388,6 +458,104 @@ if(empty($_SESSION['id_tercero'])){
 			</div>
 			<div class="modal-footer">
                 <button type="button" class="btn btn-default btn-icon icon-left" id="btn_cerrar_listado_punto_luminico" data-dismiss="modal">Cerrar<i class="entypo-cancel"></i></button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--Fin Listado-->
+
+<!--Listado Usuarios Servicio-->
+<div class="modal fade custom-width" id="frm-usuario-servicio" role="dialog" data-keyboard="false" data-backdrop="static" >
+    <div class="modal-dialog" style="width: 80%;">
+        <div class="modal-content">            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="frm-titulo-usuario-servicio">Listado Usuarios</h4>
+            </div>            
+            <div class="modal-body">
+				<!--Filtros-->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default panel-shadow" data-collapsed="0">
+							<div class="panel-heading">
+								<div class="panel-title">Filtros</div>                
+								<div class="panel-options">
+									<a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+									<!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
+								</div>
+							</div>
+							<div class="panel-body"> 
+
+								<div class="row">            
+									<div class="form-group">					
+
+										<div class="col-xs-12 col-md-2">
+											<label for="flt_identificacion" class="control-label">Identificaci&oacute;n</label> 
+											<input type="text" id="flt_identificacion" name="flt_identificacion"  class="form-control" placeholder="IDENTIFICACION"/> 
+										</div>
+
+										<div class="col-xs-12 col-md-4">
+											<label for="flt_nombre" class="control-label">Nombre</label> 
+											<input type="text" id="flt_nombre" name="flt_nombre"  class="form-control" placeholder="NOMBRE"/> 
+										</div>
+
+										<div class="col-xs-12 col-md-4">
+											<label for="flt_direccion_usuario" class="control-label">Direcci&oacute;n</label> 
+											<input type="text" title="Direcci&oacute;n" id="flt_direccion_usuario" name="flt_direccion_usuario"  class=" form-control" placeholder="DIRECCION"/> 
+										</div>
+
+										<div class="col-xs-12 col-md-2">											
+											<label for="btn_filtrar_usuario_servicio" class="control-label">&nbsp;</label> 
+											<button type="button" class="btn btn-blue btn-icon icon-left form-control" id="btn_filtrar_usuario_servicio" name="btn_filtrar_usuario_servicio">
+												Buscar
+												<i class="entypo-search"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div> 
+				<!--Fin Filtros-->
+				<!--Listado-->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default panel-shadow" data-collapsed="0">
+							<div class="panel-heading">
+								<div class="panel-title">Listado</div>                
+								<div class="panel-options">
+									<a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+									<!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
+								</div>
+							</div>
+							<div class="panel-body"> 								
+								<div class="table-responsive panel-shadow">
+								<table id="tbl_usuario_servicio" class="table table-bordered datatable table-responsive">
+									<thead>
+										<tr> 
+											<th style="text-align: center">#</th>
+											<th style="text-align: center">TIPO IDENTIFICACION</th>
+											<th style="text-align: center">IDENTIFICACION</th>
+											<th style="text-align: center">NOMBRE</th>
+											<th style="text-align: center">DIRECCION</th>
+											<th style="text-align: center">TELEFONO</th>
+											<th style="text-align: center">ID_USUARIO_SERVICIO</th>
+											<th style="text-align: center">ID_TIPO_IDENTIFICACION</th>
+										</tr>
+									</thead>
+								</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--fin-->
+			</div>
+			<div class="modal-footer">
+                <button type="button" class="btn btn-default btn-icon icon-left" id="btn_cerrar_listado_usuario_servicio" data-dismiss="modal">Cerrar<i class="entypo-cancel"></i></button>
             </div>
 
         </div>

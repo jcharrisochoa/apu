@@ -382,7 +382,8 @@ else{
                                                 <div class="input-group">                       
                                                     <input type="text" class="form-control clear" id="txt_pqr" name="txt_pqr" placeholder="PQR / Reporte" title="PQR/Reporte">
                                                     <div class="input-group-btn">					
-                                                        <button type="button" id="btn_buscar_pqr" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
+                                                        <button type="button" id="btn_buscar_pqr" class="btn btn-blue"><i class="entypo-search"></i></button>
+                                                        <button id="btn_cancelar_pqr" class="btn btn-default "><i class="entypo-cancel"></i></button>
                                                     </div>
                                                 </div>
                                             </div>	                            
@@ -394,7 +395,8 @@ else{
                                                 <div class="input-group">                       
                                                     <input type="text" class="form-control clear" id="txt_luminaria" name="txt_luminaria" placeholder="Punto Luminico" title="Punto Luminico">
                                                     <div class="input-group-btn">					
-                                                        <button type="button" id="btn_buscar_luminaria" class="btn btn-blue btn-icon icon-left">Buscar<i class="entypo-search"></i></button>
+                                                        <button type="button" id="btn_buscar_luminaria" class="btn btn-blue "><i class="entypo-search"></i></button>
+                                                        <button id="btn_cancelar_punto_luminico" class="btn btn-default "><i class="entypo-cancel"></i></button>
                                                     </div>
                                                 </div>
                                             </div>	                            
@@ -658,5 +660,137 @@ else{
         </div>
     </div>
 </div>
-	
 <!--fin-->
+
+<!--Modal PQR-->
+<div class="modal fade custom-width" id="frm-pqr" role="dialog" data-keyboard="false" data-backdrop="static" >
+    <div class="modal-dialog" style="width: 80%;">
+        <div class="modal-content">            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="frm-pqr">Listado PQR</h4>
+            </div>            
+            <div class="modal-body">
+				<!--Filtros-->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default panel-shadow" data-collapsed="0">
+							<div class="panel-heading">
+								<div class="panel-title">Filtros</div>                
+								<div class="panel-options">
+									<a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+									<!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
+								</div>
+							</div>
+							<div class="panel-body"> 
+                                <div class="row">            
+                                    <div class="form-group">
+                                        <div class="col-xs-12 col-md-4">
+                                            <label for="flt_radicado" class="control-label">Radicado</label> 
+                                            <input type="text" id="flt_radicado" name="flt_radicado"  class="form-control" placeholder="RADICADO"/> 
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-4">
+                                            <label for="flt_fch_pqr_ini" class="control-label">Fecha Inicial</label> 
+                                            <div class="input-group">
+                                                <input type="text" id="flt_fch_pqr_ini" name="flt_fch_pqr_ini" title="Fecha PQR Inicial"  class="form-control datepicker"  placeholder="YYYY-MM-DD"/> 
+                                                <div class="input-group-addon">
+                                                    <a href="#"><i class="entypo-calendar"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-4">
+                                            <label for="flt_fch_pqr_fin" class="control-label">Fecha Final</label> 
+                                            <div class="input-group">
+                                                <input type="text" id="flt_fch_pqr_fin" name="flt_fch_pqr_fin" title="Fecha PQR Final" class="form-control datepicker"  placeholder="YYYY-MM-DD"/>
+                                                <div class="input-group-addon">
+                                                    <a href="#"><i class="entypo-calendar"></i></a>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+
+								<div class="row">            
+									<div class="form-group">					
+
+										<div class="col-xs-12 col-md-2">
+											<label for="flt_identificacion_pqr" class="control-label">Identificaci&oacute;n</label> 
+											<input type="text" id="flt_identificacion" name="flt_identificacion"  class="form-control" placeholder="IDENTIFICACION"/> 
+										</div>
+
+										<div class="col-xs-12 col-md-4">
+											<label for="flt_nombre_pqr" class="control-label">Nombre</label> 
+											<input type="text" id="flt_nombre" name="flt_nombre"  class="form-control" placeholder="NOMBRE"/> 
+										</div>
+
+										<div class="col-xs-12 col-md-4">
+											<label for="flt_direccion_usuario_pqr" class="control-label">Direcci&oacute;n</label> 
+											<input type="text" title="Direcci&oacute;n" id="flt_direccion_usuario_pqr" name="flt_direccion_usuario_pqr"  class=" form-control" placeholder="DIRECCION"/> 
+										</div>
+
+										<div class="col-xs-12 col-md-2">											
+											<label for="btn_filtrar_pqr" class="control-label">&nbsp;</label> 
+											<button type="button" class="btn btn-blue btn-icon icon-left form-control" id="btn_filtrar_pqr" name="btn_filtrar_pqr">
+												Buscar
+												<i class="entypo-search"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div> 
+				<!--Fin Filtros-->
+				<!--Listado-->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default panel-shadow" data-collapsed="0">
+							<div class="panel-heading">
+								<div class="panel-title">Listado</div>                
+								<div class="panel-options">
+									<a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+									<!--<a href="#" data-rel="close" class="bg"><i class="entypo-cancel"></i></a>-->
+								</div>
+							</div>
+							<div class="panel-body"> 								
+								<div class="table-responsive panel-shadow">
+								<table id="tbl_pqr" class="table table-bordered datatable table-responsive">
+									<thead>
+										<tr> 
+											<th style="text-align: center">#</th>
+											<th style="text-align: center">RADICADO</th>
+											<th style="text-align: center">NOMBRE</th>
+											<th style="text-align: center">DIRECCION</th>
+											<th style="text-align: center">BARRIO</th>
+											<th style="text-align: center">TIPO REPORTE</th>
+                                            <th style="text-align: center">TIPO PQR</th>
+                                            <th style="text-align: center">FECHA REPORTE</th>
+											<th style="text-align: center">ESTADO</th>
+                                            <th style="text-align: center">ID_LUMINARIA</th>
+                                            <th style="text-align: center">LUMINARIA_NO</th>
+                                            <th style="text-align: center">POSTE_NO</th>
+                                            <th style="text-align: center">ID_TIPO_LUMINARIA</th>
+                                            <th style="text-align: center">ID_BARRIO_LUMINARIA</th>
+                                            <th style="text-align: center">DIRECCION_LUMINARIA</th>
+										</tr>
+									</thead>
+								</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--fin-->
+			</div>
+			<div class="modal-footer">
+                <button type="button" class="btn btn-default btn-icon icon-left" id="btn_cerrar_listado_pqr" data-dismiss="modal">Cerrar<i class="entypo-cancel"></i></button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--Fin Listado-->
