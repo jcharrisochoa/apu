@@ -22,6 +22,7 @@ var item    = 0;
 var detalleActividad = "";
 var tablePQR = "";
 var detallePQR = "";
+var tableAcciones = "";
 
 $(function() {
 
@@ -192,6 +193,26 @@ $(function() {
        //return false;
     });
 
+    $("#btn_buscar_servicio").click(function(){
+        if (event.handled !== true) {
+            event.preventDefault();
+            $("#frm-servicio").modal("show"); 
+            $("#frm-servicio").css("z-index", "15001");
+            //tableServicio.ajax.reload();
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#frm-servicio").off().on('hidden.bs.modal',function(){
+        $("#frm-actividad").css("z-index", "15000"); //foco del modal inicial
+        $('body').addClass('modal-open'); 
+        //console.log(dataDetallePuntoLuminico);
+        //$("#txt_codigo").val(dataDetallePuntoLuminico.id_luminaria);
+        //$("#txt_descripcion").val(dataDetallePuntoLuminico.poste_no);
+    
+    });
+
     $("#txt_cantidad").keydown(function(event){
         if(event.keyCode == 13){
            if(event.handled !== true){
@@ -323,6 +344,7 @@ $(function() {
         return false;
     });
     
+
     $("#flt_radicado").numeric({
         negative:false,
         decimal:false
@@ -384,6 +406,7 @@ $(function() {
     InitTableActividad();
     initTableArticulo();
     InitTablePQR();
+    InitTableAcciones();
 });
 
 function listarBarrioActividad(controlMunicipio,controlBarrio) {
@@ -984,5 +1007,48 @@ function InitTablePQR() {
         $(this).addClass("highlight");
         detallePQR = tablePQR.row(this).data();
         $("#frm-pqr").modal("hide");
+    });
+}
+
+function InitTableAcciones(){
+    if (!$.fn.DataTable.isDataTable("#tbl_acciones")) {
+        tableAcciones = $("#tbl_acciones").on("preXhr.dt", function(e, settings, data) {
+        }).DataTable({ ///todo por una D jeje
+            "aLengthMenu": [
+                [10, 15, 20],
+                [10, 15, 20]
+            ],
+            "bStateSave": false,
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "bAutoWidth": true,
+            "searching": true,
+            "ajax": {
+                "url": "actividad/ajax/listar_servicio.php",
+                "type": "POST"
+            },
+            "columns": [
+                { "data": "item",className: "text-center","searchable": false,"orderable": false,"width": "10%"},
+                { "data": "id_articulo",className: "text-center","searchable": true,"orderable": true,"name":"id_articulo"},
+                { "data": "descripcion",className: "text-left","searchable": true,"orderable": true,"name":"descripcion"},
+
+            ],
+            "order": [
+                [1,"DESC"]
+            ],
+            language: {
+                url: "../../../../libreria/DataTableSp.json"
+            }
+        });
+    }
+    $("#tbl_acciones tbody").on("click", "tr", function() {
+        $("#tbl_acciones tbody tr").removeClass("highlight");
+        $(this).addClass("highlight");
+        //detallePQR = tablePQR.row(this).data();
+        var data=tableAcciones.row(this).data();
+        $("#txt_codigo").val(data.id_articulo);
+        $("#txt_descripcion").val(data.descripcion);
+        $("#frm-servicio").modal("hide");
     });
 }

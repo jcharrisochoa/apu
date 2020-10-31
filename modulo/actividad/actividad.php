@@ -579,7 +579,7 @@ else{
                                                 <input type="text" id="txt_codigo" name="txt_codigo" class="form-control clear clear-articulo" placeholder="C&oacute;digo" title="C&oacute;digo">
                                                 <input type="hidden" id="item" name="item" value=""/>									
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-blue" type="button"><i class="entypo-search"></i></button>
+                                                    <button class="btn btn-blue" id="btn_buscar_servicio" type="button"><i class="entypo-search"></i></button>
                                                 </span>
 									        </div>
 
@@ -793,4 +793,44 @@ else{
         </div>
     </div>
 </div>
-<!--Fin Listado-->
+<!--Fin Modal PQR-->
+
+<!--Modal Servicio-->
+<div class="modal fade custom-width" id="frm-servicio" role="dialog" data-keyboard="false" data-backdrop="static" >
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="frm-titulo-servicio">Listado Servicios</h4>
+            </div>            
+            <div class="modal-body">
+				<!--Listado-->
+				<div class="row">
+					<div class="col-md-12">						
+                        <div class="panel-body"> 								
+                            <div class="table-responsive panel-shadow">
+                            <table id="tbl_acciones" class="table table-bordered datatable table-responsive">
+                                <thead>
+                                    <tr> 
+                                        <th style="text-align: center">#</th>
+                                        <th style="text-align: center">CODIGO</th>
+                                        <th style="text-align: center">DESCRIPCION</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            </div>
+                        </div>						
+					</div>
+				</div>
+				<!--fin-->
+			</div>
+			<div class="modal-footer">
+                <button type="button" class="btn btn-default btn-icon icon-left" id="btn_cerrar_listado_servicio" data-dismiss="modal">Cerrar<i class="entypo-cancel"></i></button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--Fin Modal Servicio-->
+
+
