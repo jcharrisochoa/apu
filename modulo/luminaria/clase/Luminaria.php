@@ -124,8 +124,17 @@ class Luminaria{
         $latitud    = (!empty($post['txt_latitud']))?$post['txt_latitud']:"0";
         $longitud   = (!empty($post['txt_longitud']))?$post['txt_longitud']:"0";
         $proveedor  = (!empty($post['slt_proveedor']))?$post['slt_proveedor']:"null";
+        $luminaria  = (!empty($post['txt_luminaria_no']))?"'".$post['txt_luminaria_no']."'":"null";
+        $tercero = (!empty($post['slt_tercero']))?$post['slt_tercero']:"null";
 
-        if($this->validaExistePosteLuminaria($post['txt_poste_no'],$post['txt_luminaria_no'],$post['slt_municipio'])){
+        if(!empty($post['txt_luminaria_no'])){
+            $validar = $this->validaExistePosteLuminaria($post['txt_poste_no'],$post['txt_luminaria_no'],$post['slt_municipio']);
+        }
+        else{
+            $validar = false;
+        }
+
+        if($validar){
             $array =  array("estado"=>false,"data"=>"Estos datos ya estan registrados,Poste No: ".$post['txt_poste_no'].",Luminaria No: ".$post['txt_luminaria_no']);
         }
         else{
@@ -135,9 +144,9 @@ class Luminaria{
                         fch_instalacion,fch_registro,id_tercero_registra,id_estado_luminaria,id_tercero_proveedor
                         )
                         VALUES(
-                        '".$post['txt_poste_no']."','".$post['txt_luminaria_no']."',".$post['slt_tipo_luminaria'].",
+                        '".$post['txt_poste_no']."',". $luminaria.",".$post['slt_tipo_luminaria'].",
                         ".$post['slt_municipio'].",'".$post['txt_direccion']."',".$post['slt_barrio'].",".str_replace(",",".",$latitud).",
-                        ".str_replace(",",".",$longitud).",".$post['slt_tercero'].",null,null,'".$post['txt_fch_instalacion']."',
+                        ".str_replace(",",".",$longitud).",".$tercero.",null,null,'".$post['txt_fch_instalacion']."',
                         now(),".$_SESSION['id_tercero'].",".$post['slt_estado'].",".$proveedor."
                         );";
 
@@ -189,10 +198,12 @@ class Luminaria{
         $latitud    = (!empty($post['txt_latitud']))?$post['txt_latitud']:"0";
         $longitud   = (!empty($post['txt_longitud']))?$post['txt_longitud']:"0";
         $proveedor  = (!empty($post['slt_proveedor']))?$post['slt_proveedor']:"null";
+        $luminaria  = (!empty($post['txt_luminaria_no']))?"'".$post['txt_luminaria_no']."'":"null";
+        $tercero    = (!empty($post['slt_tercero']))?$post['slt_tercero']:"null";
 
         $this->sql = "UPDATE luminaria SET 
                     poste_no='".$post['txt_poste_no']."',
-                    luminaria_no='".$post['txt_luminaria_no']."',
+                    luminaria_no=".$luminaria.",
                     id_tipo_luminaria=".$post['slt_tipo_luminaria'].",
                     id_municipio=".$post['slt_municipio'].",
                     direccion='".$post['txt_direccion']."',
@@ -201,7 +212,7 @@ class Luminaria{
                     longitud=".str_replace(",",".",$longitud).",
                     fch_instalacion='".$post['txt_fch_instalacion']."',
                     id_estado_luminaria=".$post['slt_estado'].",
-                    id_tercero=".$post['slt_tercero'].",
+                    id_tercero=".$tercero.",
                     id_tercero_proveedor=".$proveedor."
                     WHERE
                     id_luminaria=".$post['id_luminaria'];

@@ -79,6 +79,7 @@ var neonLogin = neonLogin || {};
                             setTimeout(function() {
                                 // If login is invalid, we store the 
                                 if (login_status == 'invalid') {
+                                    $("#error_login").html('Usuario Inválido');
                                     $(".login-page").removeClass('logging-in');
                                     neonLogin.resetProgressBar(true);
                                 } 
@@ -97,6 +98,7 @@ var neonLogin = neonLogin || {};
                                     }
                                     else{
                                         if(login_status == 'error'){
+                                            $("#error_login").html(response.login_message)
                                             $(".login-page").removeClass('logging-in');
                                             neonLogin.resetProgressBar(true);
                                         }
@@ -118,7 +120,7 @@ var neonLogin = neonLogin || {};
         // Lockscreen & Validation
         var is_lockscreen = $(".login-page").hasClass('is-lockscreen');
 
-        if (is_lockscreen) {
+        /*if (is_lockscreen) {
             neonLogin.$container = $("#form_lockscreen");
             neonLogin.$ls_thumb = neonLogin.$container.find('.lockscreen-thumb');
 
@@ -141,11 +143,7 @@ var neonLogin = neonLogin || {};
                 },
 
                 submitHandler: function(ev) {
-                    /* 
-                    	Demo Purpose Only 
-                    	
-                    	Here you can handle the page login, currently it does not process anything, just fills the loader.
-                    */
+                   
 
                     $(".login-page").addClass('logging-in-lockscreen'); // This will hide the login form and init the progress bar
 
@@ -173,7 +171,7 @@ var neonLogin = neonLogin || {};
                     }, 650);
                 }
             });
-        }
+        }*/
 
 
 
@@ -227,6 +225,7 @@ var neonLogin = neonLogin || {};
         });
 
         // Functions
+        
         $.extend(neonLogin, {
             setPercentage: function(pct, callback) {
                 pct = parseInt(pct / 100 * 100, 10) + '%';
@@ -312,7 +311,7 @@ var neonLogin = neonLogin || {};
 
 
         // Lockscreen Create Canvas
-        if (is_lockscreen) {
+       /* if (is_lockscreen) {
             neonLogin.$lockscreen_progress_canvas = $('<canvas></canvas>');
             neonLogin.$lockscreen_progress_indicator = neonLogin.$container.find('.lockscreen-progress-indicator');
 
@@ -364,7 +363,7 @@ var neonLogin = neonLogin || {};
             neonLogin.$lockscreen_progress_indicator.html('0%');
 
             ctx.restore();
-        }
+        }*/
 
     });
 

@@ -435,7 +435,7 @@ else{
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="txt_luminaria_no" class="control-label">Luminaria No.</label>            
-                                <input type="text" class="form-control requerido clear" id="txt_luminaria_no" name="txt_luminaria_no" placeholder="# Luminaria" title="Luminaria No">
+                                <input type="text" class="form-control clear" id="txt_luminaria_no" name="txt_luminaria_no" placeholder="# Luminaria" title="Luminaria No">
                             </div>
                         </div>
                     </div>
@@ -450,7 +450,7 @@ else{
                             </div>	-->
                             <div class="form-group">
                                 <label for="slt_tercero" class="control-label">T&eacute;cnico / Instalador</label>
-                                <select id="slt_tercero" name="slt_tercero" class="form-control requerido clear" placeholder="T&eacute;cnico" title="T&eacute;cnico">
+                                <select id="slt_tercero" name="slt_tercero" class="form-control clear" placeholder="T&eacute;cnico" title="T&eacute;cnico">
                                     <option value="">-Seleccione-</option>
                                     <?php
                                     while(!$tercero->EOF){

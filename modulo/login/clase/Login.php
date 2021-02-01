@@ -23,7 +23,7 @@ class Login{
             $this->result = $this->db->Execute($this->sql);
 
             if(!$this->result){
-                return array("estado"=>false,"data"=>"","mensaje"=>"Error Consultando el usuario");
+                return array("estado"=>false,"data"=>"","mensaje"=>"Error Consultando el usuario".$this->db->ErrorMsg());
             }
             else{
                 return array("estado"=>true,"data"=>$this->result,"mensaje"=>"");

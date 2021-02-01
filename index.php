@@ -68,7 +68,7 @@ session_destroy();
 	<div class="login-form">		
 		<div class="login-content">			
 			<div class="form-login-error">
-				<h3>Usuario Inv&aacute;lido</h3>
+				<h3 id="error_login">Usuario Inv&aacute;lido</h3>
 			</div>
 			
 			<form method="post" role="form" id="form_login">				
