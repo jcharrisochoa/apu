@@ -83,7 +83,7 @@ if(empty($_SESSION['id_tercero'])){
 
 </head>
 <body class="page-body  page-fade">
-	<div class="page-container">
+	<div class="page-container ">
 		<div class="sidebar-menu">
 
 			<div class="sidebar-menu-inner">

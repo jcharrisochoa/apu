@@ -10,6 +10,9 @@ require_once "../parametros/clase/EstadoLuminaria.php";
 require_once "../parametros/clase/Tercero.php";
 require_once "../parametros/clase/TipoActividad.php";
 require_once "../parametros/clase/Vehiculo.php";
+require_once "../parametros/clase/ClaseIluminacion.php";
+require_once "../parametros/clase/PeriodoMantenimiento.php";
+
 $menu = new Menu($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjMun = new Municipio($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoLum = new TipoLuminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
@@ -17,12 +20,18 @@ $ObjEstLum = new EstadoLuminaria($credencial['driver'],$credencial['host'], $cre
 $ObjTercero = new Tercero($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjTipoAct = new TipoActividad($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
 $ObjVeh = new Vehiculo($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjClase = new ClaseIluminacion($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$ObjPeriodo = new PeriodoMantenimiento($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+
 $municipio = $ObjMun->listarMunicipioContrato();
 $tipoLuminaria = $ObjTipoLum->listarTipoLuminaria();
 $estadoLuminaria = $ObjEstLum->listarEstadoLuminaria(""); 
 $tercero = $ObjTercero->listarTecnico();
 $vehiculo = $ObjVeh->listarVehiculo();
 $tipoActividad = $ObjTipoAct->listarTipoActividad("S");
+$claseIluminacion = $ObjClase->listarClaseIluminacion();
+$periodoMantenimiento = $ObjPeriodo->listarPeriodoMantenimiento();
+
 if(empty($_SESSION['id_tercero'])){
 	?>
 	<script> 
@@ -55,7 +64,7 @@ else{
         <a href="#">Luminaria</a>
     </li>
     <li class="active">
-    <strong>Gesti&oacute;n Hoja de Vida de la Luminaria</strong>
+    <strong>Gesti&oacute;n Hoja de Vida de Luminaria</strong>
     </li>
 </ol>
 </hr>
@@ -191,6 +200,7 @@ else{
             <th style="text-align: center">DIRECCION</th>
             <th style="text-align: center">LATITUD</th>
             <th style="text-align: center">LONGITUD</th> 
+            <th style="text-align: center">ESTADO</th>
             <th style="text-align: center">ID_LUMINARIA</th>     
             <th style="text-align: center">FCH_INSTALACION</th>
             <th style="text-align: center">FCH_REGISTRO</th>                                
@@ -199,6 +209,11 @@ else{
             <th style="text-align: center">ID_TERCERO_PROVEEDOR</th>
             <th style="text-align: center">ID_ESTADO_LUMINARIA</th>
             <th style="text-align: center">ID_TIPO_LUMINARIA</th>
+            <th style="text-align: center">ID_TERCERO</th>
+            <th style="text-align: center">INSTALADOR</th>
+            <th style="text-align: center">ID_PERIODO_MANTENIMIENTO</th>
+            <th style="text-align: center">PERIODO_MANTENIMIENTO</th>
+            
         </tr>
     </thead>
 </table>
@@ -278,17 +293,109 @@ else{
                                 </div>
                                 <div class="row">
                                         <div class="col-sm-12">
+                                            <div class="col-ms-12 col-md-2"><label class="control-label">Periodo Mantenimiento</label></div>
+                                            <div class="col-ms-12 col-md-4" id="td_periodo_mantenimiento"></div>
                                             <div class="col-ms-12 col-md-2"><label class="control-label">Estado</label></div>
-                                        <div class="col-ms-12 col-md-4" id="td_estado"></div>
-                                        <div class="col-ms-12 col-md-2"><label class="control-label"></label></div>
-                                        <div class="col-ms-12 col-md-4" id=""></div>               
+                                            <div class="col-ms-12 col-md-4" id="td_estado"></div>                                                       
                                         </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--Historial de estados-->
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="1" id="panel-encabezado">
+                            <!-- panel head -->
+                            <div class="panel-heading">
+                                <div class="panel-title">Diseño</div>
+                                <div class="panel-options">
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                </div>
+                            </div>
+                            <div class="panel-body panel-encabezado">
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <?php if($CREAR=="S"){ ?>
+                                        <button class="btn btn-success" id="btn_agregar_diseno"><i class="entypo-plus"></i></button>
+                                        <?php } ?>
+                                        <?php if($ELIMINAR=="S"){ ?>
+                                        <button class="btn btn-danger" id="btn_eliminar_diseno"><i class="entypo-trash"></i></button>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered datatable " id="tbl_diseno_luminaria">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Clase Iluminaci&oacute;n</th>
+                                                <th>Fch Visita</th>
+                                                <th>Hm</th>
+                                                <th>Sm</th>
+                                                <th>Wm</th>
+                                                <th>Ilum Lux</th>
+                                                <th>Uniformidad</th> 
+                                                <th>Cumple Retilap</th>  
+                                                <th></th>                                    
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="1" id="panel-encabezado">
+                            <!-- panel head -->
+                            <div class="panel-heading">
+                                <div class="panel-title">Medici&oacute;n(es)</div>
+                                <div class="panel-options">
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                </div>
+                            </div>
+                            <div class="panel-body panel-encabezado">
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <?php if($CREAR=="S"){ ?>
+                                        <button class="btn btn-success" id="btn_agregar_medicion"><i class="entypo-plus"></i></button>
+                                        <?php } ?>
+                                        <?php if($ELIMINAR=="S"){ ?>
+                                        <button class="btn btn-danger" id="btn_eliminar_medicion"><i class="entypo-trash"></i></button>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered datatable " id="tbl_medicion_luminaria">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Clase Iluminaci&oacute;n</th>
+                                                <th>Fch Visita</th>
+                                                <th>Hm</th>
+                                                <th>Sm</th>
+                                                <th>Wm</th>
+                                                <th>Ilum Lux</th>
+                                                <th>Uniformidad</th> 
+                                                <th>Cumple Retilap</th>  
+                                                <th></th>
+                                                <th></th>                                    
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Historial de Actividades-->
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="panel panel-default panel-shadow" data-collapsed="0" id="panel-encabezado"><!-- to apply shadow add class "panel-shadow" -->
@@ -441,7 +548,7 @@ else{
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <!--<div class="form-group">
                                 <label for="slt_proveedor" class="control-label">Proveedor</label>
                                 <select id="slt_proveedor" name="slt_proveedor" class="form-control clear" placeholder="Proveedor">
@@ -461,7 +568,24 @@ else{
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="slt_periodo_mantenimiento" class="control-label">Mantenimiento Cada ?</label>
+                                <select id="slt_periodo_mantenimiento" name="slt_periodo_mantenimiento" class="form-control requerido clear" placeholder="Periodo Mantenimiento" title="Periodo Mantenimiento">
+                                <option value="">-Seleccione-</option>
+                                <?php
+                                    while(!$periodoMantenimiento->EOF){
+                                        if($periodoMantenimiento->fields['dias']==730)
+                                            echo "<option value=\"".$periodoMantenimiento->fields['id_periodo_mantenimiento']."\" selected>".strtoupper($periodoMantenimiento->fields['descripcion'])."</option>";
+                                        else
+                                            echo "<option value=\"".$periodoMantenimiento->fields['id_periodo_mantenimiento']."\">".strtoupper($periodoMantenimiento->fields['descripcion'])."</option>";
+                                        $periodoMantenimiento->MoveNext();
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="slt_estado" class="control-label">Estado</label>
                                 <select id="slt_estado" name="slt_estado" class="form-control requerido clear" placeholder="Estado" title="Estado">
@@ -475,13 +599,19 @@ else{
                                 </select>
                             </div>	
                         </div>
+                        
                     </div> 
                     <div class="row" id="div_check_crear_actividad">
                         <div class="col-md-6">
-                            <input tabindex="5" type="checkbox" class="icheck" id="chk_crear_actividad" name="chk_crear_actividad">
-							<label for="chk_crear_actividad">¿Generar actividad de Instalaci&oacute;n?</label>
+                            <div class="form-group">
+                                <label for="chk_crear_actividad">¿Generar actividad de Instalaci&oacute;n?</label><br>
+                                <input tabindex="5" type="checkbox" class="icheck" id="chk_crear_actividad" name="chk_crear_actividad">
+                            </div>
+							
                         </div>
-                        <div class="col-md-6"></div>
+                        <div class="col-md-6">
+                            &nbsp;
+                        </div>
                     </div> 
                     <div class="row" id="div_oculto">
                         <div class="col-md-6">                           
@@ -525,3 +655,104 @@ else{
         </div>
     </div>
 </div>
+
+<!--Formulario Mediciones y Diseño-->
+<?php if($CREAR=="S"){ ?>
+<div class="modal fade" id="frm-medicion-luminaria" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="frm-titulo-medicion">Titulo</h4>
+            </div>
+            
+            <div class="modal-body">
+                <form id="form-medicion-luminaria">
+                    <input type="hidden" id="tipo_medicion" name="tipo_medicion" class="form-control" value="" />
+                    <input type="hidden" id="id_medicion" name="id_medicion" class="form-control clear_medicion" value="" />
+                    <div class="row">
+                        <div class="col-md-6">                            
+                            <div class="form-group">
+                                <label for="slt_clase_iluminacion" class="control-label">Clase Iluminaci&oacute;n</label>                    
+                                <select id="slt_clase_iluminacion" name="slt_clase_iluminacion" class="form-control requerido_medicion clear_medicion" placeholder="Clase Iluminaci&oacute;n" title="Clase Iluminaci&oacute;n">
+                                    <option value="">-Seleccione-</option>
+                                    <?php
+                                    while(!$claseIluminacion->EOF){
+                                        echo "<option value=\"".$claseIluminacion->fields['id_clase_iluminacion']."\">".strtoupper($claseIluminacion->fields['abreviatura'])."</option>";
+                                        $claseIluminacion->MoveNext();
+                                    }
+                                    ?>
+                                </select>
+                            </div>	                            
+                        </div>
+                        <div class="col-md-6">                            
+                            <div class="form-group">
+                                <label for="txt_fecha" class="control-label">Fecha</label>
+                                <div class="input-group">
+                                    <input type="text" id="txt_fecha" name="txt_fecha" readonly title="Fecha" 
+                                    class="form-control datepicker requerido_medicion clear_medicion"  placeholder="YYYY-MM-DD" data-date-format="yyyy-mm-dd"/>
+                                    <div class="input-group-addon">
+                                        <a href="#"><i class="entypo-calendar"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">                            
+                            <div class="form-group">
+                                <label for="txt_hm" class="control-label">Hm</label>
+                                <input type="text" id="txt_hm" name="txt_hm" class="form-control requerido_medicion clear_medicion text-right" maxlength="4" placeholder="0" title="Hm">
+                            </div>
+                        </div>
+                        <div class="col-md-4">                            
+                            <div class="form-group">
+                                <label for="txt_sm" class="control-label">Sm</label>
+                                <input type="text" id="txt_sm" name="txt_sm" class="form-control requerido_medicion clear_medicion text-right" maxlength="4" placeholder="0" title="Sm">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="txt_wm" class="control-label">Wm</label>
+                                <input type="text" id="txt_wm" name="txt_wm" class="form-control requerido_medicion clear_medicion text-right" maxlength="4" placeholder="0" title="Wm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="txt_ilum_lux" class="control-label">Ilum. Lux</label>
+                                <input type="text" id="txt_ilum_lux" name="txt_ilum_lux" class="form-control requerido_medicion clear_medicion text-right" maxlength="4" placeholder="0" title="Ilum. Lux">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="txt_uniformidad" class="control-label">Uniformidad</label>
+                                <input type="text" id="txt_uniformidad" name="txt_uniformidad" class="form-control requerido_medicion clear_medicion text-right" maxlength="4" placeholder="0" title="Uniformidad">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="slt_cumple_retilap" class="control-label">Cumple Retilap</label>
+                                <select id="slt_cumple_retilap" name="slt_cumple_retilap" class="form-control requerido_medicion clear_medicion" placeholder="Cumple Retilap" title="Cumple Retilap">
+                                <option value="">-Seleccione-</option>
+                                    <option value="S">Si</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-icon icon-left" id="btn_cerrar_frm" data-dismiss="modal">Cerrar<i class="entypo-cancel"></i></button>
+                <button type="button" class="btn btn-blue btn-icon icon-left" id="btn_guardar_medicion">Guardar<i class="entypo-floppy"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+}
+?>

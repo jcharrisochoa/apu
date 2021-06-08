@@ -21,7 +21,7 @@ else{
 }
 ?>
 <script src="../libreria/custom/custom.js"></script>
-<script type="text/javascript" src="parametros/js/tipo_luminaria.js"></script>
+<script type="text/javascript" src="parametros/js/clase_iluminacion.js"></script>
 <style>
 .datepicker.datepicker-dropdown {
     z-index: 100000 !important;
@@ -35,20 +35,20 @@ else{
         <a href="#">Par&aacute;metros</a>
     </li>
     <li class="active">
-    <strong>Tipo Luminaria</strong>
+    <strong>Tipo Identificacion</strong>
     </li>
 </ol>
 </hr>
 <div class="row">
 	<div class="col-md-12">
         <?php if($CREAR=="S"){ ?>
-        <button type="button" id="btn_nuevo_tipo_luminaria" style class="btn btn-green btn-icon icon-left">Nuevo<i class="entypo-plus"></i></button>
+        <button type="button" id="btn_nuevo_clase_iluminacion" style class="btn btn-green btn-icon icon-left">Nuevo<i class="entypo-plus"></i></button>
         <?php } 
         if($EDITAR=="S"){ ?>
-        <button type="button" id="btn_editar_tipo_luminaria" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
+        <button type="button" id="btn_editar_clase_iluminacion" class="btn btn-orange btn-icon icon-left">Editar<i class="entypo-pencil"></i></button>
         <?php }  
         if($ELIMINAR=="S"){ ?>
-        <button type="button" id="btn_eliminar_tipo_luminaria" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
+        <button type="button" id="btn_eliminar_clase_iluminacion" class="btn btn-red btn-icon icon-left">Eliminar<i class="entypo-trash"></i></button>
         <?php } ?>
     </div>
 </div>
@@ -56,30 +56,30 @@ else{
 
 
 <div class="table-responsive panel-shadow">
-<table id="tbl_tipo_luminaria" class="table table-bordered datatable table-responsive">
+<table id="tbl_clase_iluminacion" class="table table-bordered datatable table-responsive">
     <thead>
         <tr> 
             <th style="text-align: center">#</th>
             <th style="text-align: center">DESCRIPCION</th>
-            <th style="text-align: center">P.REACTANCIA</th>
-            <th style="text-align: center">ID_TIPO_ACTIVIDAD</th>
+            <th style="text-align: center">ABREVIATURA</th>
+            <th style="text-align: center">ID_TIPO_IDENTIFICACION</th>
         </tr>
     </thead>
 </table>
 </div>
 
 
-<div class="modal fade" id="frm-tipo-luminaria">
+<div class="modal fade" id="frm-clase-iluminacion">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">				
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="frm-titulo-tipo-luminaria">Titulo</h4>
+					<h4 class="modal-title" id="frm-titulo-clase-iluminacion">Titulo</h4>
 				</div>
 				
 				<div class="modal-body">
-                    <form id="form-tipo-luminaria">
-                        <input type="hidden" id="id_tipo_luminaria" name="id_tipo_luminaria" class="form-control clear" value="" />				
+                    <form id="form-clase-iluminacion">
+                        <input type="hidden" id="id_clase_iluminacion" name="id_clase_iluminacion" class="form-control clear" value="" />				
                         <div class="row">
                             <div class="col-md-12">							
                                 <div class="form-group">
@@ -91,8 +91,8 @@ else{
                         <div class="row">
                             <div class="col-md-12">							
                                 <div class="form-group">
-                                    <label for="txt_reactancia" class="control-label">P. Reactancia</label>								
-                                    <input type="text" class="form-control requerido clear" id="txt_reactancia" name="txt_reactancia" placeholder="P&eacute;rdida Reactancia" title="P&eacute;rdida Reactancia" maxlength="45">
+                                    <label for="txt_abreviatura" class="control-label">Abreviatura</label>								
+                                    <input type="text" class="form-control requerido clear" id="txt_abreviatura" name="txt_abreviatura" placeholder="Abreviatura" title="Abreviatura" maxlength="4">
                                 </div>							
                             </div>
                         </div>

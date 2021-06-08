@@ -44,11 +44,12 @@ class Luminaria{
 
         $this->sql = "select count(1) as total        
                         from luminaria l
+                        left join periodo_mantenimiento pm using(id_periodo_mantenimiento)
                         join municipio m using(id_municipio)
                         join barrio b using(id_barrio)
                         join estado_luminaria el using(id_estado_luminaria)
                         join tipo_luminaria tl using(id_tipo_luminaria) 
-                        join tercero tc on (tc.id_tercero = l.id_tercero_registra)
+                        join tercero tc on (tc.id_tercero = l.id_tercero_registra)                        
                         where
                         1=1
                         ".$q;
@@ -96,14 +97,15 @@ class Luminaria{
                     el.descripcion as estado,tl.descripcion as tipo,l.potencia,l.referencia,l.fch_registro,tc. usuario,
                     (select razon_social from tercero where id_tercero = l.id_tercero_proveedor) as proveedor,
                     (select concat(nombre,' ',coalesce(apellido,'')) from tercero where id_tercero = l.id_tercero) as instalador,
-                    l.id_municipio,l.id_barrio,l.id_tercero,id_tercero_proveedor,l.id_estado_luminaria,
-                    l.id_tipo_luminaria
+                    l.id_municipio,l.id_barrio,l.id_tercero,id_tercero_proveedor,l.id_estado_luminaria,l.id_periodo_mantenimiento,
+                    l.id_tipo_luminaria,el.descripcion as estado,pm.descripcion as periodo_mantenimiento
                     from luminaria l
+                    left join periodo_mantenimiento pm using(id_periodo_mantenimiento)
                     join municipio m using(id_municipio)
                     join barrio b using(id_barrio)
                     join estado_luminaria el using(id_estado_luminaria)
                     join tipo_luminaria tl using(id_tipo_luminaria) 
-                    join tercero tc on (tc.id_tercero = l.id_tercero_registra) 
+                    join tercero tc on (tc.id_tercero = l.id_tercero_registra)                   
                     where
                     1=1
                     ".$q;
@@ -141,13 +143,14 @@ class Luminaria{
             $this->sql = "INSERT INTO luminaria(
                         poste_no,luminaria_no,id_tipo_luminaria,id_municipio,
                         direccion,id_barrio,latitud,longitud,id_tercero,referencia,potencia,
-                        fch_instalacion,fch_registro,id_tercero_registra,id_estado_luminaria,id_tercero_proveedor
+                        fch_instalacion,fch_registro,id_tercero_registra,id_estado_luminaria,id_tercero_proveedor,
+                        id_periodo_mantenimiento
                         )
                         VALUES(
                         '".$post['txt_poste_no']."',". $luminaria.",".$post['slt_tipo_luminaria'].",
                         ".$post['slt_municipio'].",'".$post['txt_direccion']."',".$post['slt_barrio'].",".str_replace(",",".",$latitud).",
                         ".str_replace(",",".",$longitud).",".$tercero.",null,null,'".$post['txt_fch_instalacion']."',
-                        now(),".$_SESSION['id_tercero'].",".$post['slt_estado'].",".$proveedor."
+                        now(),".$_SESSION['id_tercero'].",".$post['slt_estado'].",".$proveedor.",".$post['slt_periodo_mantenimiento']."
                         );";
 
             $result = $this->db->Execute($this->sql);
@@ -213,7 +216,8 @@ class Luminaria{
                     fch_instalacion='".$post['txt_fch_instalacion']."',
                     id_estado_luminaria=".$post['slt_estado'].",
                     id_tercero=".$tercero.",
-                    id_tercero_proveedor=".$proveedor."
+                    id_tercero_proveedor=".$proveedor.",
+                    id_periodo_mantenimiento=".$post['slt_periodo_mantenimiento']."
                     WHERE
                     id_luminaria=".$post['id_luminaria'];
         $result = $this->db->Execute($this->sql);

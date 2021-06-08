@@ -31,7 +31,9 @@ while (!$result->EOF){
         "id_estado_luminaria"   => $result->fields['id_estado_luminaria'],
         "id_tipo_luminaria"     => $result->fields['id_tipo_luminaria'],
         "id_tercero"            => $result->fields['id_tercero'],
-        "instalador"            => $result->fields['instalador']
+        "instalador"            => $result->fields['instalador'],
+        "id_periodo_mantenimiento"            => $result->fields['id_periodo_mantenimiento'],
+        "periodo_mantenimiento"            => $result->fields['periodo_mantenimiento']
 
         );                    
     $i++;

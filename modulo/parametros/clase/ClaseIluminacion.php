@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__FILE__) . "/../../../libreria/adodb/adodb.inc.php";
 
-class TipoLuminaria{
+class ClaseIluminacion{
     private $sql;
     public $db;
     private $result;
@@ -12,11 +12,11 @@ class TipoLuminaria{
         $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
     }
 
-    function listarTipoLuminaria(){
-        $this->sql = "select * from tipo_luminaria order by descripcion";
+    function listarClaseIluminacion(){
+        $this->sql = "select * from clase_iluminacion order by descripcion";
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
-            echo "Error Consultando los tipos de luminaria". $this->db->ErrorMsg();
+            echo "Error Consultando los clase de iluminacion". $this->db->ErrorMsg();
             return false;
         }
         else{
@@ -24,16 +24,16 @@ class TipoLuminaria{
         }        
     }
     
-    function contarTipoLuminaria($post){
+    function contarClaseIluminacion($post){
         $q = "";
        
         if(!empty($post['search']['value']))
             $q .= " and descripcion like '%".$post['search']['value']."%'";
             
-        $this->sql = "select count(1) as total from tipo_luminaria where 1=1 ".$q;
+        $this->sql = "select count(1) as total from clase_iluminacion where 1=1 ".$q;
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
-            echo "Error Contando los tipos de luminaria". $this->db->ErrorMsg();
+            echo "Error Contando los clase de iluminacion". $this->db->ErrorMsg();
             return false;
         }
         else{
@@ -41,7 +41,7 @@ class TipoLuminaria{
         }
     }
 
-    function tablaTipoLuminaria($post){
+    function tablaClaseIluminacion($post){
         $q = "";
        
         if(!empty($post['search']['value']))
@@ -56,11 +56,11 @@ class TipoLuminaria{
         if (!empty($post['start']) or !empty($post['length']))
             $q .= " limit ".$post['start'].",".$post['length'];
 
-        $this->sql = "select * from tipo_luminaria where 1=1 ".$q;
+        $this->sql = "select * from clase_iluminacion where 1=1 ".$q;
 
         $this->result = $this->db->Execute($this->sql);
         if(!$this->result){
-            echo "Error Consultando los tipos de luminaria". $this->db->ErrorMsg();
+            echo "Error Consultando los clase de iluminacion". $this->db->ErrorMsg();
             return false;
         }
         else{
@@ -68,8 +68,8 @@ class TipoLuminaria{
         }        
     }
 
-    function nuevoTipoLuminaria($post){
-        $this->sql = "INSERT INTO tipo_luminaria(descripcion,reactancia) VALUES('".$post['txt_descripcion']."',".$post['txt_reactancia'].");";
+    function nuevoClaseIluminacion($post){
+        $this->sql = "INSERT INTO clase_iluminacion(descripcion,abreviatura) VALUES('".$post['txt_descripcion']."','".$post['txt_abreviatura']."');";
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
@@ -77,22 +77,22 @@ class TipoLuminaria{
             return  array("estado"=>true,"data"=>$this->db->insert_id());
     }
 
-    function editarTipoLuminaria($post){
-        $this->sql= "UPDATE tipo_luminaria SET descripcion='".$post['txt_descripcion']."' ,reactancia=".$post['txt_reactancia']." WHERE id_tipo_luminaria=".$post['id_tipo_luminaria'];
+    function editarClaseIluminacion($post){
+        $this->sql= "UPDATE clase_iluminacion SET descripcion='".$post['txt_descripcion']."',abreviatura='".$post['txt_abreviatura']."' WHERE id_clase_iluminacion=".$post['id_clase_iluminacion'];
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
         else
-            return  array("estado"=>true,"data"=>"Tipo Luminaria Actualizado");
+            return  array("estado"=>true,"data"=>"Clase Iluminacion Actualizado");
 
     }
 
-    function eliminarTipoLuminaria($id_tipo_luminaria){
-        $this->sql = "DELETE FROM tipo_luminaria WHERE id_tipo_luminaria=".$id_tipo_luminaria;
+    function eliminarClaseIluminacion($id_clase_iluminacion){
+        $this->sql = "DELETE FROM clase_iluminacion WHERE id_clase_iluminacion=".$id_clase_iluminacion;
         $result = $this->db->Execute($this->sql);
         if(!$result)
             return  array("estado"=>false,"data"=>$this->db->ErrorMsg());
         else
-            return  array("estado"=>true,"data"=>"Tipo Luminaria Eliminado");
+            return  array("estado"=>true,"data"=>"Clase Iluminacion Eliminado");
     }
 }

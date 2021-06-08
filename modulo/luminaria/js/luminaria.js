@@ -1,6 +1,10 @@
 var tableLuminaria = "";
 var tableActividad = "";
+var tableMedicion  = "";
+var tableDiseno     = "";
 var dataDetalleLuminaria = "";
+var dataDisenoLuminaria = "";
+var dataMedicionLuminaria = "";
 var dataSet = [];
 var accion = "";
 
@@ -24,17 +28,23 @@ $(function() {
         $("#slt_tipo_actividad").prop("disabled",false);
         $("#slt_vehiculo").prop("disabled",false);
         $("#slt_tipo_actividad").addClass("requerido");
-      }).on('ifUnchecked',function(){
+    }).on('ifUnchecked',function(){
         $("#div_oculto").hide();
             $("#slt_tipo_actividad").prop("disabled",true);
             $("#slt_vehiculo").prop("disabled",true);
             $("#slt_tipo_actividad").removeClass("requerido");
-      });
+    });
 
     
     $("#txt_latitud").numeric();
 
     $("#txt_longitud").numeric();
+
+    $("#txt_hm").numeric();
+    $("#txt_sm").numeric();
+    $("#txt_wm").numeric();
+    $("#txt_ilum_lux").numeric();
+    $("#txt_uniformidad").numeric();
 
     $("#btn_buscar_luminaria").click(function(event) {
         if (event.handled !== true) {
@@ -112,6 +122,70 @@ $(function() {
         accion="";
     });
 
+    $("#btn_agregar_diseno").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            nuevaMedicion("D");
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_eliminar_diseno").click(function(){        
+        if (event.handled !== true) {
+            event.preventDefault();
+            eliminarDiseno(dataDisenoLuminaria);
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_agregar_medicion").click(function(event) {
+        if (event.handled !== true) {
+            event.preventDefault();
+            nuevaMedicion("V");
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#btn_eliminar_medicion").click(function(){        
+        if (event.handled !== true) {
+            event.preventDefault();
+            eliminarMedicion(dataMedicionLuminaria);
+            event.handld = true;
+        }
+        return false;
+    });
+
+    $("#frm-medicion-luminaria").off().on('hidden.bs.modal',function(){
+        $("#form-medicion-luminaria").css("z-index", "15000"); //foco del modal inicial
+        $('body').addClass('modal-open'); //render nuevamente el modal inicial
+        clearInput(".clear_medicion");
+        tableDiseno.ajax.reload();
+        tableMedicion.ajax.reload();
+    });
+
+    $("#modal-conf").off().on('hidden.bs.modal',function(){
+        $("#form-medicion-luminaria").css("z-index", "15000"); //foco del modal inicial
+        $('body').addClass('modal-open'); //render nuevamente el modal inicial
+        //clearInput(".clear_medicion");
+        //tableDiseno.ajax.reload();
+        //tableMedicion.ajax.reload();
+    });
+
+    $("#btn_guardar_medicion").click(function(){
+        if (event.handled !== true) {
+            event.preventDefault();
+            if(ValidarDatos(".requerido_medicion")){
+                medicionAccion("nuevo");
+            }  
+            event.handld = true;
+        }
+        return false;
+    });
+
+
     InitTableLuminaria();
 });
 
@@ -183,6 +257,7 @@ function InitTableLuminaria() {
                 { "data": "direccion",className: "alignCenter","searchable": false,"orderable": true,"name":"l.direccion"},
                 { "data": "latitud", className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "longitud", className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "estado", className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "fch_instalacion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "fch_registro", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
@@ -192,7 +267,9 @@ function InitTableLuminaria() {
                 { "data": "id_estado_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_tipo_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "id_tercero", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
-                { "data": "instalador", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "instalador", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "id_periodo_mantenimiento", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
+                { "data": "periodo_mantenimiento", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }              
 
             ],
             "order": [
@@ -235,10 +312,23 @@ function verDetalle(dataDet) {
         $("#td_usuario").html(dataDet.usuario);
         $("#td_estado").html(dataDet.estado);
         $("#td_instalador").html(dataDet.instalador);
+        $("#td_periodo_mantenimiento").html(dataDet.periodo_mantenimiento);
+
         if ($.fn.DataTable.isDataTable("#tbl_actividad_luminaria")) {
             tableActividad.destroy();
         }
         InitTableActividad(dataDet);
+
+        if ($.fn.DataTable.isDataTable("#tbl_diseno_luminaria")) {
+            tableDiseno.destroy();
+        }
+        InitTableDiseno(dataDet);
+
+        if ($.fn.DataTable.isDataTable("#tbl_medicion_luminaria")) {
+            tableMedicion.destroy();
+        }
+        InitTableMedicion(dataDet);
+
         $("#modal-detalle-luminaria").modal("show");
     }
 }
@@ -271,12 +361,103 @@ function InitTableActividad(dataDet) {
             { "data": "fch_reclamo", className: "alignCenter", "searchable": false, "orderable": false },
             { "data": "fch_ejecucion", className: "alignCenter", "searchable": false, "orderable": false },
             { "data": "tecnico", className: "alignCenter", "searchable": false, "orderable": false },
-            { "data": "estado_actividad", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "estado_actividad", className: "alignCenter", "searchable": false, "orderable": false }
 
         ],
         language: {
             url: "../../../../libreria/DataTableSp.json"
         }
+    });
+}
+
+function InitTableDiseno(dataDet) {
+    tableDiseno = $("#tbl_diseno_luminaria").on("preXhr.dt", function(e, settings, data) {
+        data.id_luminaria = dataDet.id_luminaria
+        data.tipo = "D"
+    }).DataTable({
+        "aLengthMenu": [
+            [3, 5, 10],
+            [3, 5, 10]
+        ],
+        "bStateSave": false,
+        "processing": true,
+        "serverSide": true,
+        "responsive": true,
+        "bAutoWidth": true,
+        "searching": false,
+        "ajax": {
+            "url": "luminaria/ajax/listar_medicion.php",
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "item", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "clase_iluminacion",className: "alignLeft", "searchable": false, "orderable": false },
+            { "data": "fch_visita", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "hm", className: "alignRight","searchable": false, "orderable": false },
+            { "data": "sm", className: "alignRight","searchable": false, "orderable": false },
+            { "data": "wm", className: "alignRight", "searchable": false, "orderable": false },
+            { "data": "ilum_lux", className: "alignRight", "searchable": false, "orderable": false },
+            { "data": "uniformidad", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "cumple_retilap", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "id_clase_iluminacion", "searchable": false, "orderable": false,"bVisible": false },
+            { "data": "id_medicion", "searchable": false, "orderable": false,"bVisible": false }
+        ],
+        language: {
+            url: "../../../../libreria/DataTableSp.json"
+        }
+    });
+
+    $("#tbl_diseno_luminaria tbody").on("click", "tr", function() {
+        $("#tbl_diseno_luminaria tbody tr").removeClass("highlight");
+        $(this).addClass("highlight");
+        dataDisenoLuminaria = tableDiseno.row(this).data();
+        $("#id_medicion").val(dataDisenoLuminaria.id_medicion);
+    });
+}
+
+function InitTableMedicion(dataDet) {
+    tableMedicion = $("#tbl_medicion_luminaria").on("preXhr.dt", function(e, settings, data) {
+        data.id_luminaria = dataDet.id_luminaria
+        data.tipo = "V"
+    }).DataTable({
+        "aLengthMenu": [
+            [3, 5, 10],
+            [3, 5, 10]
+        ],
+        "bStateSave": false,
+        "processing": true,
+        "serverSide": true,
+        "responsive": true,
+        "bAutoWidth": true,
+        "searching": false,
+        "ajax": {
+            "url": "luminaria/ajax/listar_medicion.php",
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "item", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "clase_iluminacion",className: "alignLeft", "searchable": false, "orderable": false },
+            { "data": "fch_visita", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "hm", className: "alignRight","searchable": false, "orderable": false },
+            { "data": "sm", className: "alignRight","searchable": false, "orderable": false },
+            { "data": "wm", className: "alignRight", "searchable": false, "orderable": false },
+            { "data": "ilum_lux", className: "alignRight", "searchable": false, "orderable": false },
+            { "data": "uniformidad", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "cumple_retilap", className: "alignCenter", "searchable": false, "orderable": false },
+            { "data": "id_clase_iluminacion", "searchable": false, "orderable": false,"bVisible": false },
+            { "data": "id_medicion", "searchable": false, "orderable": false,"bVisible": false }
+            
+        ],
+        language: {
+            url: "../../../../libreria/DataTableSp.json"
+        }
+    });
+
+    $("#tbl_medicion_luminaria tbody").on("click", "tr", function() {
+        $("#tbl_medicion_luminaria tbody tr").removeClass("highlight");
+        $(this).addClass("highlight");
+        dataMedicionLuminaria = tableMedicion.row(this).data();
+        $("#id_medicion").val(dataMedicionLuminaria.id_medicion);
     });
 }
 
@@ -308,6 +489,7 @@ function editarLuminaria(dataDet){
         $("#slt_estado").val(dataDet.id_estado_luminaria).change();
         $("#slt_proveedor").val(dataDet.id_tercero_proveedor).change();
         $("#slt_tercero").val(dataDet.id_tercero).change();
+        $("#slt_periodo_mantenimiento").val(dataDet.id_periodo_mantenimiento).change();
         $("#div_check_crear_actividad").hide();
         $('input.icheck').iCheck("uncheck");
         $("#frm-luminaria").modal("show"); 
@@ -375,7 +557,6 @@ function guardarAccion(accion){
     });
 }
 
-
 function exportarLuminaria(){
     
     var url = "luminaria_no="+$("#luminaria_no").val()+"&"+
@@ -388,4 +569,90 @@ function exportarLuminaria(){
                 "tipo="+$("#tipo").val();
 
     window.open("luminaria/ajax/exportar_luminaria.php?"+url);
+}
+
+function nuevaMedicion(tipo){
+    clearInput(".clear_medicion");
+    var titulo = (tipo=="D")?"Diseño":"Medicion";
+    $("#tipo_medicion").val(tipo);
+    $("#frm-titulo-medicion").html("Nuevo "+titulo);
+    $("#frm-medicion-luminaria").modal("show"); 
+    $("#frm-medicion-luminaria").css("z-index", "15001");
+}
+
+function medicionAccion(accion){
+    switch(accion){
+        case "nuevo":
+            var variable = $("#form-medicion-luminaria").serialize()+"&id_luminaria="+dataDetalleLuminaria.id_luminaria+"&accion="+accion;
+            break;
+        case "eliminar":
+            var variable = "id_medicion="+$("#id_medicion").val()+"&accion="+accion;
+            break;
+    }
+    $.ajax({
+        async:true,
+        type: "POST",
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        url:"luminaria/ajax/medicion_accion.php",
+        data:variable,
+        beforeSend:inicioEnvio,
+        success:function(data){
+            if(data.response.estado){
+                toastr.success(data.response.mensaje, null, opts);
+                //$("#frm-medicion-luminaria").modal("hide"); 
+                clearInput(".clear_medicion");
+                tableMedicion.ajax.reload();
+                tableDiseno.ajax.reload();
+            }
+            else{
+                toastr.error(data.response.mensaje, null, opts);
+            }            
+            $.unblockUI("");            
+        },
+        error:function(){
+            toastr.error("Error General", null, opts);
+            $.unblockUI(""); 
+        }
+    });
+}
+
+function eliminarDiseno(dataDet){
+    if (dataDet.length == 0) {
+        toastr.warning("Seleccione Diseño a eliminar", null, opts);
+    } 
+    else {
+        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar el Diseño Seleccionado");
+        $("#modal-conf").modal("show");
+        $("#btn_si").off("click").on("click",function(event){      
+            if (event.handled !== true) {
+                event.preventDefault();
+                $("#modal-conf").modal("hide");
+                $("#modal-body-conf").html("")
+                medicionAccion("eliminar");                     
+                event.handld = true;
+            }
+            return false;                
+        });  
+    }
+}
+
+function eliminarMedicion(dataDet){
+    if (dataDet.length == 0) {
+        toastr.warning("Seleccione la Medición a eliminar", null, opts);
+    } 
+    else {
+        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar la medición Seleccionada");
+        $("#modal-conf").modal("show");
+        $("#btn_si").off("click").on("click",function(event){      
+            if (event.handled !== true) {
+                event.preventDefault();
+                $("#modal-conf").modal("hide");
+                $("#modal-body-conf").html("")
+                medicionAccion("eliminar");                     
+                event.handld = true;
+            }
+            return false;                
+        });  
+    }
 }

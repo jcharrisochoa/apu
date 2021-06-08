@@ -1,32 +1,32 @@
-var tableEstadoActividad = "";
-var dataDetalleEstadoActividad = "";
+var tableClaseIluminacion = "";
+var dataDetalleClaseIluminacion = "";
 var accion = "";
 
 $(function(){
-    $("#btn_nuevo_tipo_luminaria").click(function(){
+    $("#btn_nuevo_clase_iluminacion").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            nuevoEstadoActividad(); 
+            nuevoClaseIluminacion(); 
             accion = "nuevo";     
             event.handld = true;
         }
         return false;
     });
     
-    $("#btn_editar_tipo_luminaria").click(function(){
+    $("#btn_editar_clase_iluminacion").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            editarEstadoActividad(dataDetalleEstadoActividad);
+            editarClaseIluminacion(dataDetalleClaseIluminacion);
             accion = "editar";
             event.handld = true;
         }
         return false;
     });
 
-    $("#btn_eliminar_tipo_luminaria").click(function(){
+    $("#btn_eliminar_clase_iluminacion").click(function(){
         if (event.handled !== true) {
             event.preventDefault();
-            eliminarEstadoActividad(dataDetalleEstadoActividad);
+            eliminarClaseIluminacion(dataDetalleClaseIluminacion);
             accion = "eliminar";
             event.handld = true;
         }
@@ -44,16 +44,13 @@ $(function(){
         return false;
     });
 
-    $("#txt_reactancia").numeric();
-
-
-    initTableEstadoActividad();
+    initTableClaseIluminacion();
 });
 
-function initTableEstadoActividad(){
-    if (!$.fn.DataTable.isDataTable("#tbl_tipo_luminaria")) {
-        tableEstadoActividad = "";
-        tableEstadoActividad = $("#tbl_tipo_luminaria").on("preXhr.dt", function(e, settings, data) {
+function initTableClaseIluminacion(){
+    if (!$.fn.DataTable.isDataTable("#tbl_clase_iluminacion")) {
+        tableClaseIluminacion = "";
+        tableClaseIluminacion = $("#tbl_clase_iluminacion").on("preXhr.dt", function(e, settings, data) {
                 data.municipio = $("#descripcion").val()
         }).DataTable({ ///todo por una D jeje
             "aLengthMenu": [
@@ -68,14 +65,14 @@ function initTableEstadoActividad(){
             "searching": true,
 
             "ajax": {
-                "url": "parametros/ajax/listar_tipo_luminaria.php",
+                "url": "parametros/ajax/listar_clase_iluminacion.php",
                 "type": "POST"
             },
             "columns": [
                 { "data": "item", "searchable": false },
                 { "data": "descripcion",className: "alignCenter","searchable": true,"orderable": true,"name":"descripcion"},
-                { "data": "reactancia",className: "alignCenter","searchable": true,"orderable": true,"name":"reactancia"},
-                { "data": "id_tipo_luminaria", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
+                { "data": "abreviatura",className: "alignCenter","searchable": true,"orderable": true,"name":"abreviatura"},
+                { "data": "id_clase_iluminacion", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false }
             ],
             "order": [
                 [1, "DESC"]
@@ -84,46 +81,46 @@ function initTableEstadoActividad(){
                 url: "../../../../libreria/DataTableSp.json"
             },
             "rowCallback": function(row, data, dataIndex) {
-                var rowId = data.id_tipo_luminaria;
+                var rowId = data.id_clase_iluminacion;
                 //$(row).find("td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(8)").css("color", data.colorestado);
             }
         });
     }
-    $("#tbl_tipo_luminaria tbody").on("click", "tr", function() {
-        $("#tbl_tipo_luminaria tbody tr").removeClass("highlight");
+    $("#tbl_clase_iluminacion tbody").on("click", "tr", function() {
+        $("#tbl_clase_iluminacion tbody tr").removeClass("highlight");
         $(this).addClass("highlight");
-        dataDetalleEstadoActividad = tableEstadoActividad.row(this).data();
-        $("#id_tipo_luminaria").val(dataDetalleEstadoActividad.id_tipo_luminaria);
+        dataDetalleClaseIluminacion = tableClaseIluminacion.row(this).data();
+        $("#id_clase_iluminacion").val(dataDetalleClaseIluminacion.id_clase_iluminacion);
     });
 }
 
-function nuevoEstadoActividad(){
-    $("#frm-titulo-tipo-luminaria").html("Nuevo Tipo Luminaria");
-    $("#frm-tipo-luminaria").modal("show"); 
-    $("#tbl_tipo_luminaria tbody tr").removeClass("highlight");
+function nuevoClaseIluminacion(){
+    $("#frm-titulo-clase-iluminacion").html("Nueva Clase de Iluminación");
+    $("#frm-clase-iluminacion").modal("show"); 
+    $("#tbl_clase_iluminacion tbody tr").removeClass("highlight");
     clearInput(".clear");
-    dataDetalleEstadoActividad = "";
+    dataDetalleClaseIluminacion = "";
 }
 
-function editarEstadoActividad(dataDet){
+function editarClaseIluminacion(dataDet){
     if (dataDet.length == 0) {
-        toastr.warning("Seleccione el tipo de luminaria a editar", null, opts);
+        toastr.warning("Seleccione la clase de iluminacion a editar", null, opts);
     } 
     else {
-        $("#frm-titulo-tipo-luminaria").html("Editar Tipo Luminaria");
+        $("#frm-titulo-clase-iluminacion").html("Editar Clase de Iluminación");
         //$("#txt_poste_no").val(dataDet.poste_no);
         $("#txt_descripcion").val(dataDet.descripcion);
-        $("#txt_reactancia").val(dataDet.reactancia);
-        $("#frm-tipo-luminaria").modal("show"); 
+        $("#txt_abreviatura").val(dataDet.abreviatura);
+        $("#frm-clase-iluminacion").modal("show"); 
     }
 }
 
-function eliminarEstadoActividad(dataDet){
+function eliminarClaseIluminacion(dataDet){
     if (dataDet.length == 0) {
-        toastr.warning("Seleccione el tipo de luminaria a eliminar", null, opts);
+        toastr.warning("Seleccione la clase de iluminación a eliminar", null, opts);
     } 
     else {
-        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar el tipo de luminaria "+dataDet.descripcion+"");
+        $("#modal-body-conf").html("¿ Está seguro(a) de eleminar la clase de iluminación "+dataDet.descripcion+"");
         $("#modal-conf").modal("show");
         $("#btn_si").off("click").on("click",function(event){      
             if (event.handled !== true) {
@@ -141,13 +138,13 @@ function eliminarEstadoActividad(dataDet){
 function guardarAccion(accion){
     switch(accion){
         case "nuevo":
-            var variable = $("#form-tipo-luminaria").serialize()+"&accion="+accion;
+            var variable = $("#form-clase-iluminacion").serialize()+"&accion="+accion;
             break;
         case "editar":
-            var variable = $("#form-tipo-luminaria").serialize()+"&accion="+accion;
+            var variable = $("#form-clase-iluminacion").serialize()+"&accion="+accion;
             break;
         case "eliminar":
-            var variable = "id_tipo_luminaria="+$("#id_tipo_luminaria").val()+"&accion="+accion;
+            var variable = "id_clase_iluminacion="+$("#id_clase_iluminacion").val()+"&accion="+accion;
             break;
     }
     $.ajax({
@@ -155,17 +152,17 @@ function guardarAccion(accion){
         type: "POST",
         dataType: "json",
         contentType: "application/x-www-form-urlencoded",
-        url:"parametros/ajax/guardar_tipo_luminaria.php",
+        url:"parametros/ajax/guardar_clase_iluminacion.php",
         data:variable,
         beforeSend:inicioEnvio,
         success:function(data){
             if(data.response.estado){
                 toastr.success(data.response.mensaje, null, opts);
-                $("#frm-tipo-luminaria").modal("hide"); 
+                $("#frm-clase-iluminacion").modal("hide"); 
                 clearInput(".clear");
                 accion="";
-                tableEstadoActividad.ajax.reload();
-                dataDetalleEstadoActividad = "";
+                tableClaseIluminacion.ajax.reload();
+                dataDetalleClaseIluminacion = "";
             }
             else{
                 toastr.error(data.response.mensaje, null, opts);

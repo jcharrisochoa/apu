@@ -2,18 +2,18 @@
 session_start();
 $url = file_get_contents("../../../conexion/credencial.json");
 $credencial= json_decode($url, true);
-require_once "../clase/TipoLuminaria.php";
-$tipoLuminaria = new TipoLuminaria($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
-$result = $tipoLuminaria->tablaTipoLuminaria($_POST);
-$count = $tipoLuminaria->contarTipoLuminaria($_POST);
+require_once "../clase/ClaseIluminacion.php";
+$claseIluminacion = new ClaseIluminacion($credencial['driver'],$credencial['host'], $credencial['user'], $credencial['pwd'],$credencial['database']);
+$result = $claseIluminacion->tablaClaseIluminacion($_POST);
+$count = $claseIluminacion->contarClaseIluminacion($_POST);
 $i=0;
 $lista=array();
 while (!$result->EOF){
     $lista[$i]=array(                    
         "item"          => $i+1,
         "descripcion"     => $result->fields['descripcion'],
-        "reactancia"     => $result->fields['reactancia'],
-        "id_tipo_luminaria"   => $result->fields['id_tipo_luminaria']
+        "abreviatura"     => $result->fields['abreviatura'],
+        "id_clase_iluminacion"   => $result->fields['id_clase_iluminacion']
         );                    
     $i++;
     $result->MoveNext();
