@@ -36,6 +36,8 @@ class Encuesta extends General{
             $q .= " and e.id_barrio=".$post['barrio'];
         if(!empty($post['nombre']))
             $q .= " and e.nombre_usuario_servicio like '%".$post['nombre']."%'";
+        if(!empty($post['identificacion']))
+            $q .= " and us.identificacion like '%".$post['identificacion']."%'";
         if(!empty($post['direccion']))
             $q .= " and e.direccion like '%".$post['direccion']."%'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))
@@ -71,6 +73,8 @@ class Encuesta extends General{
             $q .= " and e.id_barrio=".$post['barrio'];
         if(!empty($post['nombre']))
             $q .= " and e.nombre_usuario_servicio like '%".$post['nombre']."%'";
+        if(!empty($post['identificacion']))
+            $q .= " and us.identificacion like '%".$post['identificacion']."%'";
         if(!empty($post['direccion']))
             $q .= " and e.direccion like '%".$post['direccion']."%'";
         if(!empty($post['fechaini']) and !empty($post['fechafin']))

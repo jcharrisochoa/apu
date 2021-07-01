@@ -60,4 +60,47 @@ function Meses(){
     }
     return $meses;
 }
+
+function nombreMeses($mes){
+        switch($mes){
+            case 1:
+                $descripcion="Enero";
+                break;
+            case 2:
+                $descripcion="Febrero";
+                break;
+            case 3:
+                $descripcion="Marzo";
+                break;
+            case 4:
+                $descripcion="Abrir";
+                break;
+            case 5:
+                $descripcion="Mayo";
+                break;
+            case 6:
+                $descripcion="Junio";
+                break;
+            case 7:
+                $descripcion="Julio";
+                break;
+            case 8:
+                $descripcion="Agosto";
+                break;
+            case 9:
+                $descripcion="Septiembre";
+                break;
+            case 10:
+                $descripcion="Octubre";
+                break;
+            case 11:     
+                $descripcion="Noviembre";
+                break;
+            case 12:                
+                $descripcion="Diciembre";
+                break;
+        }
+
+    return $descripcion;
+}
 ?>

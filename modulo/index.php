@@ -77,6 +77,7 @@ if(empty($_SESSION['id_tercero'])){
 	<!-- JavaScripts initializations and stuff -->
 	<script src="../libreria/neon/assets/js/neon-custom.js"></script>
 	<script src="../libreria/neon/assets/js/toastr.js"></script>
+	<script src="../libreria/neon/assets/js/jquery.number.min.js"></script>
 	<script src="../libreria/leaflet/leaflet.js"></script>
 	<script src="../libreria/custom/custom.js"></script>
 	<script src="index.js"></script>
