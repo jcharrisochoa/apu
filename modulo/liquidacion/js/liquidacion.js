@@ -271,7 +271,7 @@ function calcular(){
     var diferencia = parseFloat(valorEnergia) - totalConsumo;
     
     $("#txt_total_consumo").val(totalConsumo);
-    $("#diferencia_consumo").html(diferencia.toFixed(2));
+    $("#diferencia_consumo").html("$ "+$.number(diferencia,2, ',', '.'));
     if(diferencia==0){
         $("#diferencia_consumo").removeClass("badge-danger");
         $("#diferencia_consumo").addClass("badge-success");        
@@ -288,8 +288,8 @@ function calcular(){
     var recaudo_ap    = ($("#txt_valor_recaudo_ap").val()=="")?0:$("#txt_valor_recaudo_ap").val();
     
 
-    $("#diferencia_facturacion").html(facturado_ap - facturado_tsycc);
-    $("#diferencia_recaudo").html(recaudo_ap - recaudo_tsycc );
+    $("#diferencia_facturacion").html("$ "+$.number((facturado_ap - facturado_tsycc),2, ',', '.'));
+    $("#diferencia_recaudo").html("$ "+$.number((recaudo_ap - recaudo_tsycc),2, ',', '.') );
 
     if(facturado_tsycc == facturado_ap){
         $("#diferencia_facturacion").removeClass("badge-danger");
