@@ -222,5 +222,58 @@ class Liquidacion{
         }
         return $meses;
     }
+
+    function historicoFacturacion($post){
+        $q = "";
+        if(!empty($post["municipio"]))
+            $q .= " and l.id_municipio = ".$post["municipio"];
+        if(!empty($post["periodo"]))
+            $q .= " and l.periodo_liquidacion = ".$post["periodo"];
+
+        $this->sql = "select l.mes_liquidacion,sum(l.consumo) as consumo,sum(l.valor_consumo) as valor_consumo, 
+        sum(l.facturacion_energia ) as factura_energia,sum(facturacion_impuesto_ap) as facturacion_ap,sum(recaudo_impuesto_ap) as recaudo_ap 
+        from liquidacion l
+        where
+        1=1
+        ".$q." 
+        group by l.mes_liquidacion 
+        order by l.mes_liquidacion";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            //echo "Error Consultando el historico de consumo". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
+
+    function resumen($post){
+        $q = "";
+        if(!empty($post["municipio"]))
+            $q .= " and l.id_municipio = ".$post["municipio"];
+        if(!empty($post["periodo"]))
+            $q .= " and l.periodo_liquidacion = ".$post["periodo"];
+        if(!empty($post["mes"]))
+            $q .= " and l.mes_liquidacion = ".$post["mes"];
+
+        $this->sql = "select l.id_municipio,m.descripcion as municipio,sum(l.facturacion_impuesto_ap) as facturacion_ap,
+                sum(l.facturacion_tsycc) as facturacion_tsycc ,sum(l.recaudo_impuesto_ap) as recaudo_ap ,
+                sum(l.recaudo_tsycc) as recaudo_tsycc 
+                from liquidacion l 
+                join municipio m using(id_municipio)
+                where 
+                1=1
+                ".$q."
+                group by m.descripcion ";
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            //echo "Error Consultando el historico de consumo". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
 }
 ?>
