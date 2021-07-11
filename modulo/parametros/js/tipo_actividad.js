@@ -73,6 +73,8 @@ function initTableTipoActividad(){
                 { "data": "descripcion",className: "text-left","searchable": true,"orderable": true,"name":"descripcion"},
                 { "data": "id_tipo_actividad", "bVisible": false, className: "alignCenter", "searchable": false, "orderable": false },
                 { "data": "instalacion",className: "text-center","searchable": false,"orderable": true,"name":"instalacion"},
+                { "data": "preventivo",className: "text-center","searchable": false,"orderable": true,"name":"preventivo"},
+                { "data": "correctivo",className: "text-center","searchable": false,"orderable": true,"name":"correctivo"},
             ],
             "order": [
                 [1, "DESC"]
@@ -110,6 +112,9 @@ function editarTipoActividad(dataDet){
         $("#frm-titulo-tipo-actividad").html("Editar Tipo Actividad");
         //$("#txt_poste_no").val(dataDet.poste_no);
         $("#txt_descripcion").val(dataDet.descripcion);
+        $("#slt_instalacion").val(dataDet.instalacion).change();
+        $("#slt_preventivo").val(dataDet.preventivo).change();
+        $("#slt_correctivo").val(dataDet.correctivo).change();
         $("#frm-tipo-actividad").modal("show"); 
     }
 }

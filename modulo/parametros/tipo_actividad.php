@@ -62,7 +62,9 @@ else{
             <th style="text-align: center">#</th>
             <th style="text-align: center">DESCRIPCION</th>
             <th style="text-align: center">ID_TIPO_ACTIVIDAD</th>
-            <th style="text-align: center">TIPO INSTALACION</th>
+            <th style="text-align: center">INSTALACION</th>
+            <th style="text-align: center">PREVENTIVO</th>
+            <th style="text-align: center">CORRECTIVO</th>
         </tr>
     </thead>
 </table>
@@ -93,6 +95,31 @@ else{
                                 <div class="form-group">
                                     <label for="slt_instalacion" class="control-label">Tipo Instalaci&oacute;n</label>								
                                     <select id="slt_instalacion" name="slt_instalacion" class="form-control requerido clear" placeholder="Tipo Instalaci&oacute;n" title="Tipo Instalaci&oacute;n">
+                                    <option value="">-Seleccione-</option>
+                                    <option value="N">NO</option>
+                                    <option value="S">SI</option>
+                                </select>
+                                </div>							
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">							
+                                <div class="form-group">
+                                    <label for="slt_preventivo" class="control-label">Tipo Preventivo</label>								
+                                    <select id="slt_preventivo" name="slt_preventivo" class="form-control requerido clear" placeholder="Tipo Preventivo" title="Tipo Preventivo">
+                                    <option value="">-Seleccione-</option>
+                                    <option value="N">NO</option>
+                                    <option value="S">SI</option>
+                                </select>
+                                </div>							
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">							
+                                <div class="form-group">
+                                    <label for="slt_correctivo" class="control-label">Tipo Correctivo</label>								
+                                    <select id="slt_correctivo" name="slt_correctivo" class="form-control requerido clear" placeholder="Tipo Correctivo" title="Tipo Correctivo">
                                     <option value="">-Seleccione-</option>
                                     <option value="N">NO</option>
                                     <option value="S">SI</option>

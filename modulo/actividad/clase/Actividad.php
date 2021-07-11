@@ -460,7 +460,8 @@ class Actividad extends General{
         from luminaria l2 join
         (select a.id_luminaria,pm.dias ,max(date(fch_actividad))  as ultimo_mto ,DATEDIFF('".$fecha."' , max(a.fch_actividad)) as dias_vencimiento
         from actividad a join luminaria l using(id_luminaria) join periodo_mantenimiento pm using(id_periodo_mantenimiento)
-        where a.id_tipo_actividad=2 and a.id_municipio=".$post['municipio']."
+        where a.id_tipo_actividad IN(select id_tipo_actividad from tipo_actividad ta where preventivo='S')
+        and a.id_municipio=".$post['municipio']."
         group by id_luminaria ,pm.dias 
         having DATEDIFF('".$fecha."' , max(a.fch_actividad))>=pm.dias 
         
@@ -475,7 +476,7 @@ class Actividad extends General{
                     select id_actividad from actividad a 
                     where 
                     a.id_luminaria = l.id_luminaria  
-                    and a.id_tipo_actividad=2 
+                    and a.id_tipo_actividad IN(select id_tipo_actividad from tipo_actividad ta where preventivo='S')
                     and a.id_municipio=".$post['municipio']."
                     ) and 
         DATEDIFF('".$fecha."' , l.fch_instalacion)>=pm.dias 

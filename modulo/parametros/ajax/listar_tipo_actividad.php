@@ -13,7 +13,9 @@ while (!$result->EOF){
         "item"          => $i+1,
         "descripcion"     => $result->fields['descripcion'],
         "id_tipo_actividad"   => $result->fields['id_tipo_actividad'],
-        "instalacion"   => $result->fields['instalacion']
+        "instalacion"   => $result->fields['instalacion'],
+        "preventivo"   => $result->fields['preventivo'],
+        "correctivo"   => $result->fields['correctivo'],
         );                    
     $i++;
     $result->MoveNext();
