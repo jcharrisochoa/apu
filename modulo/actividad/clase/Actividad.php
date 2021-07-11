@@ -446,4 +446,49 @@ class Actividad extends General{
             return $this->result;
         }
     }
+
+    function mantenimientoPendiente($post){
+
+        $fecha = $post['periodo']."-".$post['mes']."-01";
+
+        $fecha = (!empty($fecha))?$fecha:date("Y-m-d");
+
+        $limit = (!empty($post['limite']))?" limit ".$post['limite']:"";
+
+        $this->sql = "select m.descripcion as municipio,l2.poste_no ,l2.luminaria_no ,l2.direccion ,b.descripcion as barrio ,fch_instalacion ,t.ultimo_mto,
+        dias_vencimiento
+        from luminaria l2 join
+        (select a.id_luminaria,pm.dias ,max(date(fch_actividad))  as ultimo_mto ,DATEDIFF('".$fecha."' , max(a.fch_actividad)) as dias_vencimiento
+        from actividad a join luminaria l using(id_luminaria) join periodo_mantenimiento pm using(id_periodo_mantenimiento)
+        where a.id_tipo_actividad=2 and a.id_municipio=".$post['municipio']."
+        group by id_luminaria ,pm.dias 
+        having DATEDIFF('".$fecha."' , max(a.fch_actividad))>=pm.dias 
+        
+        union
+        
+        select l.id_luminaria ,pm.dias,date(l.fch_instalacion)  as ultimo_mto ,DATEDIFF('".$fecha."' , l.fch_instalacion) as dias_vencimiento
+        from luminaria l 
+        join periodo_mantenimiento pm using(id_periodo_mantenimiento)
+        where
+        l.id_municipio=".$post['municipio']." and
+        not exists (
+                    select id_actividad from actividad a 
+                    where 
+                    a.id_luminaria = l.id_luminaria  
+                    and a.id_tipo_actividad=2 
+                    and a.id_municipio=".$post['municipio']."
+                    ) and 
+        DATEDIFF('".$fecha."' , l.fch_instalacion)>=pm.dias 
+        ) as t using(id_luminaria) join municipio m using(id_municipio) join barrio b using(id_barrio)
+        ".$limit;
+
+        $this->result = $this->db->Execute($this->sql);
+        if(!$this->result){
+            echo "Error Consultando los mantenimientos ". $this->db->ErrorMsg();
+            return false;
+        }
+        else{
+            return $this->result;
+        }
+    }
 }
